@@ -27,7 +27,7 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user';
 
     public static function form(Form $form): Form
     {
@@ -53,9 +53,9 @@ class UserResource extends Resource
                         Forms\Components\TextInput::make('phone_number')
                             ->tel()
                             ->telRegex('/^(\+1)?[ -]?(\(809\)|\(849\)|\(829\)|809|849|829)[ -]?(\d{3})[ -]?(\d{4})$/')
-//                            ->telRegex('/^[+][1-9]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\.\/0-9]*$/')
-//                            ->telRegex('/^(\+1)?[ -]?(\([2-9]\d{2}\)|[2-9]\d{2})[ -]?(\d{3})[ -]?(\d{4})$/')
-//                            ->telRegex('/^(\+1)?[ -]?(809|829|849)[ -]?(\d{3})[ -]?(\d{4})$/')
+                            //                            ->telRegex('/^[+][1-9]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\.\/0-9]*$/')
+                            //                            ->telRegex('/^(\+1)?[ -]?(\([2-9]\d{2}\)|[2-9]\d{2})[ -]?(\d{3})[ -]?(\d{4})$/')
+                            //                            ->telRegex('/^(\+1)?[ -]?(809|829|849)[ -]?(\d{3})[ -]?(\d{4})$/')
                             ->maxLength(20),
 
                         //                    Forms\Components\TextInput::make('photo')
@@ -83,16 +83,16 @@ class UserResource extends Resource
                             ->same('password')
                             ->maxLength(255),
 
-//                        Forms\Components\TextInput::make('new_password')
-//                            ->password()
-////                            ->dehydrateStateUsing(fn(string $state): string => Hash::make($state))
-//                            ->rule(Password::default())
-//                            ->maxLength(255),
-//                        Forms\Components\TextInput::make('new_password_confirmation')
-//                            ->password()
-//                            ->requiredWith('new_password')
-//                            ->same('new_password')
-//                            ->maxLength(255),
+                        //                        Forms\Components\TextInput::make('new_password')
+                        //                            ->password()
+                        ////                            ->dehydrateStateUsing(fn(string $state): string => Hash::make($state))
+                        //                            ->rule(Password::default())
+                        //                            ->maxLength(255),
+                        //                        Forms\Components\TextInput::make('new_password_confirmation')
+                        //                            ->password()
+                        //                            ->requiredWith('new_password')
+                        //                            ->same('new_password')
+                        //                            ->maxLength(255),
                     ])->columns(1),
             ]);
     }
@@ -102,20 +102,34 @@ class UserResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('username')
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('phone_number')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email_verified_at')
                     ->dateTime()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('photo')
-                    ->searchable(),
-                Tables\Columns\IconColumn::make('is_active')
-                    ->boolean(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                //                Tables\Columns\TextColumn::make('photo')
+                //                    ->searchable(),
+                //                Tables\Columns\IconColumn::make('is_active')
+                //                    ->label('Active')
+                //                    ->description(fn(User $record): string => $record->is_active ? 'Active' : 'Inactive')
+                //                    ->boolean(),
+                Tables\Columns\TextColumn::make('is_active')
+                    ->label('Active')
+                    ->badge()
+                    ->color(fn(string $state): string => match ($state) {
+                        'Activo' => 'success',
+                        'Inactivo' => 'danger',
+                    })
+                    ->getStateUsing(fn(User $record): string => $record->is_active ? 'Activo' : 'Inactivo'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -129,9 +143,12 @@ class UserResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make()
+                    ->label(''),
+                Tables\Actions\EditAction::make()
+                    ->label(''),
+                Tables\Actions\DeleteAction::make()
+                    ->label(''),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
