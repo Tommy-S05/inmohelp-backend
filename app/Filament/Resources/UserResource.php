@@ -27,7 +27,10 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-user';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
+    protected static ?string $navigationGroup = 'Users Management';
+    protected static ?int $navigationSort = 1;
+
 
     public static function form(Form $form): Form
     {
@@ -66,11 +69,17 @@ class UserResource extends Resource
                         Forms\Components\Toggle::make('is_active')
                             ->default(true)
                             ->required(),
-                    ])->columns(2),
+                    ])
+                    ->columns(2)
+                    ->columnSpan(['lg' => 2]),
 
                 Forms\Components\Section::make('Manage Password')
                     ->schema([
                         Forms\Components\TextInput::make('password')
+                            ->label(fn(string $operation): string => match ($operation) {
+                                'create' => 'Password',
+                                'edit' => 'New Password',
+                            })
                             ->password()
                             ->dehydrateStateUsing(fn(string $state): string => Hash::make($state))
                             ->rule(Password::default())
@@ -78,6 +87,10 @@ class UserResource extends Resource
                             ->required(fn(string $operation): bool => $operation === 'create')
                             ->maxLength(255),
                         Forms\Components\TextInput::make('password_confirmation')
+                            ->label(fn(string $operation): string => match ($operation) {
+                                'create' => 'Confirm Password',
+                                'edit' => 'Confirm New Password',
+                            })
                             ->password()
                             ->requiredWith('password')
                             ->same('password')
@@ -93,8 +106,15 @@ class UserResource extends Resource
                         //                            ->requiredWith('new_password')
                         //                            ->same('new_password')
                         //                            ->maxLength(255),
-                    ])->columns(1),
-            ]);
+                    ])
+                    ->columns(1)
+                    ->columnSpan(['lg' => 1])
+                ->heading(fn(string $operation): string => match ($operation) {
+                    'create' => 'Manage Password',
+                    'edit' => 'Change Password',
+                }),
+            ])
+            ->columns(3);
     }
 
     public static function table(Table $table): Table

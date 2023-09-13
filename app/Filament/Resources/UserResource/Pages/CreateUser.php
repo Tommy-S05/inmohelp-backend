@@ -13,12 +13,36 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Wizard\Step;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
+use Filament\Notifications\Notification;
+use Filament\Notifications\Actions\Action;
 
 class CreateUser extends CreateRecord
 {
     use CreateRecord\Concerns\HasWizard;
 
     protected static string $resource = UserResource::class;
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
+
+    protected function getCreatedNotification(): ?Notification
+    {
+        return Notification::make()
+            ->success()
+            ->title('User registered')
+            ->body('The user has been created successfully.')
+            ->actions([
+                Action::make('view')
+                    ->button()
+//                    ->url(route('filament.admin.resources.users.view', $this->record->id)),
+                    ->url($this->getResource()::getUrl('view', ['record' => $this->getRecord()])),
+                Action::make('undo')
+                    ->color('gray')
+                    ->close(),
+            ]);
+    }
 
     protected function getSteps(): array
     {
