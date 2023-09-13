@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -21,7 +22,6 @@ class AuthController extends Controller
 
         if($validator->fails()) {
             return response()->json([
-                'result' => false,
                 'message' => 'Error al logear el usuario usuario',
                 'errors' => $validator->errors()
             ], 422);
@@ -40,19 +40,19 @@ class AuthController extends Controller
             //            $token = $user->createToken('auth_token', $permissionName)->plainTextToken;
             $token = $user->createToken('auth_token')->plainTextToken;
             return response()->json([
-                'result' => true,
-                'message' => 'Sesión Iniciada',
                 'token' => $token,
                 'token_type' => 'Bearer',
-                'data' => $user,
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'username' => $user->username,
+                'photo' => $user->photo,
             ], 200);
         }
 
-        return response()->json([
-            'result' => false,
-            'massage' => 'Usuario no autorizado',
-            'data' => ''
-        ], 401);
+        throw ValidationException::withMessages([
+            'email' => __('auth.failed'),
+        ]);
     }
 
     public function logout(Request $request)
@@ -62,11 +62,7 @@ class AuthController extends Controller
         //        $request->session()->invalidate();
         //        $request->session()->regenerateToken();
 
-        return response()->json([
-            'result' => true,
-            'message' => 'Sesión cerrada',
-            'data' => ''
-        ]);
+        return response()->noContent();
     }
 
     public function register(Request $request)
@@ -121,11 +117,13 @@ class AuthController extends Controller
         //        $token = $user->createToken('auth_token', ['products.index'])->plainTextToken;
         $token = $user->createToken('auth_token')->plainTextToken;
         return response()->json([
-            'result' => true,
-            'message' => 'Usuario Regstrado',
             'token' => $token,
             'token_type' => 'Bearer',
-            'data' => $user,
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'username' => $user->username,
+            'photo' => $user->photo,
         ]);
     }
 }

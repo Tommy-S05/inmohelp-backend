@@ -42,11 +42,7 @@ class SettingController extends Controller
     {
         $setting = Setting::where('user_id', Auth::user()->id)->firstOrFail();
         $setting->update($request->all());
-        return response()->json([
-            'success' => true,
-            'message' => 'Setting updated successfully',
-            'data' => $setting
-        ], 200);
+        return response()->json($setting, 200);
     }
 
     /**

@@ -43,12 +43,8 @@ class PropertyController extends Controller
             ->thenReturn()
             ->get(['id', 'name', 'slug', 'province_id', 'purpose', 'price', 'area', 'bedrooms', 'bathrooms', 'garages']);
         //            ->paginate(10, ['id', 'name', 'slug', 'city', 'purpose', 'price', 'area', 'bedrooms', 'bathrooms', 'garages']);
-        $data = $properties;
-        return response()->json([
-            'success' => true,
-            'message' => 'Properties retrieved successfully.',
-            'data' => $data,
-        ]);
+
+        return response()->json($properties);
     }
 
     public function affordableProperties()
@@ -70,12 +66,8 @@ class PropertyController extends Controller
             ])
             ->thenReturn()
             ->get(['id', 'name', 'slug', 'province_id', 'purpose', 'price', 'area', 'bedrooms', 'bathrooms', 'garages']);
-        $data = $properties;
-        return response()->json([
-            'success' => true,
-            'message' => 'Properties retrieved successfully.',
-            'data' => $data,
-        ]);
+
+        return response()->json($properties);
     }
 
     public function outstanding()
@@ -83,14 +75,10 @@ class PropertyController extends Controller
         //outstanding properties
         //        $properties = Property::where('outstanding', 1)->get(['id', 'name', 'slug', 'city', 'purpose', 'price', 'area', 'bedrooms', 'bathrooms', 'garages']);
         $properties = Property::orderBy('views', 'desc')
-            ->take(5)
-            ->get(['id', 'name', 'slug', 'province', 'purpose', 'price', 'area', 'bedrooms', 'bathrooms', 'garages', 'views']);
-        $data = $properties;
-        return response()->json([
-            'success' => true,
-            'message' => 'Properties retrieved successfully.',
-            'data' => $data,
-        ]);
+            ->take(9)
+            ->get(['id', 'name', 'slug', 'province_id', 'purpose', 'price', 'area', 'bedrooms', 'bathrooms', 'garages', 'views']);
+
+        return response()->json($properties);
     }
 
     /**
@@ -127,9 +115,6 @@ class PropertyController extends Controller
     public function destroy(Property $property)
     {
         $property->delete();
-        return response()->json([
-            'success' => true,
-            'message' => 'Property deleted successfully.',
-        ]);
+        return response()->noContent();
     }
 }

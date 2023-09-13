@@ -39,11 +39,7 @@ class AccountController extends Controller
         }
 
         $newAccount->accountTransactions()->createMany($results);
-        return response()->json([
-            'success' => true,
-            'message' => 'Account created successfully',
-            'data' => $newAccount->load('accountTransactions')
-        ], 201);
+        return response()->json($newAccount->load('accountTransactions'), 201);
     }
 
     /**
@@ -72,11 +68,7 @@ class AccountController extends Controller
         $account->accountTransactions()->delete();
         $account->accountTransactions()->createMany($results);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Account updated successfully',
-            'data' => $account->load('accountTransactions')
-        ], 200);
+        return response()->json($account->load('accountTransactions'), 200);
     }
 
     /**
@@ -89,10 +81,6 @@ class AccountController extends Controller
         $account = Account::where('user_id', Auth::user()->id)->firstOrFail();
         $account->accountTransactions()->delete();
         $account->delete();
-        return response()->json([
-            'success' => true,
-            'message' => 'Account deleted successfully',
-            'data' => ''
-        ], 200);
+        return response()->noContent();
     }
 }

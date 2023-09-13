@@ -15,21 +15,13 @@ class PropertyTypeController extends Controller
     {
         //        $propertyTypes = PropertyType::orderBy('id', 'desc');
         $propertyTypes = PropertyType::orderBy('id', 'asc')->take(5)->get();
-        return response()->json([
-            'success' => true,
-            'message' => 'Listado de tipos de propiedades, primeras 5',
-            'data' => $propertyTypes
-        ]);
+        return response()->json($propertyTypes);
     }
 
     public function getAll()
     {
         $propertyTypes = PropertyType::orderBy('id', 'asc')->get();
-        return response()->json([
-            'success' => true,
-            'message' => 'Listado de tipos de propiedades',
-            'data' => $propertyTypes
-        ]);
+        return response()->json($propertyTypes);
     }
 
 
