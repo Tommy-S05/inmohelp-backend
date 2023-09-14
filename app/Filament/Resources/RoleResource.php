@@ -4,7 +4,9 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\RoleResource\Pages;
 use App\Filament\Resources\RoleResource\RelationManagers;
+use App\Models\Role;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -12,7 +14,6 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
-use Spatie\Permission\Models\Role;
 
 class RoleResource extends Resource
 {
@@ -42,11 +43,15 @@ class RoleResource extends Resource
                                     ->default('web')
                                     ->searchable()
                                     ->nullable(),
-                                Forms\Components\Toggle::make('select_all')
-                                    ->onIcon('heroicon-s-shield-check')
-                                    ->offIcon('heroicon-s-shield-exclamation')
-                                    ->helperText('Select all permissions')
-                                    ->live(),
+//                                Forms\Components\Toggle::make('select_all')
+//                                    ->onIcon('heroicon-s-shield-check')
+//                                    ->offIcon('heroicon-s-shield-exclamation')
+//                                    ->helperText('Select all permissions')
+//                                    ->live(),
+                                Select::make('permissions')
+                                    ->multiple()
+                                    ->preload()
+                                    ->relationship('permissions', 'name'),
                             ])
                             ->columns([
                                 'sm' => 2,
@@ -62,7 +67,7 @@ class RoleResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->badge()
-                    ->formatStateUsing(fn ($state): string => Str::headline($state))
+                    ->formatStateUsing(fn($state): string => Str::headline($state))
                     ->colors(['primary'])
                     ->searchable(),
                 Tables\Columns\TextColumn::make('guard_name')
@@ -85,7 +90,7 @@ class RoleResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+//                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
@@ -115,4 +120,9 @@ class RoleResource extends Resource
             'edit' => Pages\EditRole::route('/{record}/edit'),
         ];
     }
+
+//    public static function getEloquentQuery(): Builder
+//    {
+//        return parent::getEloquentQuery()->where('name', '!=', 'super_admin');
+//    }
 }

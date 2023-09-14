@@ -8,6 +8,7 @@ use App\Filament\Resources\UserResource\Pages\EditUser;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Components\IconEntry;
@@ -21,12 +22,13 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
-
+//    protected static ?string $slug = 'users';
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
     protected static ?string $navigationGroup = 'Users Management';
     protected static ?int $navigationSort = 1;
@@ -66,7 +68,18 @@ class UserResource extends Resource
                         Forms\Components\Textarea::make('address')
                             ->maxLength(65535)
                             ->columnSpanFull(),
+                        Select::make('roles')
+                            ->searchable()
+                            ->multiple()
+                            ->preload()
+                            ->relationship('roles', 'name'),
+                        Select::make('permissions')
+                            ->searchable()
+                            ->multiple()
+                            ->preload()
+                            ->relationship('permissions', 'name'),
                         Forms\Components\Toggle::make('is_active')
+                            ->inline(false)
                             ->default(true)
                             ->required(),
                     ])
@@ -109,10 +122,10 @@ class UserResource extends Resource
                     ])
                     ->columns(1)
                     ->columnSpan(['lg' => 1])
-                ->heading(fn(string $operation): string => match ($operation) {
-                    'create' => 'Manage Password',
-                    'edit' => 'Change Password',
-                }),
+                    ->heading(fn(string $operation): string => match ($operation) {
+                        'create' => 'Manage Password',
+                        'edit' => 'Change Password',
+                    }),
             ])
             ->columns(3);
     }
@@ -127,6 +140,41 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('email')
                     ->sortable()
                     ->searchable(),
+                //Put the User role in the table
+                Tables\Columns\TextColumn::make('roles')
+                    ->label('Role')
+//                    ->getStateUsing(fn(User $record): string => $record->roles->pluck('name')->join(', '))
+//                    ->getStateUsing(function (User $record): string {
+//                        $roleNames = $record->roles->pluck('name')->toArray();
+//                        return implode(', ', array_map(fn($roleName) => Str::headline($roleName), $roleNames));
+//                    })
+                    ->getStateUsing(function (User $record): string {
+                        if ($record->hasRole('super_admin')) {
+                            return Str::headline('super_admin');
+                        } elseif ($record->hasRole('admin')) {
+                            return Str::headline('admin');
+                        } elseif ($record->roles->count() > 0) {
+                            return Str::headline($record->getRoleNames()->first());
+                        } else {
+                            return 'Sin Rol';
+                        }
+                    })
+                    ->badge()
+                    ->color(fn(string $state): string => match ($state) {
+                        'Super Admin' => 'primary',
+                        'Admin' => 'secondary',
+                        'User' => 'tertiary',
+                        'Sin Rol' => 'danger',
+                        default => 'warning'
+                    })
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('permissions_count')
+                    ->label('Permissions')
+                    ->numeric()
+                    ->badge()
+                    ->color('success')
+                    ->getStateUsing(fn(User $record): string => $record->getAllPermissions()->count()),
                 Tables\Columns\TextColumn::make('username')
                     ->sortable()
                     ->searchable(),
@@ -138,10 +186,6 @@ class UserResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                 //                Tables\Columns\TextColumn::make('photo')
                 //                    ->searchable(),
-                //                Tables\Columns\IconColumn::make('is_active')
-                //                    ->label('Active')
-                //                    ->description(fn(User $record): string => $record->is_active ? 'Active' : 'Inactive')
-                //                    ->boolean(),
                 Tables\Columns\TextColumn::make('is_active')
                     ->label('Active')
                     ->badge()

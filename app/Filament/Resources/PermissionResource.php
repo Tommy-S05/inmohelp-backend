@@ -4,6 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PermissionResource\Pages;
 use App\Filament\Resources\PermissionResource\RelationManagers;
+use App\Models\Permission;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -12,7 +14,6 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
-use Spatie\Permission\Models\Permission;
 
 class PermissionResource extends Resource
 {
@@ -57,7 +58,7 @@ class PermissionResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->badge()
-                    ->formatStateUsing(fn ($state): string => Str::headline($state))
+                    ->formatStateUsing(fn($state): string => Str::headline($state))
                     ->colors(['primary'])
                     ->searchable(),
                 Tables\Columns\TextColumn::make('guard_name')
@@ -66,11 +67,18 @@ class PermissionResource extends Resource
                 Tables\Columns\TextColumn::make('users_count')
                     ->badge()
                     ->label('Users')
-                    ->counts('users')
+//                    ->counts('users')
+                    ->getStateUsing(function (Permission $record): int {
+                        return User::whereHas('roles.permissions', function ($query) use ($record) {
+                            $query->where('permissions.id', $record->id);
+                        })->orWhereHas('permissions', function ($query) use ($record) {
+                            $query->where('permissions.id', $record->id);
+                        })->distinct()->count();
+                    })
                     ->colors(['success']),
                 Tables\Columns\TextColumn::make('roles_count')
                     ->badge()
-                    ->label('Permissions')
+                    ->label('Roles')
                     ->counts('roles')
                     ->colors(['success']),
                 Tables\Columns\TextColumn::make('updated_at')

@@ -23,6 +23,8 @@ Route::middleware('auth:sanctum')->get('/user', function(Request $request) {
     return $request->user()->only(['id', 'name', 'email']);
 });
 
+Route::get('/roles/{user}', [\App\Http\Controllers\UserController::class, 'userRoles']);
+
 //Route::get('/user', function(Request $request) {
 //    return $request->user()->only(['id', 'name', 'email']);
 //});
