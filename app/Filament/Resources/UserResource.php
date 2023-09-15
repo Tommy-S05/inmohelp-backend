@@ -68,18 +68,7 @@ class UserResource extends Resource
                         Forms\Components\Textarea::make('address')
                             ->maxLength(65535)
                             ->columnSpanFull(),
-                        Select::make('roles')
-                            ->searchable()
-                            ->multiple()
-                            ->preload()
-                            ->relationship('roles', 'name'),
-                        Select::make('permissions')
-                            ->searchable()
-                            ->multiple()
-                            ->preload()
-                            ->relationship('permissions', 'name'),
                         Forms\Components\Toggle::make('is_active')
-                            ->inline(false)
                             ->default(true)
                             ->required(),
                     ])
@@ -126,6 +115,40 @@ class UserResource extends Resource
                         'create' => 'Manage Password',
                         'edit' => 'Change Password',
                     }),
+
+                Forms\Components\Grid::make()
+                    ->schema([
+                        Forms\Components\Section::make('Roles')
+                            ->description('Select all necessary roles for this user.')
+                            ->schema([
+                                Forms\Components\CheckboxList::make('roles')
+                                    ->relationship('roles', 'name')
+                                    ->bulkToggleable()
+                                    ->live()
+                                    ->columns([
+                                        'sm' => 2,
+                                        'lg' => 3,
+                                    ])
+                                    ->gridDirection('row')
+                            ])
+                            ->columnSpan(1)
+                            ->hidden(fn(string $operation): bool => $operation === 'view'),
+
+                        Forms\Components\Section::make('Permissions')
+                            ->description('Select all necessary permissions for this role.')
+                            ->schema([
+                                Forms\Components\CheckboxList::make('permissions')
+                                    ->relationship('permissions', 'name')
+                                    ->bulkToggleable()
+                                    ->columns([
+                                        'sm' => 2,
+                                        'lg' => 3,
+                                    ])
+                                    ->gridDirection('row')
+                            ])
+                            ->columnSpan(1)
+                            ->hidden(fn(string $operation): bool => $operation === 'view'),
+                    ])
             ])
             ->columns(3);
     }
@@ -143,6 +166,8 @@ class UserResource extends Resource
                 //Put the User role in the table
                 Tables\Columns\TextColumn::make('roles')
                     ->label('Role')
+//                    ->sortable()
+//                    ->searchable()
 //                    ->getStateUsing(fn(User $record): string => $record->roles->pluck('name')->join(', '))
 //                    ->getStateUsing(function (User $record): string {
 //                        $roleNames = $record->roles->pluck('name')->toArray();
@@ -166,9 +191,7 @@ class UserResource extends Resource
                         'User' => 'tertiary',
                         'Sin Rol' => 'danger',
                         default => 'warning'
-                    })
-                    ->sortable()
-                    ->searchable(),
+                    }),
                 Tables\Columns\TextColumn::make('permissions_count')
                     ->label('Permissions')
                     ->numeric()
@@ -180,10 +203,10 @@ class UserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('phone_number')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('email_verified_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+//                Tables\Columns\TextColumn::make('email_verified_at')
+//                    ->dateTime()
+//                    ->sortable()
+//                    ->toggleable(isToggledHiddenByDefault: true),
                 //                Tables\Columns\TextColumn::make('photo')
                 //                    ->searchable(),
                 Tables\Columns\TextColumn::make('is_active')
@@ -194,6 +217,10 @@ class UserResource extends Resource
                         'Inactivo' => 'danger',
                     })
                     ->getStateUsing(fn(User $record): string => $record->is_active ? 'Activo' : 'Inactivo'),
+                Tables\Columns\TextColumn::make('deleted_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -204,7 +231,13 @@ class UserResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\TrashedFilter::make()
+                    ->label('Deleted users'),
+                Tables\Filters\SelectFilter::make('roles')
+                    ->label('Roles')
+                    ->multiple()
+                    ->preload()
+                    ->relationship('roles', 'name')
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()
@@ -267,7 +300,7 @@ class UserResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\RolesRelationManager::class,
         ];
     }
 

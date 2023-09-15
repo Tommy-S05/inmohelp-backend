@@ -43,20 +43,34 @@ class RoleResource extends Resource
                                     ->default('web')
                                     ->searchable()
                                     ->nullable(),
-//                                Forms\Components\Toggle::make('select_all')
-//                                    ->onIcon('heroicon-s-shield-check')
-//                                    ->offIcon('heroicon-s-shield-exclamation')
-//                                    ->helperText('Select all permissions')
-//                                    ->live(),
-                                Select::make('permissions')
-                                    ->multiple()
-                                    ->preload()
-                                    ->relationship('permissions', 'name'),
+                                Forms\Components\Toggle::make('select_all')
+                                    ->onIcon('heroicon-s-shield-check')
+                                    ->offIcon('heroicon-s-shield-exclamation')
+                                    ->helperText('Select all permissions')
+                                    ->dehydrated(false)
+                                    ->live(),
+//                                Select::make('permissions')
+//                                    ->multiple()
+//                                    ->preload()
+//                                    ->relationship('permissions', 'name'),
                             ])
                             ->columns([
                                 'sm' => 2,
                                 'lg' => 3,
                             ]),
+
+                        Forms\Components\Section::make('Permissions')
+                            ->description('Select all necessary permissions for this role.')
+                            ->schema([
+                                Forms\Components\CheckboxList::make('permissions')
+                                    ->relationship('permissions', 'name')
+                                    ->bulkToggleable()
+                                    ->columns([
+                                        'sm' => 2,
+                                        'lg' => 3,
+                                    ])
+                                    ->gridDirection('row')
+                            ])->hidden(fn(string $operation): bool => $operation === 'view'),
                     ]),
             ]);
     }
@@ -90,7 +104,7 @@ class RoleResource extends Resource
                 //
             ])
             ->actions([
-//                Tables\Actions\ViewAction::make(),
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
@@ -107,7 +121,7 @@ class RoleResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\PermissionsRelationManager::class,
         ];
     }
 
