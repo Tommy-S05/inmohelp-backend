@@ -27,47 +27,50 @@ class CategoryResource extends Resource
     {
         return $form
             ->schema([
-                //                Forms\Components\TextInput::make('name')
-                //                    ->required()
-                //                    ->maxLength(255)
-                //                    ->live()
-                //                    //                    ->afterStateUpdated(fn(Set $set, ?string $state) => $set('slug', Str::slug($state))),
-                //                    ->afterStateUpdated(function(Get $get, Set $set, ?string $old, ?string $state) {
-                //                        if(($get('slug') ?? '') !== Str::slug($old)) {
-                //                            return;
-                //                        }
-                //
-                //                        $set('slug', Str::slug($state));
-                //                    }),
-                Forms\Components\TextInput::make('name')
-                    ->autofocus()
-                    ->required()
-                    ->live(onBlur: true)
-                    ->afterStateUpdated(fn(string $operation, $state, Forms\Set $set) => $operation === 'create' ? $set('slug', Str::slug($state)) : null)
-                    ->unique(Category::class, 'slug', ignoreRecord: true)
-                    ->maxLength(255),
+                Forms\Components\Section::make()
+                    ->schema([
+                        //                Forms\Components\TextInput::make('name')
+                        //                    ->required()
+                        //                    ->maxLength(255)
+                        //                    ->live()
+                        //                    //                    ->afterStateUpdated(fn(Set $set, ?string $state) => $set('slug', Str::slug($state))),
+                        //                    ->afterStateUpdated(function(Get $get, Set $set, ?string $old, ?string $state) {
+                        //                        if(($get('slug') ?? '') !== Str::slug($old)) {
+                        //                            return;
+                        //                        }
+                        //
+                        //                        $set('slug', Str::slug($state));
+                        //                    }),
+                        Forms\Components\TextInput::make('name')
+                            ->autofocus()
+                            ->required()
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(fn(string $operation, $state, Forms\Set $set) => $operation === 'create' ? $set('slug', Str::slug($state)) : null)
+                            ->unique(Category::class, 'slug', ignoreRecord: true)
+                            ->maxLength(255),
 
-                Forms\Components\TextInput::make('slug')
-                    ->disabled()
-                    ->dehydrated()
-                    ->required()
-                    ->unique(Category::class, 'slug', ignoreRecord: true)
-                    ->maxLength(255),
+                        Forms\Components\TextInput::make('slug')
+                            ->disabled()
+                            ->dehydrated()
+                            ->required()
+                            ->unique(Category::class, 'slug', ignoreRecord: true)
+                            ->maxLength(255),
 
-                Forms\Components\Select::make('type')
-                    ->options([
-                        'income' => 'Ingresos',
-                        'expense' => 'Gastos',
-                    ])
-                    ->searchable()
-                    ->required(),
+                        Forms\Components\Select::make('type')
+                            ->options([
+                                'income' => 'Ingresos',
+                                'expense' => 'Gastos',
+                            ])
+                            ->searchable()
+                            ->required(),
 
-                Forms\Components\TextInput::make('description')
-                    ->maxLength(255),
+                        Forms\Components\TextInput::make('description')
+                            ->maxLength(255),
 
-                Forms\Components\Toggle::make('is_active')
-                    ->default(true)
-                    ->required(),
+                        Forms\Components\Toggle::make('is_active')
+                            ->default(true)
+                            ->required(),
+                    ])->columns(2),
             ]);
     }
 
@@ -113,10 +116,19 @@ class CategoryResource extends Resource
             ]);
     }
 
+    public static function getRelations(): array
+    {
+        return [
+            RelationManagers\SubCategoriesRelationManager::class,
+        ];
+    }
+
     public static function getPages(): array
     {
         return [
             'index' => Pages\ManageCategories::route('/'),
+            'view' => Pages\ViewCategory::route('/{record}'),
+            'edit' => Pages\EditCategory::route('/{record}/edit'),
         ];
     }
 }
