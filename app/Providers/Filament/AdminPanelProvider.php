@@ -29,6 +29,8 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->brandName('InmoHelp')
+            ->favicon(asset('favicon.ico'))
             ->profile(EditProfile::class)
             ->colors([
                 'primary' => "rgb(251, 146, 60)",
