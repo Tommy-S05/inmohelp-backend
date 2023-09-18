@@ -5,6 +5,9 @@ namespace App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource;
 use App\Models\User;
 use Filament\Actions;
+use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Resources\Pages\CreateRecord;
@@ -65,6 +68,7 @@ class CreateUser extends CreateRecord
                         ->required()
                         ->maxLength(255),
                 ]),
+
             Step::make('User Details')
                 ->description('User personal information')
                 ->schema([
@@ -77,18 +81,45 @@ class CreateUser extends CreateRecord
                         ->label('Active')
                         ->inline(false)
                         ->required(),
-                    Select::make('roles')
-                        ->multiple()
-                        ->preload()
-                        ->relationship('roles', 'name'),
-                    Select::make('permissions')
-                        ->multiple()
-                        ->preload()
-                        ->relationship('permissions', 'name'),
                     Textarea::make('address')
                         ->maxLength(65535)
                         ->columnSpanFull(),
                 ])->columns(2),
+
+            Step::make('Roles & Permissions')
+                ->description('User roles and permissions')
+                ->schema([
+                    Grid::make()
+                        ->schema([
+                            Section::make('Roles')
+                                ->description('Select all necessary roles for this user.')
+                                ->schema([
+                                    CheckboxList::make('roles')
+                                        ->relationship('roles', 'name')
+                                        ->bulkToggleable()
+                                        ->columns([
+                                            'sm' => 2,
+                                            'lg' => 3,
+                                        ])
+                                        ->gridDirection('row')
+                                ])
+                                ->columnSpan(1),
+
+                            Section::make('Permissions')
+                                ->description('Select all necessary permissions for this role.')
+                                ->schema([
+                                    CheckboxList::make('permissions')
+                                        ->relationship('permissions', 'name')
+                                        ->bulkToggleable()
+                                        ->columns([
+                                            'sm' => 2,
+                                            'lg' => 3,
+                                        ])
+                                        ->gridDirection('row')
+                                ])
+                                ->columnSpan(1),
+                        ])
+                ])->columns(4),
             Step::make('Manage Password')
                 ->description('Set the account password')
                 ->schema([
