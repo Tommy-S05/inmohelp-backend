@@ -25,12 +25,42 @@ class MunicipalityResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('province_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\Section::make()
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\Select::make('province_id')
+                            ->relationship('province', 'name')
+                            ->required()
+                            ->preload()
+                            ->searchable()
+                            ->createOptionForm([
+                                Forms\Components\Section::make()
+                                    ->schema([
+                                        Forms\Components\TextInput::make('name')
+                                            ->autofocus()
+                                            ->required()
+                                            ->unique()
+                                            ->maxLength(255),
+                                        Forms\Components\Select::make('region_id')
+                                            ->relationship('region', 'name')
+                                            ->required()
+                                            ->preload()
+                                            ->searchable()
+                                            ->createOptionForm([
+                                                Forms\Components\Section::make()
+                                                    ->schema([
+                                                        Forms\Components\TextInput::make('name')
+                                                            ->autofocus()
+                                                            ->required()
+                                                            ->unique()
+                                                            ->maxLength(255),
+                                                    ])
+                                            ])->createOptionModalHeading('Create region'),
+                                    ])->columns(2)
+                            ])->createOptionModalHeading('Create province'),
+                    ])->columns(2)
             ]);
     }
 
@@ -38,24 +68,32 @@ class MunicipalityResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('province_id')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('province.name')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
+                    ->since()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
+                Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('province.name')
+                    ->relationship('province', 'name')
+                    ->placeholder('All provinces')
+                    ->multiple()
+                    ->searchable()
+                    ->preload(),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
@@ -69,10 +107,19 @@ class MunicipalityResource extends Resource
             ]);
     }
 
+    public static function getRelations(): array
+    {
+        return [
+            RelationManagers\NeighborhoodsRelationManager::class,
+        ];
+    }
+
     public static function getPages(): array
     {
         return [
             'index' => Pages\ManageMunicipalities::route('/'),
+            'view' => Pages\ViewMunicipality::route('/{record}'),
+            'edit' => Pages\EditMunicipality::route('/{record}/edit'),
         ];
     }
 }

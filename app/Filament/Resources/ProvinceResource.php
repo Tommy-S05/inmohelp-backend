@@ -25,12 +25,30 @@ class ProvinceResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('region_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\Section::make()
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->autofocus()
+                            ->required()
+                            ->unique(ignoreRecord: true)
+                            ->maxLength(255),
+
+                        Forms\Components\Select::make('region_id')
+                            ->relationship('region', 'name')
+                            ->required()
+                            ->preload()
+                            ->searchable()
+                            ->createOptionForm([
+                                Forms\Components\Section::make()
+                                    ->schema([
+                                        Forms\Components\TextInput::make('name')
+                                            ->autofocus()
+                                            ->required()
+                                            ->unique()
+                                            ->maxLength(255),
+                                    ])
+                            ]),
+                    ])->columns(2)
             ]);
     }
 
@@ -38,24 +56,32 @@ class ProvinceResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('region_id')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('region.name')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
+                    ->since()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
+                Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('region.name')
+                    ->relationship('region', 'name')
+                    ->placeholder('All Regions')
+                    ->multiple()
+                    ->searchable()
+                    ->preload(),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
@@ -69,10 +95,19 @@ class ProvinceResource extends Resource
             ]);
     }
 
+    public static function getRelations(): array
+    {
+        return [
+            RelationManagers\MunicipalitiesRelationManager::class,
+        ];
+    }
+
     public static function getPages(): array
     {
         return [
             'index' => Pages\ManageProvinces::route('/'),
+            'view' => Pages\ViewProvince::route('/{record}'),
+            'edit' => Pages\EditProvince::route('/{record}/edit'),
         ];
     }
 }

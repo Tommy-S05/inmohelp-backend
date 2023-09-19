@@ -34,7 +34,7 @@ class SubCategoryResource extends Resource
                     ->required()
                     ->live(onBlur: true)
                     ->afterStateUpdated(fn(string $operation, $state, Forms\Set $set) => $operation === 'create' ? $set('slug', Str::slug($state)) : null)
-                    ->unique(SubCategory::class, 'slug', ignoreRecord: true)
+                    ->unique(SubCategory::class, 'name', ignoreRecord: true)
                     ->maxLength(255),
 
                 Forms\Components\TextInput::make('slug')

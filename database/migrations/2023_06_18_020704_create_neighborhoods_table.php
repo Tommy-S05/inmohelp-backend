@@ -10,12 +10,12 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('neighborhoods', function(Blueprint $table) {
+        Schema::create('neighborhoods', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
             //            $table->string('code');
             //            $table->string('identifier');
-            $table->float('averagePrice')->nullable();
+            $table->float('average_price')->nullable();
             $table->foreignId('municipality_id')->constrained()->cascadeOnDelete();
             //            $table->string('slug')->unique();
             //            $table->string('municipalityCode');

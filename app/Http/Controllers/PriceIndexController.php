@@ -27,11 +27,11 @@ class PriceIndexController extends Controller
     //                NameFilter::class,
     //            ])
     //            ->thenReturn()
-    //            ->get(['name', 'code', 'identifier', 'averagePrice']);
+    //            ->get(['name', 'code', 'identifier', 'average_price']);
     //
     //        foreach($priceIndex as $neighborhood) {
-    //            $neighborhood->maxArea = ($downPayment / $neighborhood->averagePrice) + ($minLoan / $neighborhood->averagePrice);
-    //            //            $neighborhood->maxArea = $downPayment / $neighborhood->averagePrice;
+    //            $neighborhood->maxArea = ($downPayment / $neighborhood->average_price) + ($minLoan / $neighborhood->average_price);
+    //            //            $neighborhood->maxArea = $downPayment / $neighborhood->average_price;
     //        }
     //        return response()->json($priceIndex);
     //    }
@@ -53,11 +53,11 @@ class PriceIndexController extends Controller
                 NameFilter::class,
             ])
             ->thenReturn()
-            ->get(['name', 'code', 'identifier', 'averagePrice']);
+            ->get(['name', 'average_price']);
 
         // Calcular el tamaño máximo de área que el usuario puede comprar en cada vecindario
-        foreach($priceIndex as $neighborhood) {
-            $neighborhood->maxArea = ($downPayment / $neighborhood->averagePrice) + $loanAmount / $neighborhood->averagePrice;
+        foreach ($priceIndex as $neighborhood) {
+            $neighborhood->maxArea = ($downPayment / $neighborhood->average_price) + $loanAmount / $neighborhood->average_price;
         }
 
         return response()->json($priceIndex);

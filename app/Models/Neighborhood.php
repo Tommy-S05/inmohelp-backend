@@ -16,6 +16,7 @@ class Neighborhood extends Model
     protected $fillable = [
         'name',
         'municipality_id',
+        'average_price'
     ];
 
     public function municipality()

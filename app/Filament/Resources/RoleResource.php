@@ -135,6 +135,16 @@ class RoleResource extends Resource
         ];
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'secondary';
+    }
+
 //    public static function getEloquentQuery(): Builder
 //    {
 //        return parent::getEloquentQuery()->where('name', '!=', 'super_admin');
