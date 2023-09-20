@@ -79,7 +79,7 @@ class ProvinceResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('region.name')
+                Tables\Filters\SelectFilter::make('region')
                     ->relationship('region', 'name')
                     ->placeholder('All Regions')
                     ->multiple()

@@ -104,9 +104,9 @@ class NeighborhoodResource extends Resource
                     )
                     ->money('dop')
                     ->badge()
-                    ->color(function($state): string {
-                        if($state > 7000) return 'danger';
-                        elseif($state > 4000) return 'warning';
+                    ->color(function ($state): string {
+                        if ($state > 7000) return 'danger';
+                        elseif ($state > 4000) return 'warning';
                         return 'success';
                     })
                     ->searchable()
@@ -123,7 +123,7 @@ class NeighborhoodResource extends Resource
                     ->toggledHiddenByDefault(false),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('municipality.name')
+                Tables\Filters\SelectFilter::make('municipality')
                     ->relationship('municipality', 'name')
                     ->placeholder('All Municipalities')
                     ->multiple()
@@ -131,7 +131,6 @@ class NeighborhoodResource extends Resource
                     ->preload(),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
@@ -147,8 +146,6 @@ class NeighborhoodResource extends Resource
     {
         return [
             'index' => Pages\ManageNeighborhoods::route('/'),
-            'view' => Pages\ViewNeighborhood::route('/{record}'),
-            'edit' => Pages\EditNeighborhood::route('/{record}/edit'),
         ];
     }
 }

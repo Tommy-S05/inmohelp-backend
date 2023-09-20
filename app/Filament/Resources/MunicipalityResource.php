@@ -91,7 +91,7 @@ class MunicipalityResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('province.name')
+                Tables\Filters\SelectFilter::make('province')
                     ->relationship('province', 'name')
                     ->placeholder('All provinces')
                     ->multiple()

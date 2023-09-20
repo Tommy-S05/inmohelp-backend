@@ -13,6 +13,10 @@ class ViewCategory extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
+            Actions\Action::make('Back')
+                ->icon('heroicon-o-arrow-left')
+                ->url($this->getResource()::getUrl('index'))
+                ->color('gray'),
             Actions\EditAction::make(),
         ];
     }
