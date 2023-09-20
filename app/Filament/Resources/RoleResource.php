@@ -25,53 +25,87 @@ class RoleResource extends Resource
 
     public static function form(Form $form): Form
     {
+        // Obtén todos los permisos de Spatie
+        $permissions = \Spatie\Permission\Models\Permission::all();
+
+        // Inicializa un array para agrupar los permisos por modelo
+        $groupedPermissions = [];
+
+        // Agrupa los permisos por modelo
+        foreach ($permissions as $permission) {
+            [$action, $model] = explode(':', $permission->name);
+            $groupedPermissions[$model][] = $permission->name; // Guarda solo el nombre del permiso
+        }
+
         return $form
             ->schema([
-                Forms\Components\Grid::make()
+                Forms\Components\Section::make()
                     ->schema([
-                        Forms\Components\Section::make()
-                            ->schema([
-                                Forms\Components\TextInput::make('name')
-                                    ->required()
-                                    ->unique(ignoreRecord: true)
-                                    ->maxLength(255),
-                                Forms\Components\Select::make('guard_name')
-                                    ->options([
-                                        'web' => 'Web',
-                                        'api' => 'Api',
-                                    ])
-                                    ->default('web')
-                                    ->searchable()
-                                    ->nullable(),
-                                Forms\Components\Toggle::make('select_all')
-                                    ->onIcon('heroicon-s-shield-check')
-                                    ->offIcon('heroicon-s-shield-exclamation')
-                                    ->helperText('Select all permissions')
-                                    ->dehydrated(false)
-                                    ->live(),
+                        Forms\Components\TextInput::make('name')
+                            ->required()
+                            ->unique(ignoreRecord: true)
+                            ->maxLength(255),
+                        Forms\Components\Select::make('guard_name')
+                            ->options([
+                                'web' => 'Web',
+                                'api' => 'Api',
+                            ])
+                            ->default('web')
+                            ->searchable()
+                            ->nullable(),
+                        Forms\Components\Toggle::make('select_all')
+                            ->onIcon('heroicon-s-shield-check')
+                            ->offIcon('heroicon-s-shield-exclamation')
+                            ->helperText('Select all permissions')
+                            ->dehydrated(false)
+                            ->live(),
 //                                Select::make('permissions')
 //                                    ->multiple()
 //                                    ->preload()
 //                                    ->relationship('permissions', 'name'),
-                            ])
-                            ->columns([
-                                'sm' => 2,
-                                'lg' => 3,
-                            ]),
-
-                        Forms\Components\Section::make('Permissions')
-                            ->description('Select all necessary permissions for this role.')
-                            ->schema([
-                                Forms\Components\CheckboxList::make('permissions')
-                                    ->relationship('permissions', 'name')
-                                    ->bulkToggleable()
-                                    ->columns([
-                                        'sm' => 2,
-                                        'lg' => 3,
-                                    ])
-                                    ->gridDirection('row')
-                            ])->hidden(fn(string $operation): bool => $operation === 'view'),
+                    ])
+                    ->columns([
+                        'sm' => 2,
+                        'lg' => 3,
                     ]),
+
+
+                Forms\Components\Section::make('Permissions')
+                    ->description('Select all necessary permissions for this role.')
+                    ->schema(function () use ($groupedPermissions) {
+                        $sections = [];
+                        // Crea una sección para cada modelo
+                        foreach ($groupedPermissions as $model => $modelPermissions) {
+                            $sections[] = Forms\Components\Section::make($model)
+                                ->description("Permissions for $model")
+                                ->schema([
+                                    Forms\Components\CheckboxList::make('permissions_' . $model)
+                                        ->relationship('permissions', 'name')
+                                        ->bulkToggleable()
+                                        ->searchable()
+                                        ->noSearchResultsMessage('No permissions found.')
+                                        ->gridDirection('row')
+                                        ->options($modelPermissions)
+                                ])->columnSpan(1);
+                        }
+                        return $sections;
+                    })
+                    ->columns(3)
+                    ->hidden(fn(string $operation): bool => $operation === 'view'),
+//                Forms\Components\Section::make('Permissions')
+//                    ->description('Select all necessary permissions for this role.')
+//                    ->schema([
+//                        Forms\Components\CheckboxList::make('permissions')
+//                            ->relationship('permissions', 'name')
+//                            ->bulkToggleable()
+//                            ->columns([
+//                                'sm' => 2,
+//                                'lg' => 3,
+//                            ])
+//                            ->searchable()
+//                            ->noSearchResultsMessage('No permissions found.')
+//                            ->gridDirection('row')
+//                    ])->hidden(fn(string $operation): bool => $operation === 'view'),
             ]);
     }
 
@@ -121,6 +155,7 @@ class RoleResource extends Resource
     public static function getRelations(): array
     {
         return [
+            RelationManagers\UsersRelationManager::class,
             RelationManagers\PermissionsRelationManager::class,
         ];
     }

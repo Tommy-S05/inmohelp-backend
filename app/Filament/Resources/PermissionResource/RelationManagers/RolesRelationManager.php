@@ -1,9 +1,7 @@
 <?php
 
-namespace App\Filament\Resources\RoleResource\RelationManagers;
+namespace App\Filament\Resources\PermissionResource\RelationManagers;
 
-use App\Models\Permission;
-use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -13,9 +11,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 
-class PermissionsRelationManager extends RelationManager
+class RolesRelationManager extends RelationManager
 {
-    protected static string $relationship = 'permissions';
+    protected static string $relationship = 'roles';
 
     public function form(Form $form): Form
     {
@@ -35,11 +33,7 @@ class PermissionsRelationManager extends RelationManager
                             ->default('web')
                             ->searchable()
                             ->nullable(),
-                    ])
-                    ->columns([
-                        'sm' => 2,
-                        'lg' => 2,
-                    ]),
+                    ])->columns(2),
             ]);
     }
 
@@ -52,15 +46,19 @@ class PermissionsRelationManager extends RelationManager
                     ->badge()
                     ->formatStateUsing(fn($state): string => Str::headline($state))
                     ->colors(['primary'])
-                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('guard_name')
                     ->badge()
                     ->colors(['tertiary']),
-                Tables\Columns\TextColumn::make('roles_count')
+                Tables\Columns\TextColumn::make('users_count')
                     ->badge()
-                    ->label('Roles')
-                    ->counts('roles')
+                    ->label('Users')
+                    ->counts('users')
+                    ->colors(['success']),
+                Tables\Columns\TextColumn::make('permissions_count')
+                    ->badge()
+                    ->label('Permissions')
+                    ->counts('permissions')
                     ->colors(['success']),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime(),

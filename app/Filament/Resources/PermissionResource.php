@@ -27,27 +27,25 @@ class PermissionResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Grid::make()
+                Forms\Components\Section::make()
                     ->schema([
-                        Forms\Components\Section::make()
-                            ->schema([
-                                Forms\Components\TextInput::make('name')
-                                    ->required()
-                                    ->unique(ignoreRecord: true)
-                                    ->maxLength(255),
-                                Forms\Components\Select::make('guard_name')
-                                    ->options([
-                                        'web' => 'Web',
-                                        'api' => 'Api',
-                                    ])
-                                    ->default('web')
-                                    ->searchable()
-                                    ->nullable(),
+                        Forms\Components\TextInput::make('name')
+                            ->autofocus()
+                            ->required()
+                            ->unique(ignoreRecord: true)
+                            ->maxLength(255),
+                        Forms\Components\Select::make('guard_name')
+                            ->options([
+                                'web' => 'Web',
+                                'api' => 'Api',
                             ])
-                            ->columns([
-                                'sm' => 2,
-                                'lg' => 2,
-                            ]),
+                            ->default('web')
+                            ->searchable()
+                            ->nullable(),
+                    ])
+                    ->columns([
+                        'sm' => 2,
+                        'lg' => 2,
                     ]),
             ]);
     }
@@ -105,7 +103,8 @@ class PermissionResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\UsersRelationManager::class,
+            RelationManagers\RolesRelationManager::class,
         ];
     }
 
