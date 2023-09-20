@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Carbon;
 
 class NeighborhoodResource extends Resource
 {
@@ -117,7 +118,7 @@ class NeighborhoodResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
-                    ->since()
+//                    ->since()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->toggledHiddenByDefault(false),
@@ -129,6 +130,36 @@ class NeighborhoodResource extends Resource
                     ->multiple()
                     ->searchable()
                     ->preload(),
+
+                Tables\Filters\Filter::make('updated_at')
+                    ->form([
+                        Forms\Components\DateTimePicker::make('updated_from'),
+                        Forms\Components\DateTimePicker::make('updated_until'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['updated_from'],
+                                fn(Builder $query, $date): Builder => $query->where('updated_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['updated_until'],
+                                fn(Builder $query, $date): Builder => $query->where('updated_at', '<=', $date),
+                            );
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+
+                        if ($data['updated_from'] ?? null) {
+                            $indicators['updated_from'] = 'Updated from ' . Carbon::parse($data['updated_from'])->format('d-m-Y H:i:s');
+                        }
+
+                        if ($data['updated_until'] ?? null) {
+                            $indicators['updated_until'] = 'Updated until ' . Carbon::parse($data['updated_until'])->format('d-m-Y H:i:s');
+                        }
+
+                        return $indicators;
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
