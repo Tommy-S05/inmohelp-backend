@@ -62,6 +62,12 @@ class ProvinceResource extends Resource
                 Tables\Columns\TextColumn::make('region.name')
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('municipalities_count')
+                    ->counts('municipalities')
+                    ->label('Municipalities')
+                    ->badge()
+                    ->color('secondary')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
                     ->since()

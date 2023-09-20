@@ -74,6 +74,12 @@ class MunicipalityResource extends Resource
                 Tables\Columns\TextColumn::make('province.name')
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('neighborhoods_count')
+                    ->counts('neighborhoods')
+                    ->label('Neighborhoods')
+                    ->badge()
+                    ->color('secondary')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
                     ->since()

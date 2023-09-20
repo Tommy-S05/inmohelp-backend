@@ -44,6 +44,12 @@ class RegionResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('provinces_count')
+                    ->counts('provinces')
+                    ->label('Provinces')
+                    ->badge()
+                    ->color('secondary')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
                     ->since()
