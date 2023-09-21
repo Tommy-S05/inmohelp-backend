@@ -7,11 +7,14 @@ use App\Filament\Resources\PermissionResource\RelationManagers;
 use App\Models\Permission;
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 
@@ -47,6 +50,21 @@ class PermissionResource extends Resource
                         'sm' => 2,
                         'lg' => 2,
                     ]),
+
+                Section::make('Roles')
+                    ->description('Select all necessary roles for this permission.')
+                    ->schema([
+                        CheckboxList::make('roles')
+                            ->relationship('roles', 'name')
+                            ->getOptionLabelFromRecordUsing(fn(Model $record) => Str::headline($record->name))
+                            ->bulkToggleable()
+                            ->live()
+                            ->columns([
+                                'sm' => 2,
+                                'lg' => 3,
+                            ])
+                            ->gridDirection('row')
+                    ])->collapsed(fn(string $operation): bool => !($operation === 'create')),
             ]);
     }
 

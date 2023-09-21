@@ -31,7 +31,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $role = Role::create(['name' => 'super_admin', 'guard_name' => 'web']);
-        Role::create(['name' => 'User', 'guard_name' => 'web']);
+        Role::create(['name' => 'user', 'guard_name' => 'web']);
         $user->assignRole($role);
         $this->call([
             PropertyTypeSeeder::class,

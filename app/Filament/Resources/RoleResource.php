@@ -34,7 +34,10 @@ class RoleResource extends Resource
         // Agrupa los permisos por modelo
         foreach ($permissions as $permission) {
             [$action, $model] = explode(':', $permission->name);
-            $groupedPermissions[$model][] = $permission->name; // Guarda solo el nombre del permiso
+            $groupedPermissions[$model][] = [
+                'id' => $permission->id,
+                'name' => $permission->name,
+            ];
         }
 
         return $form
@@ -53,22 +56,11 @@ class RoleResource extends Resource
                             ->default('web')
                             ->searchable()
                             ->nullable(),
-                        Forms\Components\Toggle::make('select_all')
-                            ->onIcon('heroicon-s-shield-check')
-                            ->offIcon('heroicon-s-shield-exclamation')
-                            ->helperText('Select all permissions')
-                            ->dehydrated(false)
-                            ->live(),
-//                                Select::make('permissions')
-//                                    ->multiple()
-//                                    ->preload()
-//                                    ->relationship('permissions', 'name'),
                     ])
                     ->columns([
                         'sm' => 2,
                         'lg' => 3,
                     ]),
-
 
                 Forms\Components\Section::make('Permissions')
                     ->description('Select all necessary permissions for this role.')
@@ -76,22 +68,34 @@ class RoleResource extends Resource
                         $sections = [];
                         // Crea una sección para cada modelo
                         foreach ($groupedPermissions as $model => $modelPermissions) {
+
+                            $formattedPermissions = array_map(function ($permission) {
+                                return Str::headline($permission['name']);
+                            }, $modelPermissions);
+
                             $sections[] = Forms\Components\Section::make($model)
                                 ->description("Permissions for $model")
                                 ->schema([
-                                    Forms\Components\CheckboxList::make('permissions_' . $model)
+                                    Forms\Components\CheckboxList::make('permissions')
                                         ->relationship('permissions', 'name')
                                         ->bulkToggleable()
                                         ->searchable()
                                         ->noSearchResultsMessage('No permissions found.')
                                         ->gridDirection('row')
-                                        ->options($modelPermissions)
+                                        ->options(array_combine(
+                                            array_column($modelPermissions, 'id'), // Utiliza los IDs como claves
+                                            $formattedPermissions // Utiliza los nombres formateados como valores
+                                        ))
                                 ])->columnSpan(1);
                         }
                         return $sections;
                     })
+                    ->collapsible()
+                    ->collapsed(true)
                     ->columns(3)
                     ->hidden(fn(string $operation): bool => $operation === 'view'),
+
+
 //                Forms\Components\Section::make('Permissions')
 //                    ->description('Select all necessary permissions for this role.')
 //                    ->schema([

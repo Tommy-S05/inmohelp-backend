@@ -13,7 +13,8 @@ class RolePolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasRole(['super_admin', 'admin']) || $user->hasPermissionTo('view_any:Role', 'web');
+        return $user->hasRole(['super_admin']) || $user->hasPermissionTo('view_any:Role', 'web');
+//        return $user->hasRole(['super_admin', 'admin']) || $user->hasPermissionTo('view_any:Role', 'web');
     }
 
     /**
@@ -21,7 +22,8 @@ class RolePolicy
      */
     public function view(User $user, Role $role): bool
     {
-        return $user->hasRole(['super_admin', 'admin']) || $user->hasPermissionTo('view:Role', 'web');
+        return $user->hasRole(['super_admin']) || $user->hasPermissionTo('view:Role', 'web');
+//        return $user->hasRole(['super_admin', 'admin']) || $user->hasPermissionTo('view:Role', 'web');
     }
 
     /**

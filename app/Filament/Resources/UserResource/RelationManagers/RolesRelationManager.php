@@ -19,6 +19,18 @@ class RolesRelationManager extends RelationManager
 
     public function form(Form $form): Form
     {
+        $permissions = \Spatie\Permission\Models\Permission::all();
+
+        $groupedPermissions = [];
+
+        foreach ($permissions as $permission) {
+            [$action, $model] = explode(':', $permission->name);
+            $groupedPermissions[$model][] = [
+                'id' => $permission->id,
+                'name' => $permission->name,
+            ];
+        }
+
         return $form
             ->schema([
                 Forms\Components\Section::make()
@@ -40,6 +52,38 @@ class RolesRelationManager extends RelationManager
                         'sm' => 2,
                         'lg' => 2,
                     ]),
+
+                Forms\Components\Section::make('Permissions')
+                    ->description('Select all necessary permissions for this role.')
+                    ->schema(function () use ($groupedPermissions) {
+                        $sections = [];
+
+                        foreach ($groupedPermissions as $model => $modelPermissions) {
+
+                            $formattedPermissions = array_map(function ($permission) {
+                                return Str::headline($permission['name']);
+                            }, $modelPermissions);
+
+                            $sections[] = Forms\Components\Section::make($model)
+                                ->description("Permissions for $model")
+                                ->schema([
+                                    Forms\Components\CheckboxList::make('permissions')
+                                        ->relationship('permissions', 'name')
+                                        ->bulkToggleable()
+                                        ->searchable()
+                                        ->noSearchResultsMessage('No permissions found.')
+                                        ->gridDirection('row')
+                                        ->options(array_combine(
+                                            array_column($modelPermissions, 'id'), // Utiliza los IDs como claves
+                                            $formattedPermissions // Utiliza los nombres formateados como valores
+                                        ))
+                                ])->columnSpan(1);
+                        }
+                        return $sections;
+                    })
+                    ->collapsible()
+                    ->collapsed(true)
+                    ->columns(2),
             ]);
     }
 
@@ -78,7 +122,8 @@ class RolesRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make()->label(''),
+                Tables\Actions\EditAction::make()->label(''),
                 Tables\Actions\DetachAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])

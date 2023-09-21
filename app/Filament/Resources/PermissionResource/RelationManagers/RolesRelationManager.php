@@ -8,6 +8,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 
@@ -85,5 +86,54 @@ class RolesRelationManager extends RelationManager
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make(),
             ]);
+    }
+
+    public function isReadOnly(): bool
+    {
+        return !(auth()->user()->hasAnyPermission([
+                'create:Role',
+                'update:Role',
+                'delete:Role',
+            ]) || auth()->user()->hasRole('super_admin'));
+    }
+
+    protected function canView(Model $record): bool
+    {
+        return auth()->user()->hasRole(['super_admin']) || auth()->user()->hasPermissionTo('view:Role', 'web');
+    }
+
+    protected function canViewAny(): bool
+    {
+        return auth()->user()->hasRole(['super_admin']) || auth()->user()->hasPermissionTo('view_any:Role', 'web');
+    }
+
+    protected function canCreate(): bool
+    {
+        return auth()->user()->hasRole(['super_admin']) || auth()->user()->hasPermissionTo('create:Role', 'web');
+    }
+
+    protected function canEdit(Model $record): bool
+    {
+        return auth()->user()->hasRole(['super_admin']) || auth()->user()->hasPermissionTo('update:Role', 'web');
+    }
+
+    protected function canAttach(): bool
+    {
+        return auth()->user()->hasRole(['super_admin']) || auth()->user()->hasPermissionTo('update:Role', 'web');
+    }
+
+    protected function canDetach(Model $record): bool
+    {
+        return auth()->user()->hasRole(['super_admin']) || auth()->user()->hasPermissionTo('update:Role', 'web');
+    }
+
+    protected function canDetachAny(): bool
+    {
+        return auth()->user()->hasRole(['super_admin']) || auth()->user()->hasPermissionTo('update:Role', 'web');
+    }
+
+    protected function canDelete(Model $record): bool
+    {
+        return auth()->user()->hasRole(['super_admin']) || auth()->user()->hasPermissionTo('delete:Role', 'web');
     }
 }

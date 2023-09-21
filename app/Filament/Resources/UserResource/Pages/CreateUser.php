@@ -9,12 +9,15 @@ use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Textarea;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Wizard\Step;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 use Filament\Notifications\Notification;
 use Filament\Notifications\Actions\Action;
@@ -49,6 +52,17 @@ class CreateUser extends CreateRecord
 
     protected function getSteps(): array
     {
+        $permissions = \Spatie\Permission\Models\Permission::all();
+        $groupedPermissions = [];
+
+        foreach ($permissions as $permission) {
+            [$action, $model] = explode(':', $permission->name);
+            $groupedPermissions[$model][] = [
+                'id' => $permission->id,
+                'name' => $permission->name,
+            ];
+        }
+
         return [
             Step::make('User Account')
                 ->description('Give the account user data')
@@ -89,36 +103,65 @@ class CreateUser extends CreateRecord
             Step::make('Roles & Permissions')
                 ->description('User roles and permissions')
                 ->schema([
-                    Grid::make()
-                        ->schema([
-                            Section::make('Roles')
-                                ->description('Select all necessary roles for this user.')
+                    Tabs::make('Roles & Permissions')
+                        ->tabs([
+                            Tabs\Tab::make('Roles')
                                 ->schema([
-                                    CheckboxList::make('roles')
-                                        ->relationship('roles', 'name')
-                                        ->bulkToggleable()
-                                        ->columns([
-                                            'sm' => 2,
-                                            'lg' => 3,
+                                    Section::make()
+                                        ->description('Select all necessary roles for this user.')
+                                        ->schema([
+                                            CheckboxList::make('roles')
+                                                ->relationship('roles', 'name')
+                                                ->getOptionLabelFromRecordUsing(fn(Model $record) => Str::headline($record->name))
+                                                ->bulkToggleable()
+                                                ->live()
+                                                ->columns([
+                                                    'sm' => 2,
+                                                    'lg' => 3,
+                                                ])
+                                                ->gridDirection('row')
                                         ])
-                                        ->gridDirection('row')
-                                ])
-                                ->columnSpan(1),
+                                ]),
 
-                            Section::make('Permissions')
-                                ->description('Select all necessary permissions for this role.')
+                            Tabs\Tab::make('Permissions')
                                 ->schema([
-                                    CheckboxList::make('permissions')
-                                        ->relationship('permissions', 'name')
-                                        ->bulkToggleable()
-                                        ->columns([
-                                            'sm' => 2,
-                                            'lg' => 3,
-                                        ])
-                                        ->gridDirection('row')
-                                ])
-                                ->columnSpan(1),
+                                    Section::make()
+                                        ->description('Select all necessary permissions for this role.')
+                                        ->schema(function () use ($groupedPermissions) {
+                                            $sections = [];
+
+                                            foreach ($groupedPermissions as $model => $modelPermissions) {
+
+                                                $formattedPermissions = array_map(function ($permission) {
+                                                    return Str::headline($permission['name']);
+                                                }, $modelPermissions);
+
+                                                $sections[] = Section::make($model)
+                                                    ->description("Permissions for $model")
+                                                    ->schema([
+                                                        CheckboxList::make('permissions')
+                                                            ->hiddenLabel()
+                                                            ->relationship('permissions', 'name')
+                                                            ->bulkToggleable()
+                                                            ->searchable()
+                                                            ->noSearchResultsMessage('No permissions found.')
+                                                            ->gridDirection('row')
+                                                            ->options(array_combine(
+                                                                array_column($modelPermissions, 'id'),
+                                                                $formattedPermissions
+                                                            ))
+                                                    ])->columnSpan(1);
+                                            }
+                                            return $sections;
+                                        })
+                                        ->columns(3)
+
+                                ]),
                         ])
+                        ->hidden(fn(string $operation): bool => $operation === 'view')
+//                        ->contained(false)
+                        ->columnSpanFull(),
+
                 ])->columns(4),
             Step::make('Manage Password')
                 ->description('Set the account password')

@@ -9,7 +9,9 @@ use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Tabs;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\Section;
@@ -20,6 +22,7 @@ use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -36,6 +39,17 @@ class UserResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $permissions = \Spatie\Permission\Models\Permission::all();
+        $groupedPermissions = [];
+
+        foreach ($permissions as $permission) {
+            [$action, $model] = explode(':', $permission->name);
+            $groupedPermissions[$model][] = [
+                'id' => $permission->id,
+                'name' => $permission->name,
+            ];
+        }
+
         return $form
             ->schema([
                 Forms\Components\Section::make('User Details')
@@ -73,7 +87,7 @@ class UserResource extends Resource
                             ->required(),
                     ])
                     ->columns(2)
-                    ->columnSpan(['lg' => 2]),
+                    ->columnSpan(['lg' => fn(Model $record): int => $record->hasRole('super_admin') && !auth()->user()->hasRole('super_admin') ? 3 : 2]),
 
                 Forms\Components\Section::make('Manage Password')
                     ->schema([
@@ -83,6 +97,7 @@ class UserResource extends Resource
                                 'edit' => 'New Password',
                             })
                             ->password()
+                            ->live(debounce: 250)
                             ->dehydrateStateUsing(fn(string $state): string => Hash::make($state))
                             ->rule(Password::default())
                             ->dehydrated(fn(?string $state): bool => filled($state))
@@ -94,6 +109,8 @@ class UserResource extends Resource
                                 'edit' => 'Confirm New Password',
                             })
                             ->password()
+                            ->visible(fn(Get $get): bool => filled($get('password')))
+                            ->required(fn(Get $get): bool => filled($get('password')))
                             ->requiredWith('password')
                             ->same('password')
                             ->maxLength(255),
@@ -109,6 +126,7 @@ class UserResource extends Resource
                         //                            ->same('new_password')
                         //                            ->maxLength(255),
                     ])
+                    ->hidden(fn(Model $record): bool => $record->hasRole('super_admin') && !auth()->user()->hasRole('super_admin'))
                     ->columns(1)
                     ->columnSpan(['lg' => 1])
                     ->heading(fn(string $operation): string => match ($operation) {
@@ -116,39 +134,101 @@ class UserResource extends Resource
                         'edit' => 'Change Password',
                     }),
 
-                Forms\Components\Grid::make()
-                    ->schema([
-                        Forms\Components\Section::make('Roles')
-                            ->description('Select all necessary roles for this user.')
+                Tabs::make('Roles & Permissions')
+                    ->tabs([
+                        Tabs\Tab::make('Roles')
                             ->schema([
-                                Forms\Components\CheckboxList::make('roles')
-                                    ->relationship('roles', 'name')
-                                    ->bulkToggleable()
-                                    ->live()
-                                    ->columns([
-                                        'sm' => 2,
-                                        'lg' => 3,
+                                Forms\Components\Section::make()
+                                    ->description('Select all necessary roles for this user.')
+                                    ->schema([
+                                        Forms\Components\CheckboxList::make('roles')
+                                            ->relationship('roles', 'name')
+                                            ->getOptionLabelFromRecordUsing(fn(Model $record) => Str::headline($record->name))
+                                            ->bulkToggleable()
+                                            ->live()
+                                            ->columns([
+                                                'sm' => 2,
+                                                'lg' => 3,
+                                            ])
+                                            ->gridDirection('row')
                                     ])
-                                    ->gridDirection('row')
-                            ])
-                            ->columnSpan(1)
-                            ->hidden(fn(string $operation): bool => $operation === 'view'),
+                                    ->compact()
+                            ]),
+                        Tabs\Tab::make('Permissions')
+                            ->schema([
+                                Forms\Components\Section::make()
+                                    ->description('Select all necessary permissions for this role.')
+                                    ->schema(function () use ($groupedPermissions) {
+                                        $sections = [];
 
-                        Forms\Components\Section::make('Permissions')
-                            ->description('Select all necessary permissions for this role.')
-                            ->schema([
-                                Forms\Components\CheckboxList::make('permissions')
-                                    ->relationship('permissions', 'name')
-                                    ->bulkToggleable()
-                                    ->columns([
-                                        'sm' => 2,
-                                        'lg' => 3,
-                                    ])
-                                    ->gridDirection('row')
-                            ])
-                            ->columnSpan(1)
-                            ->hidden(fn(string $operation): bool => $operation === 'view'),
+                                        foreach ($groupedPermissions as $model => $modelPermissions) {
+
+                                            $formattedPermissions = array_map(function ($permission) {
+                                                return Str::headline($permission['name']);
+                                            }, $modelPermissions);
+
+                                            $sections[] = Forms\Components\Section::make($model)
+                                                ->description("Permissions for $model")
+                                                ->schema([
+                                                    Forms\Components\CheckboxList::make('permissions')
+                                                        ->hiddenLabel()
+                                                        ->relationship('permissions', 'name')
+                                                        ->bulkToggleable()
+                                                        ->searchable()
+                                                        ->noSearchResultsMessage('No permissions found.')
+                                                        ->gridDirection('row')
+                                                        ->options(array_combine(
+                                                            array_column($modelPermissions, 'id'),
+                                                            $formattedPermissions
+                                                        ))
+                                                ])->columnSpan(1);
+                                        }
+                                        return $sections;
+                                    })
+                                    ->compact()
+                                    ->columns(3)
+
+                            ]),
                     ])
+//                    ->visible(fn(string $operation): bool => $operation === 'create')
+                    ->hidden(fn(string $operation): bool => $operation === 'view' || !(auth()->user()->hasRole('super_admin') && auth()->user()->hasPermissionTo('update:Role', 'web')))
+                    ->contained(true)
+//                    ->persistTabInQueryString()
+                    ->columnSpanFull(),
+
+//                Forms\Components\Grid::make()
+//                    ->schema([
+//                        Forms\Components\Section::make('Roles')
+//                            ->description('Select all necessary roles for this user.')
+//                            ->schema([
+//                                Forms\Components\CheckboxList::make('roles')
+//                                    ->relationship('roles', 'name')
+//                                    ->bulkToggleable()
+//                                    ->live()
+//                                    ->columns([
+//                                        'sm' => 2,
+//                                        'lg' => 3,
+//                                    ])
+//                                    ->gridDirection('row')
+//                            ])
+//                            ->columnSpan(1)
+//                            ->hidden(fn(string $operation): bool => $operation === 'view'),
+//
+//                        Forms\Components\Section::make('Permissions')
+//                            ->description('Select all necessary permissions for this role.')
+//                            ->schema([
+//                                Forms\Components\CheckboxList::make('permissions')
+//                                    ->relationship('permissions', 'name')
+//                                    ->bulkToggleable()
+//                                    ->columns([
+//                                        'sm' => 2,
+//                                        'lg' => 3,
+//                                    ])
+//                                    ->gridDirection('row')
+//                            ])
+//                            ->columnSpan(1)
+//                            ->hidden(fn(string $operation): bool => $operation === 'view'),
+//                    ])
             ])
             ->columns(3);
     }
@@ -331,5 +411,10 @@ class UserResource extends Resource
     public static function getNavigationBadgeColor(): ?string
     {
         return 'secondary';
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return $record->id !== auth()->user()->id;
     }
 }
