@@ -3,6 +3,8 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Pages\Auth\EditProfile;
+use Awcodes\LightSwitch\Enums\Alignment;
+use Awcodes\LightSwitch\LightSwitchPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -62,6 +64,8 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->plugins([
+                LightSwitchPlugin::make()
+                    ->position(Alignment::TopRight),
 //                FilamentSpatieRolesPermissionsPlugin::make(),
             ]);
     }
