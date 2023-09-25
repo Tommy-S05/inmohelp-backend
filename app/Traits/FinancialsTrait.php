@@ -11,9 +11,9 @@ trait FinancialsTrait
 {
     public function monthlyPayments(Request $request)
     {
-        $settings = Setting::where('user_id', 1)->first();
+        $settings = Setting::where('user_id', Auth::user()->id)->first();
         //        $property = Property::find($property_id);
-        if($request->price < $settings->down_payment_available) {
+        if ($request->price < $settings->down_payment_available) {
             $payment = 0;
             return response()->json($payment);
         }
@@ -28,7 +28,7 @@ trait FinancialsTrait
 
     public function monthlyPaymentsSql()
     {
-        $settings = Setting::where('user_id', 1)->first();
+        $settings = Setting::where('user_id', Auth::user()->id)->first();
         $periods = $settings->loan_term * 12;
         $interest = (((1 + ($settings->interest_rate / 100)) ** (1 / 12)) - 1);
         $downPayment = $settings->down_payment_available;

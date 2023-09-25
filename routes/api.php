@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 //});
 
 
-Route::middleware('auth:sanctum')->get('/user', function(Request $request) {
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user()->only(['id', 'name', 'email']);
 });
 
@@ -70,3 +70,6 @@ Route::get('/categories', [\App\Http\Controllers\CategoryController::class, 'ind
 
 //PriceIndexController
 Route::get('/price-index', [\App\Http\Controllers\PriceIndexController::class, 'index'])->middleware('auth:sanctum');
+
+//AmortizationController
+Route::get('/amortization', [\App\Http\Controllers\AmortizationController::class, 'amortization']);

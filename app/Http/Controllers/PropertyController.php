@@ -7,6 +7,8 @@ use App\Http\Requests\UpdatePropertyRequest;
 use App\QueryFilters\Property\AffordableFilter;
 use App\QueryFilters\Property\AreaFilter;
 use App\QueryFilters\Property\PropertyTypeFilter;
+use App\Traits\FinancialsTrait;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\Property;
 use App\QueryFilters\Property\BathroomsFilter;
@@ -21,6 +23,8 @@ use Illuminate\Pipeline\Pipeline;
 
 class PropertyController extends Controller
 {
+    use FinancialsTrait;
+
     /**
      * Display a listing of the resource.
      */
@@ -47,14 +51,17 @@ class PropertyController extends Controller
         return response()->json($properties);
     }
 
-    public function affordableProperties()
+    public function affordableProperties(Request $request): JsonResponse
     {
+        if (!$request->has('affordable') || $request->input('affordable') != 'true') {
+            $request->merge(['affordable' => 'true']);
+        }
         $properties = app(Pipeline::class)
             ->send(Property::query())
             ->through([
                 AffordableFilter::class,
                 AreaFilter::class,
-                PurposeFilter::class,
+//                PurposeFilter::class,
                 //                PropertyTypeFilter::class,
                 //                ProvinceFilter::class,
                 //                NeighborhoodFilter::class,
