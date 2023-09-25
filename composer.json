@@ -11,7 +11,7 @@
         "php": "^8.2.4",
         "althinect/filament-spatie-roles-permissions": "^2.0.9",
         "awcodes/light-switch": "^1.0",
-        "filament/filament": "3.0.41-stable",
+        "filament/filament": "^3.0-stable",
         "guzzlehttp/guzzle": "^7.8",
         "laravel/framework": "^10.23.1",
         "laravel/sanctum": "^3.3.1",
