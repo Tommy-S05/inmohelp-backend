@@ -2,80 +2,212 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Amortization;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class AmortizationController extends Controller
 {
-    //    public function amortization(): JsonResponse
-    //    {
-    //        $loan = 330000;
-    //        $periods = 360;
-    //        $interest = 0.0527 / 12;
-    //
-    //        $payment = $loan * (($interest * (1 + $interest) ** $periods) / ((1 + $interest) ** $periods - 1));
-    //
-    //        $amortization = [];
-    //        $balance = $loan;
-    //        for ($i = 1; $i <= $periods; $i++) {
-    //            $interest_paid = $balance * $interest;
-    //            $principal_paid = $payment - $interest_paid;
-    //            $balance = $balance - $principal_paid;
-    //            $amortization[] = [
-    //                'period' => $i,
-    //                'payment' => $payment,
-    //                'interest_paid' => $interest_paid,
-    //                'principal_paid' => $principal_paid,
-    //                'balance' => $balance,
-    //            ];
-    //        }
-    //
-    //        return response()->json($amortization);
-    //    }
-
-    public function amortization(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $loan = 330000;
-        $periods = 360;
-        $interestRate = 0.0527 / 12;
+        $amortizations = $request->user()->amortizations()->with('amortizationDetails')->get();
 
-        $payment = $loan * (($interestRate * (1 + $interestRate) ** $periods) / ((1 + $interestRate) ** $periods - 1));
+        return response()->json([
+            'amortizations' => $amortizations,
+        ]);
+    }
 
-        $currentDate = Carbon::now()->addMonth();
+    public function amortization(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'loan' => 'required|numeric',
+            'periods' => 'required|numeric',
+            'interest' => 'required|numeric',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Error al calcular la amortización',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $loan = $request->loan;
+        $periods = $request->periods * 12;
+        $interest_rate = ($request->interest / 100) / 12;
+
+        $monthly_payment = $loan * (($interest_rate * (1 + $interest_rate) ** $periods) / ((1 + $interest_rate) ** $periods - 1));
+
+        $start_date = Carbon::now()->addMonth();
+        $end_date = Carbon::now()->addMonth($periods);
+        $current_date = $start_date;
 
         $amortization = [];
-        $balance = $loan;
-        $total_interest = 0;
-        $total_cost = 0;
+        $remaining_balance = $loan;
+        $total_cost_interest = 0;
+        $total_cost_loan = 0;
 
-        for($i = 1; $i <= $periods; $i++) {
-            $paymentDate = $currentDate->format('F');
+        for ($i = 1; $i <= $periods; $i++) {
+            $payment_date = $current_date->format('F');
 
-            $interest_paid = $balance * $interestRate;
-            $principal_paid = $payment - $interest_paid;
-            $balance = $balance - $principal_paid;
+            $interest_paid = $remaining_balance * $interest_rate;
+            $principal_paid = $monthly_payment - $interest_paid;
+            $remaining_balance = $remaining_balance - $principal_paid;
 
-            $total_interest += $interest_paid;
-            $total_cost += $payment;
+            $total_cost_interest += $interest_paid;
+            $total_cost_loan += $monthly_payment;
 
             //            $amortization[$currentYear][$paymentDate] = [
-            $amortization[$currentDate->year][] = [
-                'period' => $paymentDate,
-                'payment' => round($payment, 2),
+//            $amortization[$currentDate->year][] = [
+//                'period' => $paymentDate,
+//                'payment' => round($monthly_payment, 2),
+//                'interest_paid' => round($interest_paid, 2),
+//                'principal_paid' => round($principal_paid, 2),
+//                'balance' => round($balance, 2),
+//            ];
+
+            $amortization[] = [
+                'year' => $current_date->year,
+                'period' => $payment_date,
+                'payment' => round($monthly_payment, 2),
                 'interest_paid' => round($interest_paid, 2),
                 'principal_paid' => round($principal_paid, 2),
-                'balance' => round($balance, 2),
+                'remaining_balance' => round($remaining_balance, 2),
+                'payment_date' => $current_date->format('Y-m-d'),
             ];
 
-            $currentDate->addMonth();
+            $current_date->addMonth();
         }
 
         return response()->json([
-            'monthly_payment' => round($payment, 2),
-            'total_interest' => round($total_interest, 2),
-            'total_cost' => round($total_cost, 2),
-            'amortization' => $amortization,
+            'summary' => [
+                'loan' => floatval($loan),
+                'periods' => $periods,
+                'interest' => floatval($request->interest),
+                'monthly_payment' => round($monthly_payment, 2),
+                'total_cost_interest' => round($total_cost_interest, 2),
+                'total_cost_loan' => round($total_cost_loan, 2),
+                'remaining_balance' => round($loan, 2),
+                'start_date' => $start_date->format('Y-m-d'),
+                'end_date' => $end_date->format('Y-m-d'),
+            ],
+            'amortization_details' => $amortization,
         ]);
+    }
+
+    public function store(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'loan' => 'required|numeric',
+            'periods' => 'required|numeric',
+            'interest' => 'required|numeric',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Error al guardar la amortización',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $loan = $request->loan;
+        $remaining_balance = $loan;
+        $periods = $request->periods * 12;
+        $interest_rate = ($request->interest / 100) / 12;
+        $total_cost_interest = 0;
+        $total_cost_loan = 0;
+
+        $monthly_payment = $loan * (($interest_rate * (1 + $interest_rate) ** $periods) / ((1 + $interest_rate) ** $periods - 1));
+
+        $start_date = Carbon::now()->addMonth();
+        $end_date = Carbon::now()->addMonth($periods);
+        $current_date = $start_date;
+
+        $amortization = new Amortization();
+        $amortization->user_id = $request->user()->id;
+        $amortization->loan = $loan;
+        $amortization->periods = $periods;
+        $amortization->interest = $request->interest;
+        $amortization->monthly_payment = round($monthly_payment, 2);
+        $amortization->remaining_balance = round($remaining_balance, 2);
+        $amortization->start_date = $start_date->format('Y-m-d');
+        $amortization->end_date = $end_date->format('Y-m-d');
+        $amortization->save();
+
+        for ($i = 1; $i <= $periods; $i++) {
+            $payment_date = $current_date->format('F');
+
+            $interest_paid = $remaining_balance * $interest_rate;
+            $principal_paid = $monthly_payment - $interest_paid;
+            $remaining_balance = $remaining_balance - $principal_paid;
+
+            $total_cost_interest += $interest_paid;
+            $total_cost_loan += $monthly_payment;
+
+            $amortization->amortizationDetails()->create([
+                'year' => $current_date->year,
+                'period' => $payment_date,
+                'payment' => round($monthly_payment, 2),
+                'interest_paid' => round($interest_paid, 2),
+                'principal_paid' => round($principal_paid, 2),
+                'remaining_balance' => round($remaining_balance, 2),
+                'payment_date' => $current_date,
+            ]);
+
+            $current_date->addMonth();
+        }
+
+        $amortization->total_cost_interest = round($total_cost_interest, 2);
+        $amortization->total_cost_loan = round($total_cost_loan, 2);
+
+        $amortization->save();
+
+        return response()->json([
+            'summary' => $amortization->only([
+                'loan',
+                'periods',
+                'interest',
+                'monthly_payment',
+                'total_cost_interest',
+                'total_cost_loan',
+                'total_interest_paid',
+                'total_principal_paid',
+                'remaining_balance',
+                'start_date',
+                'end_date',
+            ]),
+            'amortization_details' => $amortization->amortizationDetails,
+        ]);
+    }
+
+    public function show(Amortization $amortization): JsonResponse
+    {
+        return response()->json([
+            'summary' => $amortization->only([
+                'loan',
+                'periods',
+                'interest',
+                'monthly_payment',
+                'total_cost_interest',
+                'total_cost_loan',
+                'total_interest_paid',
+                'total_principal_paid',
+                'remaining_balance',
+                'start_date',
+                'end_date',
+            ]),
+            'amortization_details' => $amortization->amortizationDetails,
+        ]);
+    }
+
+    public function destroy(Amortization $amortization): Response
+    {
+        $amortization->delete();
+        return response()->noContent();
     }
 }

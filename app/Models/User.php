@@ -69,6 +69,11 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasOne(Setting::class);
     }
 
+    public function amortizations()
+    {
+        return $this->hasMany(Amortization::class);
+    }
+
     public function canAccessPanel(Panel $panel): bool
     {
 //                return str_ends_with($this->email, '@hotmail.com') && $this->hasVerifiedEmail();

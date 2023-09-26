@@ -73,3 +73,7 @@ Route::get('/price-index', [\App\Http\Controllers\PriceIndexController::class, '
 
 //AmortizationController
 Route::get('/amortization', [\App\Http\Controllers\AmortizationController::class, 'amortization']);
+Route::get('/amortization/index', [\App\Http\Controllers\AmortizationController::class, 'index'])->middleware('auth:sanctum');
+Route::post('/amortization', [\App\Http\Controllers\AmortizationController::class, 'store'])->middleware('auth:sanctum');
+Route::get('/amortization/{amortization}', [\App\Http\Controllers\AmortizationController::class, 'show'])->middleware('auth:sanctum');
+Route::delete('/amortization/{amortization}', [\App\Http\Controllers\AmortizationController::class, 'destroy'])->middleware('auth:sanctum');
