@@ -8,33 +8,33 @@ use Illuminate\Support\Carbon;
 
 class AmortizationController extends Controller
 {
-//    public function amortization(): JsonResponse
-//    {
-//        $loan = 330000;
-//        $periods = 360;
-//        $interest = 0.0527 / 12;
-//
-//        $payment = $loan * (($interest * (1 + $interest) ** $periods) / ((1 + $interest) ** $periods - 1));
-//
-//        $amortization = [];
-//        $balance = $loan;
-//        for ($i = 1; $i <= $periods; $i++) {
-//            $interestPaid = $balance * $interest;
-//            $principalPaid = $payment - $interestPaid;
-//            $balance = $balance - $principalPaid;
-//            $amortization[] = [
-//                'period' => $i,
-//                'payment' => $payment,
-//                'interest_paid' => $interestPaid,
-//                'principal_paid' => $principalPaid,
-//                'balance' => $balance,
-//            ];
-//        }
-//
-//        return response()->json($amortization);
-//    }
+    //    public function amortization(): JsonResponse
+    //    {
+    //        $loan = 330000;
+    //        $periods = 360;
+    //        $interest = 0.0527 / 12;
+    //
+    //        $payment = $loan * (($interest * (1 + $interest) ** $periods) / ((1 + $interest) ** $periods - 1));
+    //
+    //        $amortization = [];
+    //        $balance = $loan;
+    //        for ($i = 1; $i <= $periods; $i++) {
+    //            $interest_paid = $balance * $interest;
+    //            $principal_paid = $payment - $interest_paid;
+    //            $balance = $balance - $principal_paid;
+    //            $amortization[] = [
+    //                'period' => $i,
+    //                'payment' => $payment,
+    //                'interest_paid' => $interest_paid,
+    //                'principal_paid' => $principal_paid,
+    //                'balance' => $balance,
+    //            ];
+    //        }
+    //
+    //        return response()->json($amortization);
+    //    }
 
-    public function amortization()/*: JsonResponse*/
+    public function amortization(): JsonResponse
     {
         $loan = 330000;
         $periods = 360;
@@ -43,40 +43,39 @@ class AmortizationController extends Controller
         $payment = $loan * (($interestRate * (1 + $interestRate) ** $periods) / ((1 + $interestRate) ** $periods - 1));
 
         $currentDate = Carbon::now()->addMonth();
-        $currentYear = $currentDate->year;
-        $currentMonth = $currentDate->month;
 
         $amortization = [];
         $balance = $loan;
+        $total_interest = 0;
+        $total_cost = 0;
 
-        for ($i = 1; $i <= $periods; $i++) {
-            // Calcula la fecha del pago
-            $paymentDate = $currentDate->format('F Y');
+        for($i = 1; $i <= $periods; $i++) {
+            $paymentDate = $currentDate->format('F');
 
-            $interestPaid = $balance * $interestRate;
-            $principalPaid = $payment - $interestPaid;
-            $balance = $balance - $principalPaid;
+            $interest_paid = $balance * $interestRate;
+            $principal_paid = $payment - $interest_paid;
+            $balance = $balance - $principal_paid;
 
-            $amortization[$currentYear][$paymentDate] = [
+            $total_interest += $interest_paid;
+            $total_cost += $payment;
+
+            //            $amortization[$currentYear][$paymentDate] = [
+            $amortization[$currentDate->year][] = [
                 'period' => $paymentDate,
-                'payment' => $payment,
-                'interest_paid' => $interestPaid,
-                'principal_paid' => $principalPaid,
-                'balance' => $balance,
+                'payment' => round($payment, 2),
+                'interest_paid' => round($interest_paid, 2),
+                'principal_paid' => round($principal_paid, 2),
+                'balance' => round($balance, 2),
             ];
 
-            // Avanza al siguiente mes
             $currentDate->addMonth();
-
-            // Avanza al siguiente año si es diciembre
-            if ($currentMonth == 12) {
-                $currentYear++;
-                $currentMonth = 1;
-            } else {
-                $currentMonth++;
-            }
         }
 
-        return response()->json($amortization);
+        return response()->json([
+            'monthly_payment' => round($payment, 2),
+            'total_interest' => round($total_interest, 2),
+            'total_cost' => round($total_cost, 2),
+            'amortization' => $amortization,
+        ]);
     }
 }
