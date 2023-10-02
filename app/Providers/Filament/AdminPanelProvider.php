@@ -34,6 +34,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandName('InmoHelp')
             ->favicon(asset('favicons/favicon.ico'))
             ->profile(EditProfile::class)
+            ->spa()
             ->colors([
                 'primary' => "rgb(251, 146, 60)",
                 'secondary' => "#00BD7E",
