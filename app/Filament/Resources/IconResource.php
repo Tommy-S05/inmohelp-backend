@@ -46,7 +46,7 @@ class IconResource extends Resource
                                             ->required()
                                             ->unique()
                                             ->maxLength(255),
-//                                            ->columnSpan(1),
+                                        //                                            ->columnSpan(1),
                                         Forms\Components\Toggle::make('is_active')
                                             ->default(true)
                                             ->label('Active')
@@ -89,6 +89,10 @@ class IconResource extends Resource
                 Tables\Columns\TextColumn::make('icon')
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('description')
+                    ->searchable(),
+                Tables\Columns\IconColumn::make('is_active')
+                    ->boolean(),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
                     ->since()
