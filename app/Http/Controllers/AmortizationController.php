@@ -48,15 +48,17 @@ class AmortizationController extends Controller
         $current_date = $start_date;
 
         $amortization = [];
+        $initial_balance = $loan;
         $remaining_balance = $loan;
         $total_cost_interest = 0;
         $total_cost_loan = 0;
 
         for ($i = 1; $i <= $periods; $i++) {
-            $payment_date = $current_date->format('F');
+            $payment_date = $current_date->format('F Y');
 
             $interest_paid = $remaining_balance * $interest_rate;
             $principal_paid = $monthly_payment - $interest_paid;
+            $initial_balance = $remaining_balance;
             $remaining_balance = $remaining_balance - $principal_paid;
 
             $total_cost_interest += $interest_paid;
@@ -75,6 +77,7 @@ class AmortizationController extends Controller
                 'year' => $current_date->year,
                 'period' => $payment_date,
                 'payment' => round($monthly_payment, 2),
+                'initial_balance' => round($initial_balance, 2),
                 'interest_paid' => round($interest_paid, 2),
                 'principal_paid' => round($principal_paid, 2),
                 'remaining_balance' => round($remaining_balance, 2),
@@ -116,6 +119,7 @@ class AmortizationController extends Controller
         }
 
         $loan = $request->loan;
+        $initial_balance = $loan;
         $remaining_balance = $loan;
         $periods = $request->periods * 12;
         $interest_rate = ($request->interest / 100) / 12;
@@ -140,10 +144,11 @@ class AmortizationController extends Controller
         $amortization->save();
 
         for ($i = 1; $i <= $periods; $i++) {
-            $payment_date = $current_date->format('F');
+            $payment_date = $current_date->format('F Y');
 
             $interest_paid = $remaining_balance * $interest_rate;
             $principal_paid = $monthly_payment - $interest_paid;
+            $initial_balance = $remaining_balance;
             $remaining_balance = $remaining_balance - $principal_paid;
 
             $total_cost_interest += $interest_paid;
@@ -153,6 +158,7 @@ class AmortizationController extends Controller
                 'year' => $current_date->year,
                 'period' => $payment_date,
                 'payment' => round($monthly_payment, 2),
+                'initial_balance' => round($initial_balance, 2),
                 'interest_paid' => round($interest_paid, 2),
                 'principal_paid' => round($principal_paid, 2),
                 'remaining_balance' => round($remaining_balance, 2),

@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->string('year');
             $table->string('period');
             $table->float('payment', 16, 2);
+            $table->float('initial_balance', 16, 2)->default(0.00);
             $table->float('interest_paid', 16, 2)->default(0.00);
             $table->float('principal_paid', 16, 2)->default(0.00);
             $table->float('remaining_balance', 16, 2)->default(0.00);
