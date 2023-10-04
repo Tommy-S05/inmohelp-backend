@@ -87,7 +87,7 @@ class UserResource extends Resource
                             ->required(),
                     ])
                     ->columns(2)
-                    ->columnSpan(['lg' => fn(Model $record): int => $record->hasRole('super_admin') && !auth()->user()->hasRole('super_admin') ? 3 : 2]),
+                    ->columnSpan(['lg' => fn(Model $record): int => $record->hasRole('Super Admin') && !auth()->user()->hasRole('Super Admin') ? 3 : 2]),
 
                 Forms\Components\Section::make('Manage Password')
                     ->schema([
@@ -126,7 +126,7 @@ class UserResource extends Resource
                         //                            ->same('new_password')
                         //                            ->maxLength(255),
                     ])
-                    ->hidden(fn(Model $record): bool => $record->hasRole('super_admin') && !auth()->user()->hasRole('super_admin'))
+                    ->hidden(fn(Model $record): bool => $record->hasRole('Super Admin') && !auth()->user()->hasRole('Super Admin'))
                     ->columns(1)
                     ->columnSpan(['lg' => 1])
                     ->heading(fn(string $operation): string => match ($operation) {
@@ -191,7 +191,7 @@ class UserResource extends Resource
                             ]),
                     ])
 //                    ->visible(fn(string $operation): bool => $operation === 'create')
-                    ->hidden(fn(string $operation): bool => $operation === 'view' || !(auth()->user()->hasRole('super_admin') && auth()->user()->hasPermissionTo('update:Role', 'web')))
+                    ->hidden(fn(string $operation): bool => $operation === 'view' || !(auth()->user()->hasRole('Super Admin') && auth()->user()->hasPermissionTo('update:Role', 'web')))
                     ->contained(true)
 //                    ->persistTabInQueryString()
                     ->columnSpanFull(),
@@ -254,10 +254,10 @@ class UserResource extends Resource
 //                        return implode(', ', array_map(fn($roleName) => Str::headline($roleName), $roleNames));
 //                    })
                     ->getStateUsing(function (User $record): string {
-                        if ($record->hasRole('super_admin')) {
-                            return Str::headline('super_admin');
-                        } elseif ($record->hasRole('admin')) {
-                            return Str::headline('admin');
+                        if ($record->hasRole('Super Admin')) {
+                            return Str::headline('Super Admin');
+                        } elseif ($record->hasRole('Admin')) {
+                            return Str::headline('Admin');
                         } elseif ($record->roles->count() > 0) {
                             return Str::headline($record->getRoleNames()->first());
                         } else {

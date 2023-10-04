@@ -46,5 +46,10 @@ class DatabaseSeeder extends Seeder
             AccountSeeder::class,
         ]);
         Property::factory(20)->create();
+
+//        foreach (Property::all() as $property) {
+//            $amenities = \App\Models\Amenity::inRandomOrder()->take(rand(1, 5))->pluck('id');
+//            $property->amenities()->attach($amenities);
+//        }
     }
 }
