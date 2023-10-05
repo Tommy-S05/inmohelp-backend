@@ -17,7 +17,9 @@ class IconResource extends Resource
 {
     protected static ?string $model = Icon::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-list-bullet';
+    protected static ?string $navigationGroup = 'Properties';
+    protected static ?int $navigationSort = 4;
 
     public static function form(Form $form): Form
     {
@@ -46,7 +48,6 @@ class IconResource extends Resource
                                             ->required()
                                             ->unique()
                                             ->maxLength(255),
-                                        //                                            ->columnSpan(1),
                                         Forms\Components\Toggle::make('is_active')
                                             ->default(true)
                                             ->label('Active')
@@ -89,8 +90,12 @@ class IconResource extends Resource
                 Tables\Columns\TextColumn::make('icon')
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('iconType.name')
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('description')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\IconColumn::make('is_active')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('updated_at')
@@ -107,9 +112,9 @@ class IconResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make()->label(''),
+                Tables\Actions\EditAction::make()->label(''),
+                Tables\Actions\DeleteAction::make()->label(''),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

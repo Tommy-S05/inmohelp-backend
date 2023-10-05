@@ -21,7 +21,7 @@ class RoleResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-shield-check';
 
     protected static ?string $navigationGroup = 'Users Management';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
@@ -32,7 +32,7 @@ class RoleResource extends Resource
         $groupedPermissions = [];
 
         // Agrupa los permisos por modelo
-        foreach ($permissions as $permission) {
+        foreach($permissions as $permission) {
             [$action, $model] = explode(':', $permission->name);
             $groupedPermissions[$model][] = [
                 'id' => $permission->id,
@@ -64,12 +64,12 @@ class RoleResource extends Resource
 
                 Forms\Components\Section::make('Permissions')
                     ->description('Select all necessary permissions for this role.')
-                    ->schema(function () use ($groupedPermissions) {
+                    ->schema(function() use ($groupedPermissions) {
                         $sections = [];
                         // Crea una sección para cada modelo
-                        foreach ($groupedPermissions as $model => $modelPermissions) {
+                        foreach($groupedPermissions as $model => $modelPermissions) {
 
-                            $formattedPermissions = array_map(function ($permission) {
+                            $formattedPermissions = array_map(function($permission) {
                                 return Str::headline($permission['name']);
                             }, $modelPermissions);
 
@@ -96,20 +96,20 @@ class RoleResource extends Resource
                     ->hidden(fn(string $operation): bool => $operation === 'view'),
 
 
-//                Forms\Components\Section::make('Permissions')
-//                    ->description('Select all necessary permissions for this role.')
-//                    ->schema([
-//                        Forms\Components\CheckboxList::make('permissions')
-//                            ->relationship('permissions', 'name')
-//                            ->bulkToggleable()
-//                            ->columns([
-//                                'sm' => 2,
-//                                'lg' => 3,
-//                            ])
-//                            ->searchable()
-//                            ->noSearchResultsMessage('No permissions found.')
-//                            ->gridDirection('row')
-//                    ])->hidden(fn(string $operation): bool => $operation === 'view'),
+                //                Forms\Components\Section::make('Permissions')
+                //                    ->description('Select all necessary permissions for this role.')
+                //                    ->schema([
+                //                        Forms\Components\CheckboxList::make('permissions')
+                //                            ->relationship('permissions', 'name')
+                //                            ->bulkToggleable()
+                //                            ->columns([
+                //                                'sm' => 2,
+                //                                'lg' => 3,
+                //                            ])
+                //                            ->searchable()
+                //                            ->noSearchResultsMessage('No permissions found.')
+                //                            ->gridDirection('row')
+                //                    ])->hidden(fn(string $operation): bool => $operation === 'view'),
             ]);
     }
 
@@ -184,8 +184,8 @@ class RoleResource extends Resource
         return 'secondary';
     }
 
-//    public static function getEloquentQuery(): Builder
-//    {
-//        return parent::getEloquentQuery()->where('name', '!=', 'super_admin');
-//    }
+    //    public static function getEloquentQuery(): Builder
+    //    {
+    //        return parent::getEloquentQuery()->where('name', '!=', 'super_admin');
+    //    }
 }

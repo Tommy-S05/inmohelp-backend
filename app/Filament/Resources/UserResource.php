@@ -31,10 +31,10 @@ use Illuminate\Validation\Rules\Password;
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
-//    protected static ?string $slug = 'users';
+    //    protected static ?string $slug = 'users';
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
     protected static ?string $navigationGroup = 'Users Management';
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 0;
 
 
     public static function form(Form $form): Form
@@ -42,7 +42,7 @@ class UserResource extends Resource
         $permissions = \Spatie\Permission\Models\Permission::all();
         $groupedPermissions = [];
 
-        foreach ($permissions as $permission) {
+        foreach($permissions as $permission) {
             [$action, $model] = explode(':', $permission->name);
             $groupedPermissions[$model][] = [
                 'id' => $permission->id,
@@ -158,12 +158,12 @@ class UserResource extends Resource
                             ->schema([
                                 Forms\Components\Section::make()
                                     ->description('Select all necessary permissions for this role.')
-                                    ->schema(function () use ($groupedPermissions) {
+                                    ->schema(function() use ($groupedPermissions) {
                                         $sections = [];
 
-                                        foreach ($groupedPermissions as $model => $modelPermissions) {
+                                        foreach($groupedPermissions as $model => $modelPermissions) {
 
-                                            $formattedPermissions = array_map(function ($permission) {
+                                            $formattedPermissions = array_map(function($permission) {
                                                 return Str::headline($permission['name']);
                                             }, $modelPermissions);
 
@@ -190,45 +190,45 @@ class UserResource extends Resource
 
                             ]),
                     ])
-//                    ->visible(fn(string $operation): bool => $operation === 'create')
+                    //                    ->visible(fn(string $operation): bool => $operation === 'create')
                     ->hidden(fn(string $operation): bool => $operation === 'view' || !(auth()->user()->hasRole('Super Admin') && auth()->user()->hasPermissionTo('update:Role', 'web')))
                     ->contained(true)
-//                    ->persistTabInQueryString()
+                    //                    ->persistTabInQueryString()
                     ->columnSpanFull(),
 
-//                Forms\Components\Grid::make()
-//                    ->schema([
-//                        Forms\Components\Section::make('Roles')
-//                            ->description('Select all necessary roles for this user.')
-//                            ->schema([
-//                                Forms\Components\CheckboxList::make('roles')
-//                                    ->relationship('roles', 'name')
-//                                    ->bulkToggleable()
-//                                    ->live()
-//                                    ->columns([
-//                                        'sm' => 2,
-//                                        'lg' => 3,
-//                                    ])
-//                                    ->gridDirection('row')
-//                            ])
-//                            ->columnSpan(1)
-//                            ->hidden(fn(string $operation): bool => $operation === 'view'),
-//
-//                        Forms\Components\Section::make('Permissions')
-//                            ->description('Select all necessary permissions for this role.')
-//                            ->schema([
-//                                Forms\Components\CheckboxList::make('permissions')
-//                                    ->relationship('permissions', 'name')
-//                                    ->bulkToggleable()
-//                                    ->columns([
-//                                        'sm' => 2,
-//                                        'lg' => 3,
-//                                    ])
-//                                    ->gridDirection('row')
-//                            ])
-//                            ->columnSpan(1)
-//                            ->hidden(fn(string $operation): bool => $operation === 'view'),
-//                    ])
+                //                Forms\Components\Grid::make()
+                //                    ->schema([
+                //                        Forms\Components\Section::make('Roles')
+                //                            ->description('Select all necessary roles for this user.')
+                //                            ->schema([
+                //                                Forms\Components\CheckboxList::make('roles')
+                //                                    ->relationship('roles', 'name')
+                //                                    ->bulkToggleable()
+                //                                    ->live()
+                //                                    ->columns([
+                //                                        'sm' => 2,
+                //                                        'lg' => 3,
+                //                                    ])
+                //                                    ->gridDirection('row')
+                //                            ])
+                //                            ->columnSpan(1)
+                //                            ->hidden(fn(string $operation): bool => $operation === 'view'),
+                //
+                //                        Forms\Components\Section::make('Permissions')
+                //                            ->description('Select all necessary permissions for this role.')
+                //                            ->schema([
+                //                                Forms\Components\CheckboxList::make('permissions')
+                //                                    ->relationship('permissions', 'name')
+                //                                    ->bulkToggleable()
+                //                                    ->columns([
+                //                                        'sm' => 2,
+                //                                        'lg' => 3,
+                //                                    ])
+                //                                    ->gridDirection('row')
+                //                            ])
+                //                            ->columnSpan(1)
+                //                            ->hidden(fn(string $operation): bool => $operation === 'view'),
+                //                    ])
             ])
             ->columns(3);
     }
@@ -246,19 +246,19 @@ class UserResource extends Resource
                 //Put the User role in the table
                 Tables\Columns\TextColumn::make('roles')
                     ->label('Role')
-//                    ->sortable()
-//                    ->searchable()
-//                    ->getStateUsing(fn(User $record): string => $record->roles->pluck('name')->join(', '))
-//                    ->getStateUsing(function (User $record): string {
-//                        $roleNames = $record->roles->pluck('name')->toArray();
-//                        return implode(', ', array_map(fn($roleName) => Str::headline($roleName), $roleNames));
-//                    })
-                    ->getStateUsing(function (User $record): string {
-                        if ($record->hasRole('Super Admin')) {
+                    //                    ->sortable()
+                    //                    ->searchable()
+                    //                    ->getStateUsing(fn(User $record): string => $record->roles->pluck('name')->join(', '))
+                    //                    ->getStateUsing(function (User $record): string {
+                    //                        $roleNames = $record->roles->pluck('name')->toArray();
+                    //                        return implode(', ', array_map(fn($roleName) => Str::headline($roleName), $roleNames));
+                    //                    })
+                    ->getStateUsing(function(User $record): string {
+                        if($record->hasRole('Super Admin')) {
                             return Str::headline('Super Admin');
-                        } elseif ($record->hasRole('Admin')) {
+                        } elseif($record->hasRole('Admin')) {
                             return Str::headline('Admin');
-                        } elseif ($record->roles->count() > 0) {
+                        } elseif($record->roles->count() > 0) {
                             return Str::headline($record->getRoleNames()->first());
                         } else {
                             return 'Sin Rol';
@@ -283,10 +283,10 @@ class UserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('phone_number')
                     ->searchable(),
-//                Tables\Columns\TextColumn::make('email_verified_at')
-//                    ->dateTime()
-//                    ->sortable()
-//                    ->toggleable(isToggledHiddenByDefault: true),
+                //                Tables\Columns\TextColumn::make('email_verified_at')
+                //                    ->dateTime()
+                //                    ->sortable()
+                //                    ->toggleable(isToggledHiddenByDefault: true),
                 //                Tables\Columns\TextColumn::make('photo')
                 //                    ->searchable(),
                 Tables\Columns\TextColumn::make('is_active')

@@ -13,7 +13,7 @@ class PropertyTypePolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return $user->hasRole(['Super Admin']) || $user->hasPermissionTo('view_any:PropertyType', 'web');
     }
 
     /**
@@ -21,7 +21,7 @@ class PropertyTypePolicy
      */
     public function view(User $user, PropertyType $propertyType): bool
     {
-        //
+        return $user->hasRole(['Super Admin']) || $user->hasPermissionTo('view:PropertyType', 'web');
     }
 
     /**
@@ -29,7 +29,7 @@ class PropertyTypePolicy
      */
     public function create(User $user): bool
     {
-        //
+        return $user->hasRole(['Super Admin']) || $user->hasPermissionTo('create:PropertyType', 'web');
     }
 
     /**
@@ -37,7 +37,7 @@ class PropertyTypePolicy
      */
     public function update(User $user, PropertyType $propertyType): bool
     {
-        //
+        return $user->hasRole(['Super Admin']) || $user->hasPermissionTo('update:PropertyType', 'web');
     }
 
     /**
@@ -45,7 +45,7 @@ class PropertyTypePolicy
      */
     public function delete(User $user, PropertyType $propertyType): bool
     {
-        //
+        return $user->hasRole(['Super Admin']) || $user->hasPermissionTo('delete:PropertyType', 'web');
     }
 
     /**

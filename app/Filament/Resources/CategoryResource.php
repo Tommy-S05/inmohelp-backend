@@ -18,8 +18,10 @@ class CategoryResource extends Resource
 {
     protected static ?string $model = Category::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-folder-plus';
+    protected static ?string $navigationIcon = 'heroicon-o-adjustments-horizontal';
     protected static ?string $navigationGroup = 'Finance';
+    protected static ?int $navigationSort = 2;
+
 
     //    protected static ?string $navigationLabel = 'Categorías';
 

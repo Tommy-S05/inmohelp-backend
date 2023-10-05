@@ -20,7 +20,7 @@ class NeighborhoodResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-home';
     protected static ?string $navigationGroup = 'Territories';
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 4;
 
     public static function form(Form $form): Form
     {
@@ -105,9 +105,9 @@ class NeighborhoodResource extends Resource
                     )
                     ->money('dop')
                     ->badge()
-                    ->color(function ($state): string {
-                        if ($state > 7000) return 'danger';
-                        elseif ($state > 4000) return 'warning';
+                    ->color(function($state): string {
+                        if($state > 7000) return 'danger';
+                        elseif($state > 4000) return 'warning';
                         return 'success';
                     })
                     ->searchable()
@@ -118,7 +118,7 @@ class NeighborhoodResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
-//                    ->since()
+                    //                    ->since()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->toggledHiddenByDefault(false),
@@ -136,7 +136,7 @@ class NeighborhoodResource extends Resource
                         Forms\Components\DateTimePicker::make('updated_from'),
                         Forms\Components\DateTimePicker::make('updated_until'),
                     ])
-                    ->query(function (Builder $query, array $data): Builder {
+                    ->query(function(Builder $query, array $data): Builder {
                         return $query
                             ->when(
                                 $data['updated_from'],
@@ -147,14 +147,14 @@ class NeighborhoodResource extends Resource
                                 fn(Builder $query, $date): Builder => $query->where('updated_at', '<=', $date),
                             );
                     })
-                    ->indicateUsing(function (array $data): array {
+                    ->indicateUsing(function(array $data): array {
                         $indicators = [];
 
-                        if ($data['updated_from'] ?? null) {
+                        if($data['updated_from'] ?? null) {
                             $indicators['updated_from'] = 'Updated from ' . Carbon::parse($data['updated_from'])->format('d-m-Y H:i:s');
                         }
 
-                        if ($data['updated_until'] ?? null) {
+                        if($data['updated_until'] ?? null) {
                             $indicators['updated_until'] = 'Updated until ' . Carbon::parse($data['updated_until'])->format('d-m-Y H:i:s');
                         }
 

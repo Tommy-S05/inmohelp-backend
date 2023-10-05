@@ -24,7 +24,7 @@ class PermissionResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-lock-closed';
     protected static ?string $navigationGroup = 'Users Management';
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
@@ -83,11 +83,11 @@ class PermissionResource extends Resource
                 Tables\Columns\TextColumn::make('users_count')
                     ->badge()
                     ->label('Users')
-//                    ->counts('users')
-                    ->getStateUsing(function (Permission $record): int {
-                        return User::whereHas('roles.permissions', function ($query) use ($record) {
+                    //                    ->counts('users')
+                    ->getStateUsing(function(Permission $record): int {
+                        return User::whereHas('roles.permissions', function($query) use ($record) {
                             $query->where('permissions.id', $record->id);
-                        })->orWhereHas('permissions', function ($query) use ($record) {
+                        })->orWhereHas('permissions', function($query) use ($record) {
                             $query->where('permissions.id', $record->id);
                         })->distinct()->count();
                     })
