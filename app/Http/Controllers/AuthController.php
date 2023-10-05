@@ -20,14 +20,14 @@ class AuthController extends Controller
             'password' => 'required|string|min:8'
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return response()->json([
                 'message' => 'Error al logear el usuario usuario',
                 'errors' => $validator->errors()
             ], 422);
         }
 
-        if(Auth::attempt($request->only('email', 'password'))) {
+        if (Auth::attempt($request->only('email', 'password'))) {
             //            $permissionName = array();
             //            $request->session()->regenerate();
             $user = User::where('email', '=', $request['email'])->firstOrFail();
@@ -71,11 +71,12 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8'
+            'username' => 'required|string|max:255|unique:users',
+            'phone_number' => 'required|string|min:10|max:20|unique:users',
+            'password' => 'required|string|min:8|confirmed'
         ]);
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return response()->json([
-                'result' => false,
                 'message' => 'Error al registrar usuario',
                 'errors' => $validator->errors()
             ]);
@@ -84,6 +85,9 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'username' => $request->name,
+//            'username' => strtolower($request->name),
+            'phone_number' => $request->phone_number,
             'password' => Hash::make($request->password)
         ]);
 
@@ -97,7 +101,7 @@ class AuthController extends Controller
 
         $subCategories = SubCategory::all();
 
-        foreach($subCategories as $subCategory) {
+        foreach ($subCategories as $subCategory) {
             $results[] = array(
                 "sub_category_id" => $subCategory->id,
                 "amount" => 0,
