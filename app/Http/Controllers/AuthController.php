@@ -76,7 +76,7 @@ class AuthController extends Controller
         ]);
         if($validator->fails()) {
             return response()->json([
-                'message' => 'Error al registrar usuario',
+                'message' => 'Los datos son inválidos',
                 'errors' => $validator->errors()
             ], 422);
         }
