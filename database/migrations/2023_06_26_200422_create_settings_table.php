@@ -10,9 +10,9 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('settings', function(Blueprint $table) {
+        Schema::create('settings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->float('interest_rate', 8, 2)->default(0.00);
             $table->float('down_payment_available', 16, 4)->default(0.00);
             $table->integer('loan_term')->default(0);
