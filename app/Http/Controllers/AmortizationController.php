@@ -15,7 +15,7 @@ class AmortizationController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $amortizations = $request->user()->amortizations()->with('amortizationDetails')->get();
+        $amortizations = $request->user()->amortizations()->get();
 
         return response()->json([
             'amortizations' => $amortizations,
@@ -30,7 +30,7 @@ class AmortizationController extends Controller
             'interest' => 'required|numeric',
         ]);
 
-        if ($validator->fails()) {
+        if($validator->fails()) {
             return response()->json([
                 'message' => 'Error al calcular la amortización',
                 'errors' => $validator->errors()
@@ -53,7 +53,7 @@ class AmortizationController extends Controller
         $total_cost_interest = 0;
         $total_cost_loan = 0;
 
-        for ($i = 1; $i <= $periods; $i++) {
+        for($i = 1; $i <= $periods; $i++) {
             $payment_date = $current_date->format('F Y');
 
             $interest_paid = $remaining_balance * $interest_rate;
@@ -65,13 +65,13 @@ class AmortizationController extends Controller
             $total_cost_loan += $monthly_payment;
 
             //            $amortization[$currentYear][$paymentDate] = [
-//            $amortization[$currentDate->year][] = [
-//                'period' => $paymentDate,
-//                'payment' => round($monthly_payment, 2),
-//                'interest_paid' => round($interest_paid, 2),
-//                'principal_paid' => round($principal_paid, 2),
-//                'balance' => round($balance, 2),
-//            ];
+            //            $amortization[$currentDate->year][] = [
+            //                'period' => $paymentDate,
+            //                'payment' => round($monthly_payment, 2),
+            //                'interest_paid' => round($interest_paid, 2),
+            //                'principal_paid' => round($principal_paid, 2),
+            //                'balance' => round($balance, 2),
+            //            ];
 
             $amortization[] = [
                 'year' => $current_date->year,
@@ -111,7 +111,7 @@ class AmortizationController extends Controller
             'interest' => 'required|numeric',
         ]);
 
-        if ($validator->fails()) {
+        if($validator->fails()) {
             return response()->json([
                 'message' => 'Error al guardar la amortización',
                 'errors' => $validator->errors()
@@ -143,7 +143,7 @@ class AmortizationController extends Controller
         $amortization->end_date = $end_date->format('Y-m-d');
         $amortization->save();
 
-        for ($i = 1; $i <= $periods; $i++) {
+        for($i = 1; $i <= $periods; $i++) {
             $payment_date = $current_date->format('F Y');
 
             $interest_paid = $remaining_balance * $interest_rate;
