@@ -53,9 +53,9 @@ class NeighborhoodsRelationManager extends RelationManager
                     )
                     ->money('dop')
                     ->badge()
-                    ->color(function ($state): string {
-                        if ($state > 7000) return 'danger';
-                        elseif ($state > 4000) return 'warning';
+                    ->color(function($state): string {
+                        if($state > 7000) return 'danger';
+                        elseif($state > 4000) return 'warning';
                         return 'success';
                     })
                     ->searchable()
@@ -76,9 +76,12 @@ class NeighborhoodsRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make(),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make()
+                    ->label(''),
+                Tables\Actions\EditAction::make()
+                    ->label(''),
+                Tables\Actions\DeleteAction::make()
+                    ->label(''),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
