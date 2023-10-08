@@ -23,7 +23,7 @@ class RolesRelationManager extends RelationManager
 
         $groupedPermissions = [];
 
-        foreach ($permissions as $permission) {
+        foreach($permissions as $permission) {
             [$action, $model] = explode(':', $permission->name);
             $groupedPermissions[$model][] = [
                 'id' => $permission->id,
@@ -55,12 +55,12 @@ class RolesRelationManager extends RelationManager
 
                 Forms\Components\Section::make('Permissions')
                     ->description('Select all necessary permissions for this role.')
-                    ->schema(function () use ($groupedPermissions) {
+                    ->schema(function() use ($groupedPermissions) {
                         $sections = [];
 
-                        foreach ($groupedPermissions as $model => $modelPermissions) {
+                        foreach($groupedPermissions as $model => $modelPermissions) {
 
-                            $formattedPermissions = array_map(function ($permission) {
+                            $formattedPermissions = array_map(function($permission) {
                                 return Str::headline($permission['name']);
                             }, $modelPermissions);
 
@@ -144,46 +144,46 @@ class RolesRelationManager extends RelationManager
                 'create:Role',
                 'update:Role',
                 'delete:Role',
-            ]) || auth()->user()->hasRole('Super Admin'));
+            ]) || auth()->user()->hasAnyRole(['Super Admin'], 'web'));
     }
 
     protected function canView(Model $record): bool
     {
-        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasPermissionTo('view:Role', 'web');
+        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasAnyPermission(['view:Role'], 'web');
     }
 
     protected function canViewAny(): bool
     {
-        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasPermissionTo('view_any:Role', 'web');
+        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasAnyPermission(['view_any:Role'], 'web');
     }
 
     protected function canCreate(): bool
     {
-        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasPermissionTo('create:Role', 'web');
+        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasAnyPermission(['create:Role'], 'web');
     }
 
     protected function canEdit(Model $record): bool
     {
-        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasPermissionTo('update:Role', 'web');
+        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasAnyPermission(['update:Role'], 'web');
     }
 
     protected function canAttach(): bool
     {
-        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasPermissionTo('update:Role', 'web');
+        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasAnyPermission(['update:Role'], 'web');
     }
 
     protected function canDetach(Model $record): bool
     {
-        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasPermissionTo('update:Role', 'web');
+        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasAnyPermission(['update:Role'], 'web');
     }
 
     protected function canDetachAny(): bool
     {
-        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasPermissionTo('update:Role', 'web');
+        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasAnyPermission(['update:Role'], 'web');
     }
 
     protected function canDelete(Model $record): bool
     {
-        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasPermissionTo('delete:Role', 'web');
+        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasAnyPermission(['delete:Role'], 'web');
     }
 }

@@ -43,7 +43,8 @@ class PermissionResource extends Resource
                                 'api' => 'Api',
                             ])
                             ->default('web')
-                            ->searchable()
+                            ->native(false)
+                            //                            ->searchable()
                             ->nullable(),
                     ])
                     ->columns([

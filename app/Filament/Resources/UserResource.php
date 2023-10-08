@@ -191,7 +191,7 @@ class UserResource extends Resource
                             ]),
                     ])
                     //                    ->visible(fn(string $operation): bool => $operation === 'create')
-                    ->hidden(fn(string $operation): bool => $operation === 'view' || !(auth()->user()->hasRole('Super Admin') && auth()->user()->hasPermissionTo('update:Role', 'web')))
+                    ->hidden(fn(string $operation): bool => $operation === 'view' && !(auth()->user()->hasAnyRole(['Super Admin'], 'web') || auth()->user()->hasAnyPermission(['update:Role'], 'web')))
                     ->contained(true)
                     //                    ->persistTabInQueryString()
                     ->columnSpanFull(),

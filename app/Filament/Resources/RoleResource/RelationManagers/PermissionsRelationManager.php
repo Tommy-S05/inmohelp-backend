@@ -10,6 +10,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 
@@ -87,5 +88,54 @@ class PermissionsRelationManager extends RelationManager
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make(),
             ]);
+    }
+
+    public function isReadOnly(): bool
+    {
+        return !(auth()->user()->hasAnyPermission([
+                'create:Permission',
+                'update:Permission',
+                'delete:Permission',
+            ]) || auth()->user()->hasAnyRole(['Super Admin'], 'web'));
+    }
+
+    protected function canView(Model $record): bool
+    {
+        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasAnyPermission(['view:Permission'], 'web');
+    }
+
+    protected function canViewAny(): bool
+    {
+        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasAnyPermission(['view_any:Permission'], 'web');
+    }
+
+    protected function canCreate(): bool
+    {
+        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasAnyPermission(['create:Permission'], 'web');
+    }
+
+    protected function canEdit(Model $record): bool
+    {
+        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasAnyPermission(['update:Permission'], 'web');
+    }
+
+    protected function canAttach(): bool
+    {
+        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasAnyPermission(['attach_role:Permission'], 'web');
+    }
+
+    protected function canDetach(Model $record): bool
+    {
+        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasAnyPermission(['detach_role:Permission'], 'web');
+    }
+
+    protected function canDetachAny(): bool
+    {
+        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasAnyPermission(['detach_any_role:Permission'], 'web');
+    }
+
+    protected function canDelete(Model $record): bool
+    {
+        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasAnyPermission(['delete:Permission'], 'web');
     }
 }

@@ -13,7 +13,7 @@ class PropertyPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasRole(['Super Admin']) || $user->hasPermissionTo('view_any:Property', 'web');
+        return $user->hasAnyRole(['Super Admin', 'web']) || $user->hasAnyPermission(['view_any:Property'], 'web');
     }
 
     /**
@@ -21,7 +21,7 @@ class PropertyPolicy
      */
     public function view(User $user, Property $property): bool
     {
-        return $user->hasRole(['Super Admin']) || $user->hasPermissionTo('view:Property', 'web');
+        return $user->hasAnyRole(['Super Admin', 'web']) || $user->hasAnyPermission(['view:Property'], 'web');
     }
 
     /**
@@ -29,7 +29,7 @@ class PropertyPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasRole(['Super Admin']) || $user->hasPermissionTo('create:Property', 'web');
+        return $user->hasAnyRole(['Super Admin', 'web']) || $user->hasAnyPermission(['create:Property'], 'web');
     }
 
     /**
@@ -37,7 +37,7 @@ class PropertyPolicy
      */
     public function update(User $user, Property $property): bool
     {
-        return $user->hasRole(['Super Admin']) || $user->hasPermissionTo('update:Property', 'web');
+        return $user->hasAnyRole(['Super Admin', 'web']) || $user->hasAnyPermission(['update:Property'], 'web');
     }
 
     /**
@@ -45,7 +45,7 @@ class PropertyPolicy
      */
     public function delete(User $user, Property $property): bool
     {
-        return $user->hasRole(['Super Admin']) || $user->hasPermissionTo('delete:Property', 'web');
+        return $user->hasAnyRole(['Super Admin', 'web']) || $user->hasAnyPermission(['delete:Property'], 'web');
     }
 
     /**
