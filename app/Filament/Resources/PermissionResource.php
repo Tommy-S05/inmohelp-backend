@@ -38,14 +38,12 @@ class PermissionResource extends Resource
                             ->unique(ignoreRecord: true)
                             ->maxLength(255),
                         Forms\Components\Select::make('guard_name')
+                            ->disabled()
                             ->options([
                                 'web' => 'Web',
                                 'api' => 'Api',
                             ])
-                            ->default('web')
-                            ->native(false)
-                            //                            ->searchable()
-                            ->nullable(),
+                            ->default('web'),
                     ])
                     ->columns([
                         'sm' => 2,

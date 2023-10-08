@@ -27,6 +27,7 @@ class PermissionsRelationManager extends RelationManager
                             ->unique(ignoreRecord: true)
                             ->maxLength(255),
                         Forms\Components\Select::make('guard_name')
+                            ->disabled()
                             ->options([
                                 'web' => 'Web',
                                 'api' => 'Api',

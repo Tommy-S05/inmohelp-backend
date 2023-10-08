@@ -45,21 +45,21 @@ class RoleResource extends Resource
                 Forms\Components\Section::make()
                     ->schema([
                         Forms\Components\TextInput::make('name')
+                            ->autofocus()
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->maxLength(255),
                         Forms\Components\Select::make('guard_name')
+                            ->disabled()
                             ->options([
                                 'web' => 'Web',
                                 'api' => 'Api',
                             ])
-                            ->default('web')
-                            ->searchable()
-                            ->nullable(),
+                            ->default('web'),
                     ])
                     ->columns([
                         'sm' => 2,
-                        'lg' => 3,
+                        'lg' => 2,
                     ]),
 
                 Forms\Components\Section::make('Permissions')
