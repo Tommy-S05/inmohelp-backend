@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Municipality;
 use App\Models\Neighborhood;
 use App\Models\PropertyType;
 use App\Models\Province;
@@ -25,32 +26,37 @@ class PropertyFactory extends Factory
             'code' => $this->faker->unique()->numberBetween(0001, 9999),
             'name' => $this->faker->unique()->sentence(2),
             'slug' => $this->faker->unique()->slug,
-            //            'user_id' => 1,
             'user_id' => User::inRandomOrder()->value('id') ?: factory(User::class),
-            //            "property_type_id" => 1,
-            "property_type_id" => PropertyType::inRandomOrder()->value('id') ?: factory(PropertyType::class),
+            'property_type_id' => PropertyType::inRandomOrder()->value('id') ?: factory(PropertyType::class),
+            'thumbnail' => $this->faker->imageUrl(640, 480, 'properties', true),
+            'short_description' => $this->faker->paragraph(3),
             'description' => $this->faker->paragraph(12),
             'province_id' => Province::inRandomOrder()->value('id') ?: factory(Province::class),
+            'municipality_id' => Municipality::inRandomOrder()->value('id') ?: factory(Municipality::class),
             'neighborhood_id' => Neighborhood::inRandomOrder()->value('id') ?: factory(Neighborhood::class),
             'address' => $this->faker->address,
             //            'map' => $this->faker->url,
+            'latitude' => $this->faker->latitude,
+            'longitude' => $this->faker->longitude,
             'purpose' => $purpose,
             'price' => ($purpose == 'Venta') ? $this->faker->numberBetween(10000000, 50000000) : $this->faker->numberBetween(20000, 50000),
             'area' => $this->faker->numberBetween(50, 500),
             'bedrooms' => $this->faker->numberBetween(1, 5),
             'bathrooms' => $this->faker->numberBetween(1, 4),
             'garages' => $this->faker->numberBetween(1, 3),
-            //            'floors' => $this->faker->numberBetween(1, 3),
+            'status' => $this->faker->randomElement(['Nuevo', 'Usado', 'En Construcción', 'Sobre Planos', 'Remodelado']),
+            'floors' => $this->faker->numberBetween(1, 3),
             'views' => $this->faker->numberBetween(0, 100),
-            'outstanding' => $this->faker->boolean(20),
+            'featured' => $this->faker->boolean(20),
             //            'sold' => $this->faker->boolean(20),
             //            'rent' => $this->faker->boolean(20),
+            //            'available' => $this->faker->boolean(20),
+            'negotiable' => $this->faker->boolean(20),
             'furnished' => $this->faker->boolean(20),
+            'published' => $this->faker->boolean(90),
             'published_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
+            'year_built' => $this->faker->dateTimeBetween('-10 years', 'now'),
             //            'state' => $this->faker->randomElement(['NEW', 'LIKE NEW', 'USED']),
-            //            'category_id' => $this->faker->numberBetween(1, 5),
-            //            'user_id' => $this->faker->numberBetween(1, 5),
-
         ];
     }
 }
