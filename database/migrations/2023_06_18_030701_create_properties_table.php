@@ -10,7 +10,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('properties', function(Blueprint $table) {
+        Schema::create('properties', function (Blueprint $table) {
             $table->id();
             $table->string('code')->unique();
             $table->string('name');
@@ -40,8 +40,6 @@ return new class extends Migration {
             $table->integer('views')->default(0);
             $table->boolean('featured')->default(false);//Destacado
             //            $table->boolean('outstanding')->default(false);//Destacado
-            $table->boolean('sold')->default(false)->nullable();
-            $table->boolean('rented')->default(false)->nullable();
             $table->boolean('available')->default(true);
             $table->boolean('negotiable')->default(false);
             $table->boolean('furnished')->default(false)->nullable();//Amueblado

@@ -63,7 +63,7 @@ class Property extends Model
         'furnished' => 'boolean',
         'published' => 'boolean',
         'published_at' => 'datetime',
-        'year_built' => 'date',
+        'year_built' => 'date:M Y',
         'is_active' => 'boolean',
     ];
 

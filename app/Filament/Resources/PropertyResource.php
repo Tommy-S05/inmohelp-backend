@@ -6,12 +6,25 @@ use App\Filament\Resources\PropertyResource\Pages;
 use App\Filament\Resources\PropertyResource\RelationManagers;
 use App\Models\Property;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Set;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Wizard;
+
+//use Filament\Forms\Components\Wizard\Step;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
 
 class PropertyResource extends Resource
 {
@@ -24,6 +37,118 @@ class PropertyResource extends Resource
     {
         return $form
             ->schema([
+                Wizard::make([
+                    Wizard\Step::make('Property Information')
+                        ->icon('heroicon-o-home')
+                        ->columns(3)
+                        ->schema([
+                            Section::make()
+                                ->columns(2)
+                                ->columnSpan(2)
+                                ->schema([
+                                    TextInput::make('name')
+                                        ->autofocus()
+                                        ->required()
+                                        ->live(onBlur: true)
+                                        ->afterStateUpdated(fn(Set $set, $state) => $set('slug', Str::slug($state)))
+                                        ->maxLength(255),
+                                    TextInput::make('slug')
+                                        ->required()
+                                        ->disabled()
+                                        ->dehydrated()
+                                        ->maxLength(255),
+
+                                    Select::make('property_type_id')
+                                        ->relationship('propertyType', 'name')
+                                        ->required()
+                                        ->preload()
+                                        ->searchable()
+                                        ->native(false)
+                                        ->createOptionForm([
+                                            Section::make()
+                                                ->columns(2)
+                                                ->schema([
+                                                    TextInput::make('name')
+                                                        ->autofocus()
+                                                        ->required()
+                                                        ->maxLength(255)
+                                                        ->live(onBlur: true)
+                                                        ->afterStateUpdated(fn(Set $set, $state) => $set('slug', Str::slug($state))),
+                                                    TextInput::make('slug')
+                                                        ->disabled()
+                                                        ->dehydrated()
+                                                        ->required()
+                                                        ->maxLength(255),
+                                                    Textarea::make('description')
+                                                        ->rows(4)
+                                                        ->maxLength(65535)
+                                                        ->nullable()
+                                                        ->columnSpanFull(),
+                                                    Toggle::make('is_active')
+                                                        ->default(true)
+                                                        ->label('Active')
+                                                        ->required(),
+                                                ])
+                                        ]),
+
+                                    Textarea::make('short_description')
+//                                        ->rows(3)
+                                        ->autosize()
+                                        ->maxLength(65535),
+
+                                    RichEditor::make('description')
+                                        ->maxLength(65535)
+                                        ->columnSpanFull(),
+                                ]),
+
+                            Section::make()
+                                ->columns(1)
+                                ->columnSpan(1)
+                                ->schema([
+                                    Select::make('purpose')
+                                        ->options([
+                                            'venta' => 'Venta',
+                                            'alquiler' => 'Alquiler',
+                                        ])
+                                        ->required()
+                                        ->native(false),
+
+                                    TextInput::make('area')
+                                        ->label('Property Size')
+                                        ->placeholder('Size in square meters')
+                                        ->suffix('m²')
+                                        ->numeric(),
+
+                                    TextInput::make('price')
+                                        ->numeric()
+                                        ->required()
+                                        ->inputMode('float')
+                                        ->minValue(0)
+                                        ->prefix('$')
+                                        ->suffix('DOP'),
+
+                                    DatePicker::make('year_built')
+                                        ->placeholder('Select a date')
+                                        ->displayFormat('M Y')
+                                        ->maxDate(now())
+                                        ->closeOnDateSelection()
+                                        ->native(false),
+                                ]),
+
+                            FileUpload::make('thumbnail')
+                                ->columnSpanFull()
+                                ->disk('public')
+                                ->directory('properties/thumbnails')
+//                                        ->image()
+                                ->imageEditor()
+                                ->moveFiles()
+                                ->openable()
+                                ->downloadable()
+                        ]),
+
+                ])->columnSpanFull()
+
+                /*
                 Forms\Components\TextInput::make('user_id')
                     ->required()
                     ->numeric(),
@@ -97,6 +222,7 @@ class PropertyResource extends Resource
                 Forms\Components\DatePicker::make('year_built'),
                 Forms\Components\Toggle::make('is_active')
                     ->required(),
+                */
             ]);
     }
 
@@ -125,14 +251,7 @@ class PropertyResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('slug')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('thumbnail')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('address')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('latitude')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('longitude')
-                    ->searchable(),
+                Tables\Columns\ImageColumn::make('thumbnail'),
                 Tables\Columns\TextColumn::make('purpose')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('price')
@@ -155,14 +274,7 @@ class PropertyResource extends Resource
                 Tables\Columns\TextColumn::make('floors')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('views')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\IconColumn::make('featured')
-                    ->boolean(),
-                Tables\Columns\IconColumn::make('sold')
-                    ->boolean(),
-                Tables\Columns\IconColumn::make('rented')
                     ->boolean(),
                 Tables\Columns\IconColumn::make('available')
                     ->boolean(),
