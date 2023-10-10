@@ -17,7 +17,8 @@ class PropertyType extends Model
         'name',
         'slug',
         'description',
-        'image',
+        'code',
+//        'thumbnail',
         'is_active',
     ];
 

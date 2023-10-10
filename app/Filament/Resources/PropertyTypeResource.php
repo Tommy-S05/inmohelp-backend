@@ -26,6 +26,15 @@ class PropertyTypeResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Group::make()
+                    ->columns(4)
+                    ->columnSpanFull()
+                    ->schema([
+                        Forms\Components\TextInput::make('code')
+                            ->required()
+                            ->maxLength(3)
+                            ->minLength(2),
+                    ]),
                 Forms\Components\TextInput::make('name')
                     ->autofocus()
                     ->required()

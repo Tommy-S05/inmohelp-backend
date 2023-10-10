@@ -31,9 +31,14 @@ class AmenityResource extends Resource
                             ->required()
                             ->autofocus()
                             ->maxLength(255),
+                        Forms\Components\Toggle::make('is_active')
+                            ->label('Active')
+                            ->default(true)
+                            ->inline(false)
+                            ->required(),
+                        /*
                         Forms\Components\Select::make('icon_id')
                             ->relationship('icon', 'name')
-                            ->required()
                             ->preload()
                             ->searchable()
                             ->createOptionForm([
@@ -90,17 +95,13 @@ class AmenityResource extends Resource
                                             ->required(),
                                     ])->columns(2),
                             ]),
+                        */
 
                         Forms\Components\Textarea::make('description')
                             ->rows(4)
                             ->maxLength(65535)
                             ->nullable()
                             ->columnSpanFull(),
-
-                        Forms\Components\Toggle::make('is_active')
-                            ->default(true)
-                            ->label('Active')
-                            ->required(),
                     ])->columns(2),
             ]);
     }

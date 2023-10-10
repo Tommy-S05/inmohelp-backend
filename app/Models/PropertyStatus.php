@@ -4,23 +4,23 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
  * @mixin Builder
  */
-class PropertyGallery extends Model
+class PropertyStatus extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'property_id',
-        'image',
+        'name',
+        'description'
     ];
 
-    public function property(): BelongsTo
+    public function properties(): HasMany
     {
-        return $this->belongsTo(Property::class);
+        return $this->hasMany(Property::class);
     }
 }

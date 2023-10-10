@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\PropertyResource\Pages;
 
 use App\Filament\Resources\PropertyResource;
+use App\Models\PropertyType;
 use Filament\Actions;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
@@ -27,10 +28,22 @@ class CreateProperty extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $data['code'] = Str::upper(Str::random(6));
+        $letters = PropertyType::select('code')->where('id', $data['property_type_id'])->first();
+        $code = Str::upper($letters->code) . rand(1000, 9999);
+        $data['code'] = $code;
         $data['user_id'] = auth()->id();
 
         return $data;
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Actions\Action::make('Cancel')
+                ->icon('heroicon-o-arrow-left')
+                ->url($this->getResource()::getUrl('index'))
+                ->color('gray'),
+        ];
     }
 
     protected function getRedirectUrl(): string
@@ -62,107 +75,15 @@ class CreateProperty extends CreateRecord
     public function getSteps(): array
     {
         return [
-            Step::make('Property Information')
-                ->icon('heroicon-o-home')
-                ->columns(3)
-                ->schema([
-                    Section::make()
-                        ->columns(2)
-                        ->columnSpan(2)
-                        ->schema([
-                            PropertyResource::getNameFormField(),
-                            PropertyResource::getSlugFormField(),
-
-                            Select::make('property_type_id')
-                                ->relationship('propertyType', 'name')
-                                ->required()
-                                ->preload()
-                                ->searchable()
-                                ->native(false)
-                                ->createOptionForm([
-                                    Section::make()
-                                        ->columns(2)
-                                        ->schema([
-                                            TextInput::make('name')
-                                                ->autofocus()
-                                                ->required()
-                                                ->maxLength(255)
-                                                ->live(onBlur: true)
-                                                ->afterStateUpdated(fn(Set $set, $state) => $set('slug', Str::slug($state))),
-                                            TextInput::make('slug')
-                                                ->disabled()
-                                                ->dehydrated()
-                                                ->required()
-                                                ->maxLength(255),
-                                            Textarea::make('description')
-                                                ->rows(4)
-                                                ->maxLength(65535)
-                                                ->nullable()
-                                                ->columnSpanFull(),
-                                            Toggle::make('is_active')
-                                                ->default(true)
-                                                ->label('Active')
-                                                ->required(),
-                                        ])
-                                ]),
-
-                            Textarea::make('short_description')
-                                //                                        ->rows(3)
-                                ->autosize()
-                                ->maxLength(65535),
-
-                            RichEditor::make('description')
-                                ->maxLength(65535)
-                                ->columnSpanFull(),
-                        ]),
-
-                    Section::make()
-                        ->columns(1)
-                        ->columnSpan(1)
-                        ->schema([
-                            Select::make('purpose')
-                                ->options([
-                                    'venta' => 'Venta',
-                                    'alquiler' => 'Alquiler',
-                                ])
-                                ->required()
-                                ->native(false),
-
-                            TextInput::make('area')
-                                ->label('Property Size')
-                                ->required()
-                                ->placeholder('Size in square meters')
-                                ->suffix('m²')
-                                ->numeric(),
-
-                            TextInput::make('price')
-                                ->numeric()
-                                ->required()
-                                ->inputMode('float')
-                                ->minValue(0)
-                                ->prefix('$')
-                                ->suffix('DOP'),
-
-                            DatePicker::make('year_built')
-                                ->placeholder('Select a date')
-                                ->displayFormat('M Y')
-                                ->maxDate(now())
-                                ->closeOnDateSelection()
-                                ->native(false),
-                        ]),
-
-                    FileUpload::make('thumbnail')
-                        ->columnSpanFull()
-                        ->disk('public')
-                        ->directory('properties/thumbnails')
-                        //                                        ->image()
-                        ->imageEditor()
-                        ->moveFiles()
-                        ->openable()
-                        ->downloadable()
-                ]),
+            PropertyResource::getPropertyInformationWizard(),
 
             PropertyResource::getPropertyLocationWizard(),
+
+            PropertyResource::getPropertyAmenitiesWizard(),
+
+            PropertyResource::getPropertyGalleryWizard(),
+
+            PropertyResource::getPropertyStatusWizard()
         ];
     }
 

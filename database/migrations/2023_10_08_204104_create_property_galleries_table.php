@@ -10,10 +10,10 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('property_galleries', function(Blueprint $table) {
+        Schema::create('property_galleries', function (Blueprint $table) {
             $table->id();
             $table->foreignId('property_id')->constrained()->cascadeOnDelete();
-            $table->text('image');
+            $table->text('image')->unique();
             $table->timestamps();
         });
     }

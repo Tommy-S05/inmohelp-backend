@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * @mixin Builder
@@ -39,7 +39,7 @@ class Property extends Model
         'bedrooms',
         'bathrooms',
         'garages',
-        'status',
+        'property_status_id',
         'floors',
         'views',
         'featured',
@@ -92,9 +92,14 @@ class Property extends Model
         return $this->belongsTo(Neighborhood::class);
     }
 
+    public function propertyStatus(): BelongsTo
+    {
+        return $this->belongsTo(PropertyStatus::class);
+    }
+
     public function amenities(): BelongsToMany
     {
-        return $this->belongsToMany(Amenity::class);
+        return $this->belongsToMany(Amenity::class)->withTimestamps();
     }
 
     public function galleries(): HasMany

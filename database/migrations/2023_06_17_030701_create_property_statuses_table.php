@@ -10,14 +10,10 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('property_types', function (Blueprint $table) {
+        Schema::create('property_statuses', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->string('slug')->unique();
-            $table->string('code', 3)->unique();
             $table->text('description')->nullable();
-            //            $table->string('thumbnail');
-            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }
@@ -27,6 +23,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('property_types');
+        Schema::dropIfExists('property_statuses');
     }
 };

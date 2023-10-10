@@ -8,6 +8,7 @@ use App\Models\Municipality;
 use App\Models\Neighborhood;
 use App\Models\Property;
 use Filament\Forms;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
@@ -42,120 +43,22 @@ class PropertyResource extends Resource
         return $form
             ->schema([
                 Wizard::make([
-                    Wizard\Step::make('Property Information')
-                        ->icon('heroicon-o-home')
-                        ->columns(3)
-                        ->schema([
-                            Section::make()
-                                ->columns(2)
-                                ->columnSpan(2)
-                                ->schema([
-                                    self::getNameFormField(),
-                                    self::getSlugFormField(),
-
-                                    Select::make('property_type_id')
-                                        ->relationship('propertyType', 'name')
-                                        ->required()
-                                        ->preload()
-                                        ->searchable()
-                                        ->native(false)
-                                        ->createOptionForm([
-                                            Section::make()
-                                                ->columns(2)
-                                                ->schema([
-                                                    self::getNameFormField(),
-                                                    self::getSlugFormField(),
-                                                    Textarea::make('description')
-                                                        ->rows(4)
-                                                        ->maxLength(65535)
-                                                        ->nullable()
-                                                        ->columnSpanFull(),
-                                                    Toggle::make('is_active')
-                                                        ->default(true)
-                                                        ->label('Active')
-                                                        ->required(),
-                                                ])
-                                        ]),
-
-                                    Textarea::make('short_description')
-                                        //                                        ->rows(3)
-                                        ->autosize()
-                                        ->maxLength(65535),
-
-                                    RichEditor::make('description')
-                                        ->maxLength(65535)
-                                        ->columnSpanFull(),
-                                ]),
-
-                            Section::make()
-                                ->columns(1)
-                                ->columnSpan(1)
-                                ->schema([
-                                    Select::make('purpose')
-                                        ->options([
-                                            'venta' => 'Venta',
-                                            'alquiler' => 'Alquiler',
-                                        ])
-                                        ->required()
-                                        ->native(false),
-
-                                    TextInput::make('area')
-                                        ->label('Property Size')
-                                        ->required()
-                                        ->placeholder('Size in square meters')
-                                        ->suffix('m²')
-                                        ->numeric(),
-
-                                    TextInput::make('price')
-                                        ->numeric()
-                                        ->required()
-                                        ->inputMode('float')
-                                        ->minValue(0)
-                                        ->prefix('$')
-                                        ->suffix('DOP'),
-
-                                    DatePicker::make('year_built')
-                                        ->placeholder('Select a date')
-                                        ->displayFormat('M Y')
-                                        ->maxDate(now())
-                                        ->closeOnDateSelection()
-                                        ->native(false),
-                                ]),
-
-                            FileUpload::make('thumbnail')
-                                ->columnSpanFull()
-                                ->disk('public')
-                                ->directory('properties/thumbnails')
-                                //                                        ->image()
-                                ->imageEditor()
-                                ->moveFiles()
-                                ->openable()
-                                ->downloadable()
-                        ]),
+                    self::getPropertyInformationWizard(),
 
                     self::getPropertyLocationWizard(),
+
+                    self::getPropertyAmenitiesWizard(),
+
+                    self::getPropertyGalleryWizard(),
+
+                    self::getPropertyStatusWizard()
                 ])
                     ->skippable()
                     ->persistStepInQueryString()
                     ->columnSpanFull()
 
                 /*
-                Forms\Components\TextInput::make('status')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('floors')
-                    ->numeric(),
-                Forms\Components\Toggle::make('featured')
-                    ->required(),
-                Forms\Components\Toggle::make('available')
-                    ->required(),
-                Forms\Components\Toggle::make('negotiable')
-                    ->required(),
-                Forms\Components\Toggle::make('furnished'),
-                Forms\Components\Toggle::make('published')
-                    ->required(),
-                Forms\Components\DateTimePicker::make('published_at'),
-                Forms\Components\Toggle::make('is_active')
-                    ->required(),
+
                 */
             ]);
     }
@@ -180,6 +83,100 @@ class PropertyResource extends Resource
             ->maxLength(255);
     }
 
+    public static function getPropertyInformationWizard()
+    {
+        return Wizard\Step::make('Property Information')
+            ->icon('heroicon-o-home')
+            ->columns(3)
+            ->schema([
+                Section::make()
+                    ->columns(2)
+                    ->columnSpan(2)
+                    ->schema([
+                        self::getNameFormField(),
+                        self::getSlugFormField(),
+
+                        Select::make('property_type_id')
+                            ->relationship('propertyType', 'name')
+                            ->required()
+                            ->preload()
+                            ->searchable()
+                            ->native(false)
+                            ->createOptionForm([
+                                Section::make()
+                                    ->columns(2)
+                                    ->schema([
+                                        self::getNameFormField(),
+                                        self::getSlugFormField(),
+                                        Textarea::make('description')
+                                            ->rows(4)
+                                            ->maxLength(65535)
+                                            ->nullable()
+                                            ->columnSpanFull(),
+                                        Toggle::make('is_active')
+                                            ->default(true)
+                                            ->label('Active')
+                                            ->required(),
+                                    ])
+                            ]),
+
+                        Textarea::make('short_description')
+                            ->autosize()
+                            ->maxLength(65535),
+
+                        RichEditor::make('description')
+                            ->maxLength(65535)
+                            ->columnSpanFull(),
+                    ]),
+
+                Section::make()
+                    ->columns(1)
+                    ->columnSpan(1)
+                    ->schema([
+                        Select::make('purpose')
+                            ->options([
+                                'venta' => 'Venta',
+                                'alquiler' => 'Alquiler',
+                            ])
+                            ->required()
+                            ->native(false),
+
+                        TextInput::make('area')
+                            ->numeric()
+                            ->label('Property Size')
+                            ->required()
+                            ->placeholder('Size in square meters')
+                            ->suffix('m²')
+                            ->minValue(0),
+
+                        TextInput::make('price')
+                            ->numeric()
+                            ->required()
+                            ->inputMode('float')
+                            ->minValue(0)
+                            ->prefix('$')
+                            ->suffix('DOP')
+                            ->minValue(0),
+
+                        DatePicker::make('year_built')
+                            ->placeholder('Select a date')
+                            ->displayFormat('M Y')
+                            ->maxDate(now())
+                            ->closeOnDateSelection()
+                            ->native(false),
+                    ]),
+
+                FileUpload::make('thumbnail')
+                    ->columnSpanFull()
+                    ->disk('public')
+                    ->directory('properties/thumbnail')
+                    ->image()
+                    ->imageEditor()
+                    ->openable()
+                    ->downloadable()
+            ]);
+    }
+
     public static function getPropertyLocationWizard()
     {
         return Wizard\Step::make('Property Location')
@@ -189,7 +186,7 @@ class PropertyResource extends Resource
                 Select::make('province_id')
                     ->required()
                     ->relationship('province', 'name')
-                    ->afterStateUpdated(function(Set $set, $state) {
+                    ->afterStateUpdated(function (Set $set, $state) {
                         $set('municipality_id', null);
                         $set('neighborhood_id', null);
                     })
@@ -199,6 +196,7 @@ class PropertyResource extends Resource
                     ->native(false),
 
                 Select::make('municipality_id')
+                    ->label('Municipality')
                     ->required()
                     ->options(fn(Get $get): Collection => Municipality::query()
                         ->where('province_id', $get('province_id'))
@@ -210,6 +208,7 @@ class PropertyResource extends Resource
                     ->native(false),
 
                 Select::make('neighborhood_id')
+                    ->label('Neighborhood')
                     ->required()
                     ->options(fn(Get $get): Collection => Neighborhood::query()
                         ->where('municipality_id', $get('municipality_id'))
@@ -219,7 +218,109 @@ class PropertyResource extends Resource
                     ->live()
                     ->native(false),
                 TextInput::make('address')
+                    ->required()
                     ->maxLength(255),
+            ]);
+    }
+
+    public static function getPropertyAmenitiesWizard()
+    {
+        return Wizard\Step::make('Property Amenities')
+            ->icon('heroicon-o-sparkles')
+            ->schema([
+                Section::make('Details')
+                    ->columns(2)
+                    ->schema([
+                        TextInput::make('bedrooms')
+                            ->numeric()
+                            ->minValue(0),
+
+                        TextInput::make('bathrooms')
+                            ->numeric()
+                            ->minValue(0),
+
+                        TextInput::make('garages')
+                            ->numeric()
+                            ->minValue(0),
+
+                        TextInput::make('floors')
+                            ->numeric()
+                            ->minValue(0)
+                    ]),
+
+                Section::make('Amenities')
+                    ->schema([
+                        CheckboxList::make('amenities')
+                            ->relationship('amenities', 'name')
+                            ->columnSpanFull()
+                            ->columns(3)
+                            ->bulkToggleable()
+                            ->searchable()
+                            ->noSearchResultsMessage('No amenities found.')
+                            ->gridDirection('row')
+                    ])
+            ]);
+    }
+
+    public static function getPropertyGalleryWizard()
+    {
+        return Wizard\Step::make('Property Gallery')
+            ->icon('heroicon-o-photo')
+            ->schema([
+                FileUpload::make('galleries')
+                    ->multiple()
+                    ->columnSpanFull()
+                    ->disk('public')
+                    ->directory('properties/gallery')
+                    ->image()
+                    ->imageEditor()
+                    ->openable()
+                    ->downloadable()
+            ]);
+    }
+
+    public static function getPropertyStatusWizard()
+    {
+        return Wizard\Step::make('Property Status')
+            ->icon('heroicon-o-calendar-days')
+            ->columns(2)
+            ->schema([
+                Section::make()
+                    ->columns(2)
+                    ->columnSpanFull()
+                    ->schema([
+                        Forms\Components\Group::make()
+                            ->columns(2)
+                            ->columnSpanFull()
+                            ->schema([
+                                Select::make('property_status_id')
+                                    ->relationship('propertyStatus', 'name')
+                                    ->preload()
+                                    ->searchable()
+                                    ->native(false),
+
+                                Forms\Components\DateTimePicker::make('published_at')
+                                    ->placeholder('Select a date')
+                                    ->minDate(now())
+                                    ->native(false),
+                            ]),
+
+                        Forms\Components\Toggle::make('is_active')
+                            ->label('Active')
+                            ->default(true)
+                            ->required(),
+
+                        Forms\Components\Toggle::make('published')
+                            ->default(true)
+                            ->required(),
+
+                        Forms\Components\Toggle::make('available')
+                            ->default(true),
+                        Forms\Components\Toggle::make('featured'),
+                        Forms\Components\Toggle::make('negotiable'),
+                        Forms\Components\Toggle::make('furnished'),
+
+                    ])
             ]);
     }
 
@@ -227,68 +328,59 @@ class PropertyResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user_id')
-                    ->numeric()
+                Tables\Columns\ImageColumn::make('thumbnail'),
+                Tables\Columns\TextColumn::make('code')
+                    ->copyable()
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('name')
+                    ->limit(20)
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('slug')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('Agent')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('propertyType.name')
-                    ->numeric()
-                    ->sortable(),
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('province.name')
-                    ->numeric()
-                    ->sortable(),
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('municipality.name')
-                    ->numeric()
-                    ->sortable(),
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('neighborhood.name')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('code')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('slug')
-                    ->searchable(),
-                Tables\Columns\ImageColumn::make('thumbnail'),
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('purpose')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('price')
-                    ->money()
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('area')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('bedrooms')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('price')
+                    ->money()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('bathrooms')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('garages')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('status')
+                Tables\Columns\TextColumn::make('propertyStatus.name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('floors')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\IconColumn::make('featured')
-                    ->boolean(),
-                Tables\Columns\IconColumn::make('available')
-                    ->boolean(),
-                Tables\Columns\IconColumn::make('negotiable')
-                    ->boolean(),
-                Tables\Columns\IconColumn::make('furnished')
-                    ->boolean(),
-                Tables\Columns\IconColumn::make('published')
-                    ->boolean(),
+                Tables\Columns\ToggleColumn::make('featured')
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\ToggleColumn::make('available')
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\ToggleColumn::make('published'),
                 Tables\Columns\TextColumn::make('published_at')
                     ->dateTime()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('year_built')
-                    ->date()
-                    ->sortable(),
-                Tables\Columns\IconColumn::make('is_active')
-                    ->boolean(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\ToggleColumn::make('is_active'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -298,12 +390,20 @@ class PropertyResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+//            ->defaultSort('created_at', 'desc')
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make()
+                    ->label('')
+                    ->tooltip('View Property'),
+                Tables\Actions\EditAction::make()
+                    ->label('')
+                    ->tooltip('Edit Property'),
+                Tables\Actions\DeleteAction::make()
+                    ->label('')
+                    ->tooltip('Delete Property'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -327,5 +427,15 @@ class PropertyResource extends Resource
             'view' => Pages\ViewProperty::route('/{record}'),
             'edit' => Pages\EditProperty::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'secondary';
     }
 }

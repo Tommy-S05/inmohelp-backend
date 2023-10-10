@@ -10,7 +10,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('properties', function(Blueprint $table) {
+        Schema::create('properties', function (Blueprint $table) {
             $table->id();
             $table->string('code')->unique();
             $table->string('name');
@@ -35,7 +35,7 @@ return new class extends Migration {
             $table->float('bedrooms')->nullable();
             $table->float('bathrooms', 4, 1)->nullable();
             $table->float('garages')->nullable();
-            $table->string('status')->nullable();//Nuevo, Usado, En Construcción, Sobre Planos, Remodelado
+            $table->foreignId('property_status_id')->nullable()->constrained()->nullOnDelete();//Nuevo, Usado, En Construcción, Sobre Planos, Remodelado
             $table->integer('floors')->nullable();
             $table->integer('views')->default(0);
             $table->boolean('featured')->default(false);//Destacado
