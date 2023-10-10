@@ -4,6 +4,9 @@ namespace App\Filament\Resources\PropertyResource\Pages;
 
 use App\Filament\Resources\PropertyResource;
 use Filament\Actions;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -18,7 +21,7 @@ use Illuminate\Support\Str;
 
 class CreateProperty extends CreateRecord
 {
-//    use CreateRecord\Concerns\HasWizard;
+    use CreateRecord\Concerns\HasWizard;
 
     protected static string $resource = PropertyResource::class;
 
@@ -51,26 +54,24 @@ class CreateProperty extends CreateRecord
             ]);
     }
 
-    /*
+    public function hasSkippableSteps(): bool
+    {
+        return true;
+    }
+
     public function getSteps(): array
     {
         return [
             Step::make('Property Information')
                 ->icon('heroicon-o-home')
+                ->columns(3)
                 ->schema([
                     Section::make()
                         ->columns(2)
+                        ->columnSpan(2)
                         ->schema([
-                            TextInput::make('name')
-                                ->autofocus()
-                                ->required()
-                                ->live(onBlur: true)
-                                ->afterStateUpdated(fn(Set $set, $state) => $set('slug', Str::slug($state)))
-                                ->maxLength(255),
-                            TextInput::make('slug')
-                                ->required()
-                                ->disabled()
-                                ->maxLength(255),
+                            PropertyResource::getNameFormField(),
+                            PropertyResource::getSlugFormField(),
 
                             Select::make('property_type_id')
                                 ->relationship('propertyType', 'name')
@@ -87,7 +88,7 @@ class CreateProperty extends CreateRecord
                                                 ->required()
                                                 ->maxLength(255)
                                                 ->live(onBlur: true)
-                                                ->afterStateUpdated(fn(string $operation, $state, Set $set) => $operation === 'create' ? $set('slug', Str::slug($state)) : null),
+                                                ->afterStateUpdated(fn(Set $set, $state) => $set('slug', Str::slug($state))),
                                             TextInput::make('slug')
                                                 ->disabled()
                                                 ->dehydrated()
@@ -105,10 +106,64 @@ class CreateProperty extends CreateRecord
                                         ])
                                 ]),
 
+                            Textarea::make('short_description')
+                                //                                        ->rows(3)
+                                ->autosize()
+                                ->maxLength(65535),
 
-                        ])
-                ])
+                            RichEditor::make('description')
+                                ->maxLength(65535)
+                                ->columnSpanFull(),
+                        ]),
+
+                    Section::make()
+                        ->columns(1)
+                        ->columnSpan(1)
+                        ->schema([
+                            Select::make('purpose')
+                                ->options([
+                                    'venta' => 'Venta',
+                                    'alquiler' => 'Alquiler',
+                                ])
+                                ->required()
+                                ->native(false),
+
+                            TextInput::make('area')
+                                ->label('Property Size')
+                                ->required()
+                                ->placeholder('Size in square meters')
+                                ->suffix('m²')
+                                ->numeric(),
+
+                            TextInput::make('price')
+                                ->numeric()
+                                ->required()
+                                ->inputMode('float')
+                                ->minValue(0)
+                                ->prefix('$')
+                                ->suffix('DOP'),
+
+                            DatePicker::make('year_built')
+                                ->placeholder('Select a date')
+                                ->displayFormat('M Y')
+                                ->maxDate(now())
+                                ->closeOnDateSelection()
+                                ->native(false),
+                        ]),
+
+                    FileUpload::make('thumbnail')
+                        ->columnSpanFull()
+                        ->disk('public')
+                        ->directory('properties/thumbnails')
+                        //                                        ->image()
+                        ->imageEditor()
+                        ->moveFiles()
+                        ->openable()
+                        ->downloadable()
+                ]),
+
+            PropertyResource::getPropertyLocationWizard(),
         ];
     }
-    */
+
 }

@@ -4,6 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PropertyResource\Pages;
 use App\Filament\Resources\PropertyResource\RelationManagers;
+use App\Models\Municipality;
+use App\Models\Neighborhood;
 use App\Models\Property;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
@@ -13,6 +15,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Wizard;
@@ -24,6 +27,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class PropertyResource extends Resource
@@ -46,17 +50,8 @@ class PropertyResource extends Resource
                                 ->columns(2)
                                 ->columnSpan(2)
                                 ->schema([
-                                    TextInput::make('name')
-                                        ->autofocus()
-                                        ->required()
-                                        ->live(onBlur: true)
-                                        ->afterStateUpdated(fn(Set $set, $state) => $set('slug', Str::slug($state)))
-                                        ->maxLength(255),
-                                    TextInput::make('slug')
-                                        ->required()
-                                        ->disabled()
-                                        ->dehydrated()
-                                        ->maxLength(255),
+                                    self::getNameFormField(),
+                                    self::getSlugFormField(),
 
                                     Select::make('property_type_id')
                                         ->relationship('propertyType', 'name')
@@ -68,17 +63,8 @@ class PropertyResource extends Resource
                                             Section::make()
                                                 ->columns(2)
                                                 ->schema([
-                                                    TextInput::make('name')
-                                                        ->autofocus()
-                                                        ->required()
-                                                        ->maxLength(255)
-                                                        ->live(onBlur: true)
-                                                        ->afterStateUpdated(fn(Set $set, $state) => $set('slug', Str::slug($state))),
-                                                    TextInput::make('slug')
-                                                        ->disabled()
-                                                        ->dehydrated()
-                                                        ->required()
-                                                        ->maxLength(255),
+                                                    self::getNameFormField(),
+                                                    self::getSlugFormField(),
                                                     Textarea::make('description')
                                                         ->rows(4)
                                                         ->maxLength(65535)
@@ -92,7 +78,7 @@ class PropertyResource extends Resource
                                         ]),
 
                                     Textarea::make('short_description')
-//                                        ->rows(3)
+                                        //                                        ->rows(3)
                                         ->autosize()
                                         ->maxLength(65535),
 
@@ -115,6 +101,7 @@ class PropertyResource extends Resource
 
                                     TextInput::make('area')
                                         ->label('Property Size')
+                                        ->required()
                                         ->placeholder('Size in square meters')
                                         ->suffix('m²')
                                         ->numeric(),
@@ -139,78 +126,26 @@ class PropertyResource extends Resource
                                 ->columnSpanFull()
                                 ->disk('public')
                                 ->directory('properties/thumbnails')
-//                                        ->image()
+                                //                                        ->image()
                                 ->imageEditor()
                                 ->moveFiles()
                                 ->openable()
                                 ->downloadable()
                         ]),
 
-                ])->columnSpanFull()
+                    self::getPropertyLocationWizard(),
+                ])
+                    ->skippable()
+                    ->persistStepInQueryString()
+                    ->columnSpanFull()
 
                 /*
-                Forms\Components\TextInput::make('user_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\Select::make('property_type_id')
-                    ->relationship('propertyType', 'name')
-                    ->required(),
-                Forms\Components\Select::make('province_id')
-                    ->relationship('province', 'name'),
-                Forms\Components\Select::make('municipality_id')
-                    ->relationship('municipality', 'name'),
-                Forms\Components\Select::make('neighborhood_id')
-                    ->relationship('neighborhood', 'name'),
-                Forms\Components\TextInput::make('code')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('slug')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('thumbnail')
-                    ->maxLength(255),
-                Forms\Components\Textarea::make('short_description')
-                    ->columnSpanFull(),
-                Forms\Components\Textarea::make('description')
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('address')
-                    ->maxLength(255),
-                Forms\Components\Textarea::make('map')
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('latitude')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('longitude')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('purpose')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('price')
-                    ->required()
-                    ->numeric()
-                    ->prefix('$'),
-                Forms\Components\TextInput::make('area')
-                    ->numeric(),
-                Forms\Components\TextInput::make('bedrooms')
-                    ->numeric(),
-                Forms\Components\TextInput::make('bathrooms')
-                    ->numeric(),
-                Forms\Components\TextInput::make('garages')
-                    ->numeric(),
                 Forms\Components\TextInput::make('status')
                     ->maxLength(255),
                 Forms\Components\TextInput::make('floors')
                     ->numeric(),
-                Forms\Components\TextInput::make('views')
-                    ->required()
-                    ->numeric()
-                    ->default(0),
                 Forms\Components\Toggle::make('featured')
                     ->required(),
-                Forms\Components\Toggle::make('sold'),
-                Forms\Components\Toggle::make('rented'),
                 Forms\Components\Toggle::make('available')
                     ->required(),
                 Forms\Components\Toggle::make('negotiable')
@@ -219,10 +154,72 @@ class PropertyResource extends Resource
                 Forms\Components\Toggle::make('published')
                     ->required(),
                 Forms\Components\DateTimePicker::make('published_at'),
-                Forms\Components\DatePicker::make('year_built'),
                 Forms\Components\Toggle::make('is_active')
                     ->required(),
                 */
+            ]);
+    }
+
+    public static function getNameFormField()
+    {
+        return TextInput::make('name')
+            ->autofocus()
+            ->required()
+            ->live(onBlur: true)
+            ->afterStateUpdated(fn(Set $set, $state) => $set('slug', Str::slug($state)))
+            ->maxLength(255);
+    }
+
+    public static function getSlugFormField(): Forms\Components\TextInput
+    {
+        return TextInput::make('slug')
+            ->required()
+            ->unique(ignoreRecord: true)
+            ->disabled()
+            ->dehydrated()
+            ->maxLength(255);
+    }
+
+    public static function getPropertyLocationWizard()
+    {
+        return Wizard\Step::make('Property Location')
+            ->icon('heroicon-o-map-pin')
+            ->columns(2)
+            ->schema([
+                Select::make('province_id')
+                    ->required()
+                    ->relationship('province', 'name')
+                    ->afterStateUpdated(function(Set $set, $state) {
+                        $set('municipality_id', null);
+                        $set('neighborhood_id', null);
+                    })
+                    ->searchable()
+                    ->preload()
+                    ->live()
+                    ->native(false),
+
+                Select::make('municipality_id')
+                    ->required()
+                    ->options(fn(Get $get): Collection => Municipality::query()
+                        ->where('province_id', $get('province_id'))
+                        ->pluck('name', 'id'))
+                    ->afterStateUpdated(fn(Set $set, $state) => $set('neighborhood_id', null))
+                    ->searchable()
+                    ->preload()
+                    ->live()
+                    ->native(false),
+
+                Select::make('neighborhood_id')
+                    ->required()
+                    ->options(fn(Get $get): Collection => Neighborhood::query()
+                        ->where('municipality_id', $get('municipality_id'))
+                        ->pluck('name', 'id'))
+                    ->searchable()
+                    ->preload()
+                    ->live()
+                    ->native(false),
+                TextInput::make('address')
+                    ->maxLength(255),
             ]);
     }
 

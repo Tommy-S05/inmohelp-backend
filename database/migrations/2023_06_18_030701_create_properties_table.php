@@ -10,7 +10,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('properties', function (Blueprint $table) {
+        Schema::create('properties', function(Blueprint $table) {
             $table->id();
             $table->string('code')->unique();
             $table->string('name');
@@ -21,17 +21,17 @@ return new class extends Migration {
             //            $table->foreignId('property_condition_id')->constrained('property_conditions')->cascadeOnDelete();
             $table->text('short_description')->nullable();
             $table->longText('description')->nullable();
-            $table->foreignId('province_id')->nullable()->constrained('provinces');
-            $table->foreignId('municipality_id')->nullable()->constrained('municipalities');
-            $table->foreignId('neighborhood_id')->nullable()->constrained('neighborhoods');
-            $table->string('address')->nullable();
+            $table->foreignId('province_id')->constrained('provinces');
+            $table->foreignId('municipality_id')->constrained('municipalities');
+            $table->foreignId('neighborhood_id')->constrained('neighborhoods');
+            $table->string('address');
             $table->text('map')->nullable();
             $table->string('latitude')->nullable();
             $table->string('longitude')->nullable();
             $table->enum('purpose', ['Venta', 'Alquiler']);
             //            $table->string('property_type'); //Casa, Apartamento, Local, Terreno, Oficina, Edificio, Finca, Bodega, Lote, Consultorio, Casa Campestre, Casa Lote, Casa en Condominio, Casa en Conjunto Cerrado, Casa en Unidad Cerrada, Casa en Unidad Residencial
             $table->float('price', 12, 2);
-            $table->float('area')->nullable();
+            $table->float('area');
             $table->float('bedrooms')->nullable();
             $table->float('bathrooms', 4, 1)->nullable();
             $table->float('garages')->nullable();
