@@ -169,7 +169,7 @@ class PropertyResource extends Resource
                     ]),
 
                 SpatieMediaLibraryFileUpload::make('thumbnail')
-                    ->collection('property_thumbnail')
+                    ->collection('thumbnail')
                     ->disk('public')
 //                    ->directory('/properties/thumbnail')
                     ->moveFiles()
@@ -271,7 +271,7 @@ class PropertyResource extends Resource
             ->icon('heroicon-o-photo')
             ->schema([
                 SpatieMediaLibraryFileUpload::make('images')
-                    ->collection('property_gallery')
+                    ->collection('gallery')
                     ->disk('public')
                     ->directory('/properties/gallery')
                     ->multiple()
@@ -342,10 +342,10 @@ class PropertyResource extends Resource
         return $table
             ->columns([
                 SpatieMediaLibraryImageColumn::make('thumbnail')
-                    ->collection('property_thumbnail'),
+                    ->collection('thumbnail'),
                 SpatieMediaLibraryImageColumn::make('images')
+                    ->collection('gallery')
                     ->label('Gallery')
-                    ->collection('property_gallery')
                     ->circular()
                     ->stacked()
                     ->limit(3)
@@ -430,6 +430,9 @@ class PropertyResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+            ])
+            ->emptyStateActions([
+                Tables\Actions\CreateAction::make(),
             ]);
     }
 
