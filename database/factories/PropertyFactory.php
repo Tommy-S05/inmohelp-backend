@@ -33,7 +33,7 @@ class PropertyFactory extends Factory
             'slug' => $this->faker->unique()->slug,
             'user_id' => User::inRandomOrder()->value('id') ?: factory(User::class),
             'property_type_id' => $property_type_id,
-            'thumbnail' => $this->faker->imageUrl(640, 480, 'properties', true),
+//            'thumbnail' => $this->faker->imageUrl(640, 480, 'properties', true),
             'short_description' => $this->faker->paragraph(3),
             'description' => $this->faker->paragraph(12),
             'province_id' => Province::inRandomOrder()->value('id') ?: factory(Province::class),

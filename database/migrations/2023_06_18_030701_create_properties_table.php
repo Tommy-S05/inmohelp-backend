@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->string('slug')->unique();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('property_type_id')->constrained('property_types');
-            $table->string('thumbnail')->nullable();
+//            $table->string('thumbnail')->nullable();
             //            $table->foreignId('property_condition_id')->constrained('property_conditions')->cascadeOnDelete();
             $table->text('short_description')->nullable();
             $table->longText('description')->nullable();

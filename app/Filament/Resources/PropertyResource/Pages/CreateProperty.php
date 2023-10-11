@@ -43,7 +43,6 @@ class CreateProperty extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-//        dd($data);
         $letters = PropertyType::select('code')->where('id', $data['property_type_id'])->first();
         $code = Str::upper($letters->code) . rand(1000, 9999);
         $data['code'] = $code;
@@ -52,14 +51,16 @@ class CreateProperty extends CreateRecord
         return $data;
     }
 
-    protected function afterCreate(): void
-    {
-        foreach ($this->data['images'] as $uuid => $image) {
-            $this->record->images()->create([
-                'image' => $image
-            ]);
-        }
-    }
+//    protected function afterCreate(): void
+//    {
+//        if ($this->data['images']) {
+//            foreach ($this->data['images'] as $uuid => $image) {
+//                $this->record->images()->create([
+//                    'image' => $image
+//                ]);
+//            }
+//        }
+//    }
 
     protected function getCreatedNotification(): ?Notification
     {

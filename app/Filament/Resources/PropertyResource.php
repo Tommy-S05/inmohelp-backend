@@ -13,6 +13,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -25,6 +26,7 @@ use Filament\Forms\Components\Wizard;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -166,14 +168,15 @@ class PropertyResource extends Resource
                             ->native(false),
                     ]),
 
-                FileUpload::make('thumbnail')
-                    ->columnSpanFull()
+                SpatieMediaLibraryFileUpload::make('thumbnail')
+                    ->collection('property_thumbnail')
                     ->disk('public')
-                    ->directory('properties/thumbnail')
-                    ->image()
+//                    ->directory('/properties/thumbnail')
+                    ->moveFiles()
                     ->imageEditor()
                     ->openable()
                     ->downloadable()
+                    ->columnSpanFull()
             ]);
     }
 
@@ -267,15 +270,26 @@ class PropertyResource extends Resource
         return Wizard\Step::make('Property Gallery')
             ->icon('heroicon-o-photo')
             ->schema([
-                FileUpload::make('images')
-                    ->multiple()
-                    ->columnSpanFull()
+                SpatieMediaLibraryFileUpload::make('images')
+                    ->collection('property_gallery')
                     ->disk('public')
-                    ->directory('properties/gallery')
-                    ->image()
+                    ->directory('/properties/gallery')
+                    ->multiple()
+                    ->reorderable()
                     ->imageEditor()
+                    ->moveFiles()
                     ->openable()
                     ->downloadable()
+                    ->columnSpanFull()
+//                FileUpload::make('images')
+//                    ->multiple()
+//                    ->columnSpanFull()
+//                    ->disk('public')
+//                    ->directory('properties/gallery')
+//                    ->image()
+//                    ->imageEditor()
+//                    ->openable()
+//                    ->downloadable()
             ]);
     }
 
@@ -301,7 +315,6 @@ class PropertyResource extends Resource
 
                                 Forms\Components\DateTimePicker::make('published_at')
                                     ->placeholder('Select a date')
-                                    ->minDate(now())
                                     ->native(false),
                             ]),
 
@@ -328,11 +341,14 @@ class PropertyResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('thumbnail'),
-                Tables\Columns\ImageColumn::make('images.image')
+                SpatieMediaLibraryImageColumn::make('thumbnail')
+                    ->collection('property_thumbnail'),
+                SpatieMediaLibraryImageColumn::make('images')
+                    ->label('Gallery')
+                    ->collection('property_gallery')
                     ->circular()
                     ->stacked()
-                    ->limit(4)
+                    ->limit(3)
                     ->limitedRemainingText(),
                 Tables\Columns\TextColumn::make('code')
                     ->copyable()
@@ -351,8 +367,16 @@ class PropertyResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('propertyType.name')
                     ->searchable()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('purpose')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('area')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('price')
+                    ->money()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('province.name')
                     ->searchable()
                     ->sortable()
@@ -365,17 +389,9 @@ class PropertyResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('purpose')
-                    ->searchable()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('area')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('price')
-                    ->money()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('propertyStatus.name')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\ToggleColumn::make('featured')
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\ToggleColumn::make('available')
