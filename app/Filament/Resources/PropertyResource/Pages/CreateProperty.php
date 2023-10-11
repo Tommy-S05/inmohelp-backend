@@ -26,16 +26,6 @@ class CreateProperty extends CreateRecord
 
     protected static string $resource = PropertyResource::class;
 
-    protected function mutateFormDataBeforeCreate(array $data): array
-    {
-        $letters = PropertyType::select('code')->where('id', $data['property_type_id'])->first();
-        $code = Str::upper($letters->code) . rand(1000, 9999);
-        $data['code'] = $code;
-        $data['user_id'] = auth()->id();
-
-        return $data;
-    }
-
     protected function getHeaderActions(): array
     {
         return [
@@ -49,6 +39,26 @@ class CreateProperty extends CreateRecord
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');
+    }
+
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+//        dd($data);
+        $letters = PropertyType::select('code')->where('id', $data['property_type_id'])->first();
+        $code = Str::upper($letters->code) . rand(1000, 9999);
+        $data['code'] = $code;
+        $data['user_id'] = auth()->id();
+
+        return $data;
+    }
+
+    protected function afterCreate(): void
+    {
+        foreach ($this->data['images'] as $uuid => $image) {
+            $this->record->images()->create([
+                'image' => $image
+            ]);
+        }
     }
 
     protected function getCreatedNotification(): ?Notification

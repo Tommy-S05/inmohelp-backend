@@ -267,7 +267,7 @@ class PropertyResource extends Resource
         return Wizard\Step::make('Property Gallery')
             ->icon('heroicon-o-photo')
             ->schema([
-                FileUpload::make('galleries')
+                FileUpload::make('images')
                     ->multiple()
                     ->columnSpanFull()
                     ->disk('public')
@@ -329,6 +329,11 @@ class PropertyResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('thumbnail'),
+                Tables\Columns\ImageColumn::make('images.image')
+                    ->circular()
+                    ->stacked()
+                    ->limit(4)
+                    ->limitedRemainingText(),
                 Tables\Columns\TextColumn::make('code')
                     ->copyable()
                     ->searchable()

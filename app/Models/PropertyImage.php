@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 /**
  * @mixin Builder
  */
-class PropertyGallery extends Model
+class PropertyImage extends Model
 {
     use HasFactory;
 

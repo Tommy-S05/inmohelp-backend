@@ -102,8 +102,8 @@ class Property extends Model
         return $this->belongsToMany(Amenity::class)->withTimestamps();
     }
 
-    public function galleries(): HasMany
+    public function images(): HasMany
     {
-        return $this->hasMany(PropertyGallery::class);
+        return $this->hasMany(PropertyImage::class);
     }
 }
