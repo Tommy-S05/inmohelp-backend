@@ -103,9 +103,4 @@ class Property extends Model implements HasMedia
     {
         return $this->belongsToMany(Amenity::class)->withTimestamps();
     }
-
-    public function images(): HasMany
-    {
-        return $this->hasMany(PropertyImage::class);
-    }
 }

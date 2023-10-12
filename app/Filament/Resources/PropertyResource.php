@@ -167,16 +167,6 @@ class PropertyResource extends Resource
                             ->closeOnDateSelection()
                             ->native(false),
                     ]),
-
-                SpatieMediaLibraryFileUpload::make('thumbnail')
-                    ->collection('thumbnail')
-                    ->disk('public')
-                    //                    ->directory('/properties/thumbnail')
-                    ->moveFiles()
-                    ->imageEditor()
-                    ->openable()
-                    ->downloadable()
-                    ->columnSpanFull()
             ]);
     }
 
@@ -270,33 +260,41 @@ class PropertyResource extends Resource
         return Wizard\Step::make('Property Gallery')
             ->icon('heroicon-o-photo')
             ->schema([
-                SpatieMediaLibraryFileUpload::make('images')
-                    ->collection('gallery')
-                    ->disk('public')
-                    ->directory('/properties/gallery')
-                    ->multiple()
-                    ->reorderable()
-                    ->imageEditor()
-                    ->moveFiles()
-                    ->openable()
-                    ->downloadable()
-                    ->columnSpanFull()
-                //                FileUpload::make('images')
-                //                    ->multiple()
-                //                    ->columnSpanFull()
-                //                    ->disk('public')
-                //                    ->directory('properties/gallery')
-                //                    ->image()
-                //                    ->imageEditor()
-                //                    ->openable()
-                //                    ->downloadable()
+                Section::make('Thumbnail')
+                    ->columns(1)
+                    ->collapsed(false)
+                    ->schema([
+                        SpatieMediaLibraryFileUpload::make('thumbnail')
+                            ->collection('thumbnail')
+                            ->disk('public')
+                            ->moveFiles()
+                            ->imageEditor()
+                            ->openable()
+                            ->downloadable()
+                            ->columnSpanFull()
+                    ]),
+                Section::make('Gallery')
+                    ->columns(1)
+                    ->collapsed()
+                    ->schema([
+                        SpatieMediaLibraryFileUpload::make('images')
+                            ->collection('gallery')
+                            ->disk('public')
+                            ->multiple()
+                            ->reorderable()
+                            ->imageEditor()
+                            ->moveFiles()
+                            ->openable()
+                            ->downloadable()
+                            ->columnSpanFull()
+                    ])
             ]);
     }
 
     public static function getPropertyStatusWizard()
     {
         return Wizard\Step::make('Property Status')
-            ->icon('heroicon-o-calendar-days')
+            ->icon('heroicon-o-battery-50')
             ->columns(2)
             ->schema([
                 Section::make()
