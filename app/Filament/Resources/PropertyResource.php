@@ -137,8 +137,8 @@ class PropertyResource extends Resource
                     ->schema([
                         Select::make('purpose')
                             ->options([
-                                'venta' => 'Venta',
-                                'alquiler' => 'Alquiler',
+                                'Venta' => 'Venta',
+                                'Alquiler' => 'Alquiler',
                             ])
                             ->required()
                             ->native(false),
@@ -171,7 +171,7 @@ class PropertyResource extends Resource
                 SpatieMediaLibraryFileUpload::make('thumbnail')
                     ->collection('thumbnail')
                     ->disk('public')
-//                    ->directory('/properties/thumbnail')
+                    //                    ->directory('/properties/thumbnail')
                     ->moveFiles()
                     ->imageEditor()
                     ->openable()
@@ -189,7 +189,7 @@ class PropertyResource extends Resource
                 Select::make('province_id')
                     ->required()
                     ->relationship('province', 'name')
-                    ->afterStateUpdated(function (Set $set, $state) {
+                    ->afterStateUpdated(function(Set $set, $state) {
                         $set('municipality_id', null);
                         $set('neighborhood_id', null);
                     })
@@ -281,15 +281,15 @@ class PropertyResource extends Resource
                     ->openable()
                     ->downloadable()
                     ->columnSpanFull()
-//                FileUpload::make('images')
-//                    ->multiple()
-//                    ->columnSpanFull()
-//                    ->disk('public')
-//                    ->directory('properties/gallery')
-//                    ->image()
-//                    ->imageEditor()
-//                    ->openable()
-//                    ->downloadable()
+                //                FileUpload::make('images')
+                //                    ->multiple()
+                //                    ->columnSpanFull()
+                //                    ->disk('public')
+                //                    ->directory('properties/gallery')
+                //                    ->image()
+                //                    ->imageEditor()
+                //                    ->openable()
+                //                    ->downloadable()
             ]);
     }
 
@@ -411,7 +411,7 @@ class PropertyResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-//            ->defaultSort('created_at', 'desc')
+            //            ->defaultSort('created_at', 'desc')
             ->filters([
                 //
             ])
