@@ -17,7 +17,7 @@ class UserResource extends JsonResource
     {
         return [
             $this->merge(Arr::except(parent::toArray($request), [
-                    'password', 'remember_token', 'email_verified_at', 'created_at', 'updated_at'
+                    'password', 'remember_token', 'email_verified_at', 'deleted_at', 'created_at', 'updated_at'
                 ]
             )),
         ];

@@ -25,7 +25,6 @@ class Property extends Model implements HasMedia
         'slug',
         'user_id',
         'property_type_id',
-        'thumbnail',
         'short_description',
         'description',
         'province_id',
@@ -45,8 +44,6 @@ class Property extends Model implements HasMedia
         'floors',
         'views',
         'featured',
-        'sold',
-        'rented',
         'available',
         'negotiable',
         'furnished',
@@ -58,8 +55,6 @@ class Property extends Model implements HasMedia
 
     protected $casts = [
         'featured' => 'boolean',
-        'sold' => 'boolean',
-        'rented' => 'boolean',
         'available' => 'boolean',
         'negotiable' => 'boolean',
         'furnished' => 'boolean',

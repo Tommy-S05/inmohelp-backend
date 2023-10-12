@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePropertyRequest;
 use App\Http\Requests\UpdatePropertyRequest;
+use App\Http\Resources\PropertyResource;
 use App\QueryFilters\Property\AffordableFilter;
 use App\QueryFilters\Property\AreaFilter;
 use App\QueryFilters\Property\PropertyTypeFilter;
@@ -45,6 +46,10 @@ class PropertyController extends Controller
                 MaxPriceFilter::class,
             ])
             ->thenReturn()
+            ->where('available', true)
+            ->where('published', true)
+            ->where('published_at', '<=', now())
+            ->where('is_active', true)
             ->get(['id', 'name', 'slug', 'province_id', 'purpose', 'price', 'area', 'bedrooms', 'bathrooms', 'garages']);
         //            ->paginate(10, ['id', 'name', 'slug', 'city', 'purpose', 'price', 'area', 'bedrooms', 'bathrooms', 'garages']);
 
@@ -72,19 +77,30 @@ class PropertyController extends Controller
                 MaxPriceFilter::class,
             ])
             ->thenReturn()
+            ->where('available', true)
+            ->where('published', true)
+            ->where('published_at', '<=', now())
+            ->where('is_active', true)
             ->get(['id', 'name', 'slug', 'province_id', 'purpose', 'price', 'area', 'bedrooms', 'bathrooms', 'garages']);
 
         return response()->json($properties);
     }
 
-    public function outstanding()
+    public function outstanding(): JsonResponse
     {
         //outstanding properties
         //        $properties = Property::where('outstanding', 1)->get(['id', 'name', 'slug', 'city', 'purpose', 'price', 'area', 'bedrooms', 'bathrooms', 'garages']);
         $properties = Property::orderBy('views', 'desc')
             ->take(9)
+            ->where('available', true)
+            ->where('published', true)
+            ->where('published_at', '<=', now())
+            ->where('is_active', true)
             ->get(['id', 'name', 'slug', 'province_id', 'purpose', 'price', 'area', 'bedrooms', 'bathrooms', 'garages', 'views']);
 
+        foreach ($properties as $property) {
+            $property->thumbnail = $property->getFirstMediaUrl('thumbnail');
+        }
         return response()->json($properties);
     }
 
@@ -103,9 +119,9 @@ class PropertyController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Property $property)
+    public function show(Property $property): JsonResponse
     {
-        return response()->json($property);
+        return response()->json(new PropertyResource($property));
     }
 
     /**
