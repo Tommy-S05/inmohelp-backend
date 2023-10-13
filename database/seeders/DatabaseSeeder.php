@@ -35,6 +35,7 @@ class DatabaseSeeder extends Seeder
         $user->assignRole($role);
 
         $this->call([
+            AmenitySeeder::class,
             PropertyStatusSeeder::class,
             PropertyTypeSeeder::class,
             CategorySeeder::class,
@@ -46,11 +47,11 @@ class DatabaseSeeder extends Seeder
             NeighborhoodSeeder::class,
             AccountSeeder::class,
         ]);
-//        Property::factory(20)->create();
+        //        Property::factory(20)->create();
 
-//        foreach (Property::all() as $property) {
-//            $amenities = \App\Models\Amenity::inRandomOrder()->take(rand(1, 5))->pluck('id');
-//            $property->amenities()->attach($amenities);
-//        }
+        //        foreach (Property::all() as $property) {
+        //            $amenities = \App\Models\Amenity::inRandomOrder()->take(rand(1, 5))->pluck('id');
+        //            $property->amenities()->attach($amenities);
+        //        }
     }
 }

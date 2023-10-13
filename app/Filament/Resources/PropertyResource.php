@@ -313,6 +313,7 @@ class PropertyResource extends Resource
 
                                 Forms\Components\DateTimePicker::make('published_at')
                                     ->placeholder('Select a date')
+                                    ->required()
                                     ->native(false),
                             ]),
 
