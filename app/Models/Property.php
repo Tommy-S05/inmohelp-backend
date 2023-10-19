@@ -54,6 +54,7 @@ class Property extends Model implements HasMedia
     ];
 
     protected $casts = [
+        'price' => 'float',
         'featured' => 'boolean',
         'available' => 'boolean',
         'negotiable' => 'boolean',

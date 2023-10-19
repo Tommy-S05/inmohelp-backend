@@ -22,6 +22,9 @@ class Account extends Model
     ];
 
     protected $casts = [
+        'total_incomes' => 'float',
+        'total_expenses' => 'float',
+        'budget' => 'float',
         'is_active' => 'boolean',
     ];
 

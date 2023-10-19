@@ -22,6 +22,7 @@ class AccountTransaction extends Model
     ];
 
     protected $casts = [
+        'amount' => 'float',
         'is_active' => 'boolean',
     ];
 

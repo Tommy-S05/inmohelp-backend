@@ -10,14 +10,14 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('properties', function (Blueprint $table) {
+        Schema::create('properties', function(Blueprint $table) {
             $table->id();
             $table->string('code')->unique();
             $table->string('name');
             $table->string('slug')->unique();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('property_type_id')->constrained('property_types');
-//            $table->string('thumbnail')->nullable();
+            //            $table->string('thumbnail')->nullable();
             //            $table->foreignId('property_condition_id')->constrained('property_conditions')->cascadeOnDelete();
             $table->text('short_description')->nullable();
             $table->longText('description')->nullable();
@@ -32,9 +32,9 @@ return new class extends Migration {
             //            $table->string('property_type'); //Casa, Apartamento, Local, Terreno, Oficina, Edificio, Finca, Bodega, Lote, Consultorio, Casa Campestre, Casa Lote, Casa en Condominio, Casa en Conjunto Cerrado, Casa en Unidad Cerrada, Casa en Unidad Residencial
             $table->float('price', 12, 2);
             $table->float('area');
-            $table->float('bedrooms')->nullable();
+            $table->integer('bedrooms')->nullable();
             $table->float('bathrooms', 4, 1)->nullable();
-            $table->float('garages')->nullable();
+            $table->integer('garages')->nullable();
             $table->foreignId('property_status_id')->nullable()->constrained()->nullOnDelete();//Nuevo, Usado, En Construcción, Sobre Planos, Remodelado
             $table->integer('floors')->nullable();
             $table->integer('views')->default(0);
