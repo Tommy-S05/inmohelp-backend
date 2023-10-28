@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Setting;
-use App\Models\SubCategory;
+use App\Models\Subcategory;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -98,11 +98,11 @@ class AuthController extends Controller
             'budget' => 0,
         ]);
 
-        $subCategories = SubCategory::all();
+        $subcategories = Subcategory::all();
 
-        foreach($subCategories as $subCategory) {
+        foreach($subcategories as $subcategory) {
             $results[] = array(
-                "sub_category_id" => $subCategory->id,
+                "subcategory_id" => $subcategory->id,
                 "amount" => 0,
             );
         }

@@ -15,9 +15,9 @@ class PropertyTypeSeeder extends Seeder
     public function run(): void
     {
         PropertyType::create([
-            'name' => 'Departamento',
-            'slug' => 'departamento',
-            'description' => 'Departamento',
+            'name' => 'Aepartamento',
+            'slug' => 'aepartamento',
+            'description' => 'Aepartamento',
             'code' => 'DEP',
             //            'thumbnail' => '/assets/categories/category-departamento.png',
             'is_active' => true

@@ -35,11 +35,12 @@ class DatabaseSeeder extends Seeder
         $user->assignRole($role);
 
         $this->call([
+            PermissionSeeder::class,
             AmenitySeeder::class,
             PropertyStatusSeeder::class,
             PropertyTypeSeeder::class,
             CategorySeeder::class,
-            SubCategorySeeder::class,
+            SubcategorySeeder::class,
             SettingSeeder::class,
             RegionSeeder::class,
             ProvinceSeeder::class,

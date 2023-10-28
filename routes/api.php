@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 //});
 
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+Route::middleware('auth:sanctum')->get('/user', function(Request $request) {
     return $request->user()->only(['id', 'name', 'email']);
 });
 
@@ -62,8 +62,8 @@ Route::put('/settings', [\App\Http\Controllers\SettingController::class, 'update
 Route::get('/monthly/payments', [\App\Http\Controllers\FinancialController::class, 'monthlyPayments']);
 Route::get('/monthly/budget', [\App\Http\Controllers\FinancialController::class, 'monthlyBudget']);
 Route::get('/monthly2/budget', [\App\Http\Controllers\FinancialController::class, 'monthlyBudget2']);
-Route::get('/affordable/properties', [\App\Http\Controllers\FinancialController::class, 'affordableProperties']);
-Route::get('/affordable2/properties', [\App\Http\Controllers\FinancialController::class, 'affordableProperties2']);
+//Route::get('/affordable/properties', [\App\Http\Controllers\FinancialController::class, 'affordableProperties']);
+//Route::get('/affordable2/properties', [\App\Http\Controllers\FinancialController::class, 'affordableProperties2']);
 
 //FinancialCategories
 Route::get('/categories', [\App\Http\Controllers\CategoryController::class, 'index']);

@@ -36,9 +36,9 @@ class PropertyController extends Controller
             ->through([
                 AreaFilter::class,
                 PurposeFilter::class,
-                //                PropertyTypeFilter::class,
-                //                ProvinceFilter::class,
-                //                NeighborhoodFilter::class,
+                PropertyTypeFilter::class,
+                ProvinceFilter::class,
+                NeighborhoodFilter::class,
                 BedroomsFilter::class,
                 BathroomsFilter::class,
                 GaragesFilter::class,
@@ -53,23 +53,27 @@ class PropertyController extends Controller
             ->get(['id', 'name', 'slug', 'province_id', 'purpose', 'price', 'area', 'bedrooms', 'bathrooms', 'garages']);
         //            ->paginate(10, ['id', 'name', 'slug', 'city', 'purpose', 'price', 'area', 'bedrooms', 'bathrooms', 'garages']);
 
+        foreach($properties as $property) {
+            $property->thumbnail = $property->getFirstMediaUrl('thumbnail');
+        }
+
         return response()->json($properties);
     }
 
     public function affordableProperties(Request $request): JsonResponse
     {
-        if (!$request->has('affordable') || $request->input('affordable') != 'true') {
-            $request->merge(['affordable' => 'true']);
+        if(!$request->has('affordable')) {
+            $request->merge(['affordable' => 'false']);
         }
         $properties = app(Pipeline::class)
             ->send(Property::query())
             ->through([
                 AffordableFilter::class,
                 AreaFilter::class,
-//                PurposeFilter::class,
-                //                PropertyTypeFilter::class,
-                //                ProvinceFilter::class,
-                //                NeighborhoodFilter::class,
+                PurposeFilter::class,
+                PropertyTypeFilter::class,
+                ProvinceFilter::class,
+                NeighborhoodFilter::class,
                 BedroomsFilter::class,
                 BathroomsFilter::class,
                 GaragesFilter::class,
@@ -81,7 +85,11 @@ class PropertyController extends Controller
             ->where('published', true)
             ->where('published_at', '<=', now())
             ->where('is_active', true)
-            ->get(['id', 'name', 'slug', 'province_id', 'purpose', 'price', 'area', 'bedrooms', 'bathrooms', 'garages']);
+            ->get(['id', 'name', 'slug', 'province_id', 'property_type_id', 'purpose', 'price', 'area', 'bedrooms', 'bathrooms', 'garages']);
+
+        foreach($properties as $property) {
+            $property->thumbnail = $property->getFirstMediaUrl('thumbnail');
+        }
 
         return response()->json($properties);
     }
@@ -90,15 +98,16 @@ class PropertyController extends Controller
     {
         //outstanding properties
         //        $properties = Property::where('outstanding', 1)->get(['id', 'name', 'slug', 'city', 'purpose', 'price', 'area', 'bedrooms', 'bathrooms', 'garages']);
-        $properties = Property::orderBy('views', 'desc')
-            ->take(9)
+        //        $properties = Property::orderBy('views', 'desc')
+        //            ->take(9)
+        $properties = Property::where('featured', true)
             ->where('available', true)
             ->where('published', true)
             ->where('published_at', '<=', now())
             ->where('is_active', true)
             ->get(['id', 'name', 'slug', 'province_id', 'purpose', 'price', 'area', 'bedrooms', 'bathrooms', 'garages', 'views']);
 
-        foreach ($properties as $property) {
+        foreach($properties as $property) {
             $property->thumbnail = $property->getFirstMediaUrl('thumbnail');
         }
         return response()->json($properties);

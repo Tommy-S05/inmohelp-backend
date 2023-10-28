@@ -12,8 +12,6 @@ class PropertyTypeFilter
             return $next($request);
         }
 
-        $builder = $next($request);
-
-        return $builder->where('property_type_id', request()->input('property_type'));
+        return $next($request)->where('property_type_id', request()->input('property_type'));
     }
 }

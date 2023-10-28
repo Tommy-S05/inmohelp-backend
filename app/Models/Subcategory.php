@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 /**
  * @mixin Builder
  */
-class SubCategory extends Model
+class Subcategory extends Model
 {
     use HasFactory;
 

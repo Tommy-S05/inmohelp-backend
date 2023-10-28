@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Account;
+use App\Models\AccountTransaction;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,8 +15,16 @@ class AccountController extends Controller
      */
     public function index(Request $request)
     {
-        $accounts = Account::where('user_id', Auth::user()->id)->get();
-        return response()->json($accounts->load('accountTransactions'));
+        $account = Account::where('user_id', Auth::user()->id)->firstOrFail(['id', 'total_expenses', 'total_incomes', 'budget']);
+
+        $categories = Category::with(['subcategories.accountTransactions' => function($query) use ($account) {
+            $query->where('account_id', $account->id)->select('subcategory_id', 'amount');
+        }, 'subcategories:id,name,category_id'])->get(['id', 'name', 'type']);
+
+        return response()->json([
+            'account' => $account,
+            'categories' => $categories
+        ]);
     }
 
     /**
@@ -33,7 +43,7 @@ class AccountController extends Controller
         ]);
         foreach($request->subCategories as $subCategory) {
             $results[] = array(
-                "sub_category_id" => $subCategory['subCategory_id'],
+                "subcategory_id" => $subCategory['subCategory_id'],
                 "amount" => $subCategory['amount'],
             );
         }
@@ -45,30 +55,49 @@ class AccountController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request/*, string $id*/)
+    public function update(Request $request)
     {
+        $total_incomes = 0;
+        $total_expenses = 0;
+
         $account = Account::where('user_id', Auth::user()->id)->firstOrFail();
-        //            ->findOrFail($id);
-        //        $account = Account::where('id', $id)->firstOrFail();
-        $budget = $request->total_incomes - $request->total_expenses;
+
+        foreach($request->data['categories'] as $category) {
+            $type = $category['type'];
+
+            foreach($category['subcategories'] as $subcategory) {
+                $amount = $subcategory['account_transactions'][0]['amount'];
+
+                if($type === 'income') {
+                    $total_incomes += $amount;
+                } elseif($type === 'expense') {
+                    $total_expenses += $amount;
+                }
+
+                $subcategoryId = $subcategory['id'];
+                $accountTransaction = $account->accountTransactions()->where('subcategory_id', $subcategoryId)->first();
+
+                if($accountTransaction) {
+                    $accountTransaction->update([
+                        'amount' => $amount
+                    ]);
+                } else {
+                    $account->accountTransactions()->create([
+                        "subcategory_id" => $subcategory['id'],
+                        "amount" => $subcategory['amount']
+                    ]);
+                }
+            }
+        }
+        $budget = $total_incomes - $total_expenses;
 
         $account->update([
-            'total_incomes' => $request->total_incomes,
-            'total_expenses' => $request->total_expenses,
+            'total_incomes' => $total_incomes,
+            'total_expenses' => $total_expenses,
             'budget' => $budget,
         ]);
 
-        foreach($request->subCategories as $subCategory) {
-            $results[] = array(
-                "sub_category_id" => $subCategory['subCategory_id'],
-                "amount" => $subCategory['amount'],
-            );
-        }
-
-        $account->accountTransactions()->delete();
-        $account->accountTransactions()->createMany($results);
-
-        return response()->json($account->load('accountTransactions'), 200);
+        return response()->json($account->load('accountTransactions'));
     }
 
     /**

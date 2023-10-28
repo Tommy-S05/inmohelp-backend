@@ -15,7 +15,7 @@ class SettingController extends Controller
      */
     public function index()
     {
-        $setting = Setting::where('user_id', Auth::user()->id)->firstOrFail();
+        $setting = Setting::where('user_id', Auth::user()->id)->firstOrFail(['interest_rate', 'down_payment_available', 'loan_term']);
         return response()->json($setting);
     }
 

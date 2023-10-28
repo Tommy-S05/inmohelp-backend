@@ -24,320 +24,320 @@ class AccountSeeder extends Seeder
             'budget' => $budget,
         ]);
 
-        $subCategories = [
+        $subcategories = [
             [
-                'sub_category_id' => 1,
+                'subcategory_id' => 1,
                 'amount' => 100000,
             ],
             [
-                'sub_category_id' => 2,
+                'subcategory_id' => 2,
                 'amount' => 100000,
             ],
             [
-                'sub_category_id' => 3,
+                'subcategory_id' => 3,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 4,
+                'subcategory_id' => 4,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 5,
+                'subcategory_id' => 5,
                 'amount' => 25000,
             ],
             [
-                'sub_category_id' => 6,
+                'subcategory_id' => 6,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 7,
+                'subcategory_id' => 7,
                 'amount' => 20000,
             ],
             [
-                'sub_category_id' => 8,
+                'subcategory_id' => 8,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 9,
+                'subcategory_id' => 9,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 10,
+                'subcategory_id' => 10,
                 'amount' => 1500,
             ],
             [
-                'sub_category_id' => 11,
+                'subcategory_id' => 11,
                 'amount' => 500,
             ],
             [
-                'sub_category_id' => 12,
+                'subcategory_id' => 12,
                 'amount' => 1500,
             ],
             [
-                'sub_category_id' => 13,
+                'subcategory_id' => 13,
                 'amount' => 1000,
             ],
             [
-                'sub_category_id' => 14,
+                'subcategory_id' => 14,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 15,
+                'subcategory_id' => 15,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 16,
+                'subcategory_id' => 16,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 17,
+                'subcategory_id' => 17,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 18,
+                'subcategory_id' => 18,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 19,
+                'subcategory_id' => 19,
                 'amount' => 1500,
             ],
             [
-                'sub_category_id' => 20,
+                'subcategory_id' => 20,
                 'amount' => 250,
             ],
             [
-                'sub_category_id' => 21,
+                'subcategory_id' => 21,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 22,
+                'subcategory_id' => 22,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 23,
+                'subcategory_id' => 23,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 24,
+                'subcategory_id' => 24,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 25,
+                'subcategory_id' => 25,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 26,
+                'subcategory_id' => 26,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 27,
+                'subcategory_id' => 27,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 28,
+                'subcategory_id' => 28,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 29,
+                'subcategory_id' => 29,
                 'amount' => 15000,
             ],
             [
-                'sub_category_id' => 30,
+                'subcategory_id' => 30,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 31,
+                'subcategory_id' => 31,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 32,
+                'subcategory_id' => 32,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 33,
+                'subcategory_id' => 33,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 34,
+                'subcategory_id' => 34,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 35,
+                'subcategory_id' => 35,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 36,
+                'subcategory_id' => 36,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 37,
+                'subcategory_id' => 37,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 38,
+                'subcategory_id' => 38,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 39,
+                'subcategory_id' => 39,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 40,
+                'subcategory_id' => 40,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 41,
+                'subcategory_id' => 41,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 42,
+                'subcategory_id' => 42,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 43,
+                'subcategory_id' => 43,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 44,
+                'subcategory_id' => 44,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 45,
+                'subcategory_id' => 45,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 46,
+                'subcategory_id' => 46,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 47,
+                'subcategory_id' => 47,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 48,
+                'subcategory_id' => 48,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 49,
+                'subcategory_id' => 49,
                 'amount' => 1000,
             ],
             [
-                'sub_category_id' => 50,
+                'subcategory_id' => 50,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 51,
+                'subcategory_id' => 51,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 52,
+                'subcategory_id' => 52,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 53,
+                'subcategory_id' => 53,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 54,
+                'subcategory_id' => 54,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 55,
+                'subcategory_id' => 55,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 56,
+                'subcategory_id' => 56,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 57,
+                'subcategory_id' => 57,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 58,
+                'subcategory_id' => 58,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 59,
+                'subcategory_id' => 59,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 60,
+                'subcategory_id' => 60,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 61,
+                'subcategory_id' => 61,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 62,
+                'subcategory_id' => 62,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 63,
+                'subcategory_id' => 63,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 64,
+                'subcategory_id' => 64,
                 'amount' => 4000,
             ],
             [
-                'sub_category_id' => 65,
+                'subcategory_id' => 65,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 66,
+                'subcategory_id' => 66,
                 'amount' => 120,
             ],
             [
-                'sub_category_id' => 67,
+                'subcategory_id' => 67,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 68,
+                'subcategory_id' => 68,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 69,
+                'subcategory_id' => 69,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 70,
+                'subcategory_id' => 70,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 71,
+                'subcategory_id' => 71,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 72,
+                'subcategory_id' => 72,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 73,
+                'subcategory_id' => 73,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 74,
+                'subcategory_id' => 74,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 75,
+                'subcategory_id' => 75,
                 'amount' => 0,
             ],
             [
-                'sub_category_id' => 76,
+                'subcategory_id' => 76,
                 'amount' => 0,
             ],
         ];
 
         //        foreach($subCategories as $subCategory) {
         //            $results[] = array(
-        //                "sub_category_id" => $subCategory['sub_category_id'],
+        //                "subcategory_id" => $subCategory['subcategory_id'],
         //                "amount" => $subCategory['amount'],
         //            );
         //        }
 
-        $newAccount->accountTransactions()->createMany($subCategories);
+        $newAccount->accountTransactions()->createMany($subcategories);
     }
 }

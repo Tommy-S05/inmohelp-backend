@@ -13,7 +13,7 @@ trait FinancialsTrait
     {
         $settings = Setting::where('user_id', Auth::user()->id)->first();
         //        $property = Property::find($property_id);
-        if ($request->price < $settings->down_payment_available) {
+        if($request->price < $settings->down_payment_available) {
             $payment = 0;
             return response()->json($payment);
         }
@@ -55,7 +55,7 @@ trait FinancialsTrait
         //        $account = Account::where('user_id', 1)->first();
         $available = $account->total_incomes * 0.28;
         $houseSpend = $account->accountTransactions()
-            ->join('sub_categories', 'account_transactions.sub_category_id', '=', 'sub_categories.id')
+            ->join('sub_categories', 'account_transactions.subcategory_id', '=', 'sub_categories.id')
             ->join('categories', 'sub_categories.category_id', '=', 'categories.id')
             ->where('categories.id', 2)
             ->sum('account_transactions.amount');

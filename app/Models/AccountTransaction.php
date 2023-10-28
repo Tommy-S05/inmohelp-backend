@@ -15,7 +15,7 @@ class AccountTransaction extends Model
 
     protected $fillable = [
         'account_id',
-        'sub_category_id',
+        'subcategory_id',
         'amount',
         'description',
         'is_active',
