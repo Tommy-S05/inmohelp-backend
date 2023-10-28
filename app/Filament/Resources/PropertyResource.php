@@ -126,8 +126,9 @@ class PropertyResource extends Resource
                             ->autosize()
                             ->maxLength(65535),
 
-                        RichEditor::make('description')
+                        Textarea::make('description')
                             ->maxLength(65535)
+                            ->rows(5)
                             ->columnSpanFull(),
                     ]),
 
