@@ -110,7 +110,7 @@ class NeighborhoodResource extends Resource
                         elseif($state > 4000) return 'warning';
                         return 'success';
                     })
-                    ->searchable()
+                    //                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

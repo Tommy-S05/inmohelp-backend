@@ -415,6 +415,6 @@ class UserResource extends Resource
 
     public static function canDelete(Model $record): bool
     {
-        return $record->id !== auth()->user()->id && (auth()->user()->hasAnyRole(['Super Admin'], 'web') || auth()->user()->hasAnyPermission(['delete:User'], 'web'));
+        return ($record->id !== auth()->user()->id && !$record->hasAnyRole(['Super Admin'], 'web')) && (auth()->user()->hasAnyRole(['Super Admin'], 'web') || auth()->user()->hasAnyPermission(['eliminar:Usuarios'], 'web'));
     }
 }

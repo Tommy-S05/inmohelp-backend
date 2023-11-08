@@ -13,7 +13,11 @@ class PropertyPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyRole(['Super Admin', 'web']) || $user->hasAnyPermission(['view_any:Property'], 'web');
+        if($user->hasAnyRole(['Super Admin', 'web']) || $user->hasAnyRole(['Admin', 'web'])) {
+            return true;
+        } else {
+            return $user->hasAnyPermission(['ver_todos:Propiedades'], 'web');
+        }
     }
 
     /**
@@ -21,7 +25,11 @@ class PropertyPolicy
      */
     public function view(User $user, Property $property): bool
     {
-        return $user->hasAnyRole(['Super Admin', 'web']) || $user->hasAnyPermission(['view:Property'], 'web');
+        if($user->hasAnyRole(['Super Admin', 'web']) || $user->hasAnyRole(['Admin', 'web'])) {
+            return true;
+        } else {
+            return $user->hasAnyPermission(['mostrar:Propiedades'], 'web') && $user->id === $property->user_id;
+        }
     }
 
     /**
@@ -29,7 +37,11 @@ class PropertyPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasAnyRole(['Super Admin', 'web']) || $user->hasAnyPermission(['create:Property'], 'web');
+        if($user->hasAnyRole(['Super Admin', 'web']) || $user->hasAnyRole(['Admin', 'web'])) {
+            return true;
+        } else {
+            return $user->hasAnyRole(['Super Admin', 'web']) || $user->hasAnyPermission(['crear:Propiedades'], 'web');
+        }
     }
 
     /**
@@ -37,7 +49,11 @@ class PropertyPolicy
      */
     public function update(User $user, Property $property): bool
     {
-        return $user->hasAnyRole(['Super Admin', 'web']) || $user->hasAnyPermission(['update:Property'], 'web');
+        if($user->hasAnyRole(['Super Admin', 'web']) || $user->hasAnyRole(['Admin', 'web'])) {
+            return true;
+        } else {
+            return $user->hasAnyPermission(['actualizar:Propiedades'], 'web') && $user->id === $property->user_id;
+        }
     }
 
     /**
@@ -45,7 +61,11 @@ class PropertyPolicy
      */
     public function delete(User $user, Property $property): bool
     {
-        return $user->hasAnyRole(['Super Admin', 'web']) || $user->hasAnyPermission(['delete:Property'], 'web');
+        if($user->hasAnyRole(['Super Admin', 'web']) || $user->hasAnyRole(['Admin', 'web'])) {
+            return true;
+        } else {
+            return $user->hasAnyPermission(['eliminar:Propiedades'], 'web') && $user->id === $property->user_id;
+        }
     }
 
     /**

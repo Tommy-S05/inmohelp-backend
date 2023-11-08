@@ -13,6 +13,7 @@ class PermissionSeeder extends Seeder
      */
     public function run(): void
     {
+        //Usuarios
         Permission::create([
             'name' => 'ver_todos:Usuarios',
             'guard_name' => 'web'
@@ -39,6 +40,37 @@ class PermissionSeeder extends Seeder
         ]);
 
         Permission::create([
+            'name' => 'atachar_rol:Usuarios',
+            'guard_name' => 'web'
+        ]);
+
+        Permission::create([
+            'name' => 'detachar_rol:Usuarios',
+            'guard_name' => 'web'
+        ]);
+
+        Permission::create([
+            'name' => 'detachar_todos_rol:Usuarios',
+            'guard_name' => 'web'
+        ]);
+
+        Permission::create([
+            'name' => 'atachar_permiso:Usuarios',
+            'guard_name' => 'web'
+        ]);
+
+        Permission::create([
+            'name' => 'detachar_permiso:Usuarios',
+            'guard_name' => 'web'
+        ]);
+
+        Permission::create([
+            'name' => 'detachar_todos_permiso:Usuarios',
+            'guard_name' => 'web'
+        ]);
+
+        //Roles
+        Permission::create([
             'name' => 'ver_todos:Roles',
             'guard_name' => 'web'
         ]);
@@ -63,6 +95,7 @@ class PermissionSeeder extends Seeder
             'guard_name' => 'web'
         ]);
 
+        //Permisos
         Permission::create([
             'name' => 'ver_todos:Permisos',
             'guard_name' => 'web'
@@ -89,6 +122,22 @@ class PermissionSeeder extends Seeder
         ]);
 
         Permission::create([
+            'name' => 'atachar_rol:Permisos',
+            'guard_name' => 'web'
+        ]);
+
+        Permission::create([
+            'name' => 'detachar_rol:Permisos',
+            'guard_name' => 'web'
+        ]);
+
+        Permission::create([
+            'name' => 'detachar_todos_rol:Permisos',
+            'guard_name' => 'web'
+        ]);
+
+        //Propiedades
+        Permission::create([
             'name' => 'ver_todos:Propiedades',
             'guard_name' => 'web'
         ]);
@@ -113,6 +162,7 @@ class PermissionSeeder extends Seeder
             'guard_name' => 'web'
         ]);
 
+        //Estados de propiedad
         Permission::create([
             'name' => 'ver_todos:Estados de propiedad',
             'guard_name' => 'web'
@@ -138,6 +188,7 @@ class PermissionSeeder extends Seeder
             'guard_name' => 'web'
         ]);
 
+        //Tipos de propiedad
         Permission::create([
             'name' => 'ver_todos:Tipos de propiedad',
             'guard_name' => 'web'
@@ -163,6 +214,7 @@ class PermissionSeeder extends Seeder
             'guard_name' => 'web'
         ]);
 
+        //Amenidades
         Permission::create([
             'name' => 'ver_todos:Amenidades',
             'guard_name' => 'web'
@@ -188,6 +240,7 @@ class PermissionSeeder extends Seeder
             'guard_name' => 'web'
         ]);
 
+        //Categorías
         Permission::create([
             'name' => 'ver_todos:Categorias',
             'guard_name' => 'web'
@@ -213,6 +266,7 @@ class PermissionSeeder extends Seeder
             'guard_name' => 'web'
         ]);
 
+        //Subcategoría
         Permission::create([
             'name' => 'ver_todos:Subcategorias',
             'guard_name' => 'web'
@@ -235,6 +289,110 @@ class PermissionSeeder extends Seeder
 
         Permission::create([
             'name' => 'eliminar:Subcategorias',
+            'guard_name' => 'web'
+        ]);
+
+        //Sectores
+        Permission::create([
+            'name' => 'ver_todos:Sectores',
+            'guard_name' => 'web'
+        ]);
+
+        Permission::create([
+            'name' => 'mostrar:Sectores',
+            'guard_name' => 'web'
+        ]);
+
+        Permission::create([
+            'name' => 'crear:Sectores',
+            'guard_name' => 'web'
+        ]);
+
+        Permission::create([
+            'name' => 'actualizar:Sectores',
+            'guard_name' => 'web'
+        ]);
+
+        Permission::create([
+            'name' => 'eliminar:Sectores',
+            'guard_name' => 'web'
+        ]);
+
+        //Municipios
+        Permission::create([
+            'name' => 'ver_todos:Municipios',
+            'guard_name' => 'web'
+        ]);
+
+        Permission::create([
+            'name' => 'mostrar:Municipios',
+            'guard_name' => 'web'
+        ]);
+
+        Permission::create([
+            'name' => 'crear:Municipios',
+            'guard_name' => 'web'
+        ]);
+
+        Permission::create([
+            'name' => 'actualizar:Municipios',
+            'guard_name' => 'web'
+        ]);
+
+        Permission::create([
+            'name' => 'eliminar:Municipios',
+            'guard_name' => 'web'
+        ]);
+
+        //Provincias
+        Permission::create([
+            'name' => 'ver_todos:Provincias',
+            'guard_name' => 'web'
+        ]);
+
+        Permission::create([
+            'name' => 'mostrar:Provincias',
+            'guard_name' => 'web'
+        ]);
+
+        Permission::create([
+            'name' => 'crear:Provincias',
+            'guard_name' => 'web'
+        ]);
+
+        Permission::create([
+            'name' => 'actualizar:Provincias',
+            'guard_name' => 'web'
+        ]);
+
+        Permission::create([
+            'name' => 'eliminar:Provincias',
+            'guard_name' => 'web'
+        ]);
+
+        //Regiones
+        Permission::create([
+            'name' => 'ver_todos:Regiones',
+            'guard_name' => 'web'
+        ]);
+
+        Permission::create([
+            'name' => 'mostrar:Regiones',
+            'guard_name' => 'web'
+        ]);
+
+        Permission::create([
+            'name' => 'crear:Regiones',
+            'guard_name' => 'web'
+        ]);
+
+        Permission::create([
+            'name' => 'actualizar:Regiones',
+            'guard_name' => 'web'
+        ]);
+
+        Permission::create([
+            'name' => 'eliminar:Regiones',
             'guard_name' => 'web'
         ]);
     }

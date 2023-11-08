@@ -13,7 +13,7 @@ class PropertyTypePolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyRole(['Super Admin'], 'web') || $user->hasAnyPermission(['view_any:Property Type'], 'web');
+        return $user->hasAnyRole(['Super Admin'], 'web') || $user->hasAnyPermission(['ver_todos:Tipos de propiedad'], 'web');
     }
 
     /**
@@ -21,7 +21,7 @@ class PropertyTypePolicy
      */
     public function view(User $user, PropertyType $propertyType): bool
     {
-        return $user->hasAnyRole(['Super Admin'], 'web') || $user->hasAnyPermission('view:Property Type', 'web');
+        return $user->hasAnyRole(['Super Admin'], 'web') || $user->hasAnyPermission('mostrar:Tipos de propiedad', 'web');
     }
 
     /**
@@ -29,7 +29,7 @@ class PropertyTypePolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasAnyRole(['Super Admin'], 'web') || $user->hasAnyPermission(['create:Property Type'], 'web');
+        return $user->hasAnyRole(['Super Admin'], 'web') || $user->hasAnyPermission(['crear:Tipos de propiedad'], 'web');
     }
 
     /**
@@ -37,7 +37,7 @@ class PropertyTypePolicy
      */
     public function update(User $user, PropertyType $propertyType): bool
     {
-        return $user->hasAnyRole(['Super Admin'], 'web') || $user->hasAnyPermission(['update:Property Type'], 'web');
+        return $user->hasAnyRole(['Super Admin'], 'web') || $user->hasAnyPermission(['actualizar:Tipos de propiedad'], 'web');
     }
 
     /**
@@ -45,7 +45,7 @@ class PropertyTypePolicy
      */
     public function delete(User $user, PropertyType $propertyType): bool
     {
-        return $user->hasAnyRole(['Super Admin'], 'web') || $user->hasAnyPermission(['delete:Property Type'], 'web');
+        return $user->hasAnyRole(['Super Admin'], 'web') || $user->hasAnyPermission(['eliminar:Tipos de propiedad'], 'web');
     }
 
     /**

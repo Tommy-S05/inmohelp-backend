@@ -15,10 +15,10 @@ class PropertyTypeSeeder extends Seeder
     public function run(): void
     {
         PropertyType::create([
-            'name' => 'Aepartamento',
-            'slug' => 'aepartamento',
-            'description' => 'Aepartamento',
-            'code' => 'DEP',
+            'name' => 'Apartamento',
+            'slug' => 'apartamento',
+            'description' => 'Apartamento',
+            'code' => 'APT',
             //            'thumbnail' => '/assets/categories/category-departamento.png',
             'is_active' => true
         ]);

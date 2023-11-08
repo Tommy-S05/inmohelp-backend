@@ -13,7 +13,7 @@ class PermissionPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyRole(['Super Admin']) || $user->hasAnyPermission(['view_any:Permission'], 'web');
+        return $user->hasAnyRole(['Super Admin']) || $user->hasAnyPermission(['ver_todos:Permisos'], 'web');
     }
 
     /**
@@ -21,7 +21,7 @@ class PermissionPolicy
      */
     public function view(User $user, Permission $permission): bool
     {
-        return $user->hasAnyRole(['Super Admin'], 'web') || $user->hasAnyPermission(['view:Permission'], 'web');
+        return $user->hasAnyRole(['Super Admin'], 'web') || $user->hasAnyPermission(['mostrar:Permisos'], 'web');
     }
 
     /**
@@ -29,7 +29,7 @@ class PermissionPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasAnyRole(['Super Admin'], 'web') || $user->hasAnyPermission(['create:Permission'], 'web');
+        return $user->hasAnyRole(['Super Admin'], 'web') || $user->hasAnyPermission(['crear:Permisos'], 'web');
     }
 
     /**
@@ -37,7 +37,7 @@ class PermissionPolicy
      */
     public function update(User $user, Permission $permission): bool
     {
-        return $user->hasAnyRole(['Super Admin'], 'web') || $user->hasAnyPermission(['update:Permission'], 'web');
+        return $user->hasAnyRole(['Super Admin'], 'web') || $user->hasAnyPermission(['actualizar:Permisos'], 'web');
     }
 
     /**
@@ -45,7 +45,7 @@ class PermissionPolicy
      */
     public function delete(User $user, Permission $permission): bool
     {
-        return $user->hasAnyRole(['Super Admin'], 'web') || $user->hasAnyPermission(['delete:Permission'], 'web');
+        return $user->hasAnyRole(['Super Admin'], 'web') || $user->hasAnyPermission(['eliminar:Permisos'], 'web');
     }
 
     /**

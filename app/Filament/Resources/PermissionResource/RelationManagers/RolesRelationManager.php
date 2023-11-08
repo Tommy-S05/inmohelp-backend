@@ -93,49 +93,49 @@ class RolesRelationManager extends RelationManager
     public function isReadOnly(): bool
     {
         return !(auth()->user()->hasAnyPermission([
-                'create:Role',
-                'update:Role',
-                'delete:Role',
+                'crear:Roles',
+                'actualizar:Roles',
+                'eliminar:Roles',
             ]) || auth()->user()->hasAnyRole(['Super Admin'], 'web'));
-    }
-
-    protected function canView(Model $record): bool
-    {
-        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasAnyPermission(['view:Role'], 'web');
     }
 
     protected function canViewAny(): bool
     {
-        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasAnyPermission(['view_any:Role'], 'web');
+        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasAnyPermission(['ver_todos:Roles'], 'web');
+    }
+
+    protected function canView(Model $record): bool
+    {
+        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasAnyPermission(['mostrar:Roles'], 'web');
     }
 
     protected function canCreate(): bool
     {
-        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasAnyPermission(['create:Role'], 'web');
+        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasAnyPermission(['crear:Roles'], 'web');
     }
 
     protected function canEdit(Model $record): bool
     {
-        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasAnyPermission(['update:Role'], 'web');
+        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasAnyPermission(['actualizar:Roles'], 'web');
     }
 
     protected function canAttach(): bool
     {
-        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasAnyPermission(['update:Role'], 'web');
+        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasAnyPermission(['actualizar:Roles'], 'web');
     }
 
     protected function canDetach(Model $record): bool
     {
-        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasAnyPermission(['update:Role'], 'web');
+        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasAnyPermission(['actualizar:Roles'], 'web');
     }
 
     protected function canDetachAny(): bool
     {
-        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasAnyPermission(['update:Role'], 'web');
+        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasAnyPermission(['actualizar:Roles'], 'web');
     }
 
     protected function canDelete(Model $record): bool
     {
-        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasAnyPermission(['delete:Role'], 'web');
+        return auth()->user()->hasRole(['Super Admin']) || auth()->user()->hasAnyPermission(['eliminar:Roles'], 'web');
     }
 }
