@@ -68,6 +68,10 @@ class AccountController extends Controller
             foreach($category['subcategories'] as $subcategory) {
                 $amount = $subcategory['account_transactions'][0]['amount'];
 
+                if(!$amount || $amount < 0) {
+                    $amount = 0;
+                }
+
                 if($type === 'income') {
                     $total_incomes += $amount;
                 } elseif($type === 'expense') {
