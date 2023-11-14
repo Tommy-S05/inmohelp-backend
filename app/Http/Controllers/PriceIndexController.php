@@ -42,7 +42,7 @@ class PriceIndexController extends Controller
         $downPayment = $settings->down_payment_available;
 
         $account = Account::where('user_id', Auth::user()->id)->first();
-        $available = $account->budget * 0.7;
+        $available = $account->budget;
 
         // Calcular el monto del préstamo
         $loanAmount = $this->calculateLoanAmount($available, $settings->interest_rate, $settings->loan_term);
@@ -56,7 +56,7 @@ class PriceIndexController extends Controller
             ->get(['name', 'average_price']);
 
         // Calcular el tamaño máximo de área que el usuario puede comprar en cada vecindario
-        foreach ($priceIndex as $neighborhood) {
+        foreach($priceIndex as $neighborhood) {
             $neighborhood->maxArea = ($downPayment / $neighborhood->average_price) + $loanAmount / $neighborhood->average_price;
         }
 
@@ -65,7 +65,8 @@ class PriceIndexController extends Controller
 
     private function calculateLoanAmount($available, $interestRate, $loanTerm)
     {
-        $monthlyInterestRate = (((1 + ($interestRate / 100)) ** (1 / 12)) - 1);
+        //        $monthlyInterestRate = (((1 + ($interestRate / 100)) ** (1 / 12)) - 1);
+        $monthlyInterestRate = ($interestRate / 100) / 12;
         $numberOfPayments = $loanTerm * 12;
 
         $loanAmount = $available * (pow(1 + $monthlyInterestRate, $numberOfPayments) - 1) / ($monthlyInterestRate * pow(1 + $monthlyInterestRate, $numberOfPayments));

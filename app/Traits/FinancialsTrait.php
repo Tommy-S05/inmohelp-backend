@@ -47,7 +47,7 @@ trait FinancialsTrait
     {
         $account = Account::where('user_id', Auth::user()->id)->first();
         //        $account = Account::where('user_id', 1)->first();
-        $available = $account->budget * 0.7;
+        $available = $account->budget;
         return response()->json($available);
     }
 

@@ -15,7 +15,7 @@ class AccountSeeder extends Seeder
     {
         $total_incomes = 225000;
         $total_expenses = 46370;
-        $budget = $total_incomes - $total_expenses;
+        $budget = ($total_incomes - $total_expenses) * 0.7;
 
         $newAccount = Account::create([
             'user_id' => 1,

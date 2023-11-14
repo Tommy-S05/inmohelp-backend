@@ -32,7 +32,7 @@ class AccountController extends Controller
      */
     public function store(Request $request)
     {
-        $budget = $request->total_incomes - $request->total_expenses;
+        $budget = ($request->total_incomes - $request->total_expenses) * 0.7;
 
         $newAccount = Account::create([
             'user_id' => Auth::user()->id,
@@ -93,7 +93,7 @@ class AccountController extends Controller
                 }
             }
         }
-        $budget = $total_incomes - $total_expenses;
+        $budget = ($total_incomes - $total_expenses) * 0.7;
 
         $account->update([
             'total_incomes' => $total_incomes,
