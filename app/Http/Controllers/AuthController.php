@@ -36,7 +36,7 @@ class AuthController extends Controller
             //            foreach($permissions as $permission) {
             //                $permissionName[] = $permission->name;
             //            }
-            $user->tokens()->delete();
+            //            $user->tokens()->delete();
             //            $token = $user->createToken('auth_token', $permissionName)->plainTextToken;
             $token = $user->createToken('auth_token')->plainTextToken;
             return response()->json([
