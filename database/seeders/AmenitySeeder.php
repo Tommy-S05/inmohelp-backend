@@ -38,7 +38,7 @@ class AmenitySeeder extends Seeder
         ]);
 
         Amenity::create([
-            'name' => 'Ascensor'
+            'name' => 'ascensor'
         ]);
 
         Amenity::create([
@@ -70,11 +70,11 @@ class AmenitySeeder extends Seeder
         ]);
 
         Amenity::create([
-            'name' => 'Salón de eventos'
+            'name' => 'salón de eventos'
         ]);
 
         Amenity::create([
-            'name' => 'Area común'
+            'name' => 'área común'
         ]);
     }
 }

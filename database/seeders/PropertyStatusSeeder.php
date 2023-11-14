@@ -38,34 +38,34 @@ class PropertyStatusSeeder extends Seeder
             'description' => 'Remodelado',
         ]);
 
-        PropertyStatus::create([
-            'name' => 'En Proceso de Construcción',
-            'description' => 'En Proceso de Construcción',
-        ]);
-
-        PropertyStatus::create([
-            'name' => 'En Proceso de Remodelación',
-            'description' => 'En Proceso de Remodelación',
-        ]);
-
-        PropertyStatus::create([
-            'name' => 'En Proceso de Ampliación',
-            'description' => 'En Proceso de Ampliación',
-        ]);
-
-        PropertyStatus::create([
-            'name' => 'En Proceso de Mantenimiento',
-            'description' => 'En Proceso de Mantenimiento',
-        ]);
-
-        PropertyStatus::create([
-            'name' => 'En Proceso de Reparación',
-            'description' => 'En Proceso de Reparación',
-        ]);
-
-        PropertyStatus::create([
-            'name' => 'En Proceso de Pintura',
-            'description' => 'En Proceso de Pintura',
-        ]);
+        //        PropertyStatus::create([
+        //            'name' => 'En Proceso de Construcción',
+        //            'description' => 'En Proceso de Construcción',
+        //        ]);
+        //
+        //        PropertyStatus::create([
+        //            'name' => 'En Proceso de Remodelación',
+        //            'description' => 'En Proceso de Remodelación',
+        //        ]);
+        //
+        //        PropertyStatus::create([
+        //            'name' => 'En Proceso de Ampliación',
+        //            'description' => 'En Proceso de Ampliación',
+        //        ]);
+        //
+        //        PropertyStatus::create([
+        //            'name' => 'En Proceso de Mantenimiento',
+        //            'description' => 'En Proceso de Mantenimiento',
+        //        ]);
+        //
+        //        PropertyStatus::create([
+        //            'name' => 'En Proceso de Reparación',
+        //            'description' => 'En Proceso de Reparación',
+        //        ]);
+        //
+        //        PropertyStatus::create([
+        //            'name' => 'En Proceso de Pintura',
+        //            'description' => 'En Proceso de Pintura',
+        //        ]);
     }
 }

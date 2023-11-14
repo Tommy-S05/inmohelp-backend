@@ -16,14 +16,14 @@ return new class extends Migration {
             $table->string('name');
             $table->string('slug')->unique();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignId('property_type_id')->constrained('property_types');
+            $table->foreignId('property_type_id')->nullable()->constrained('property_types')->nullOnDelete();
             //            $table->string('thumbnail')->nullable();
             //            $table->foreignId('property_condition_id')->constrained('property_conditions')->cascadeOnDelete();
             $table->text('short_description')->nullable();
             $table->longText('description')->nullable();
-            $table->foreignId('province_id')->constrained('provinces');
-            $table->foreignId('municipality_id')->constrained('municipalities');
-            $table->foreignId('neighborhood_id')->constrained('neighborhoods');
+            $table->foreignId('province_id')->nullable()->constrained('provinces')->nullOnDelete();
+            $table->foreignId('municipality_id')->nullable()->constrained('municipalities')->nullOnDelete();
+            $table->foreignId('neighborhood_id')->nullable()->constrained('neighborhoods')->nullOnDelete();
             $table->string('address');
             $table->text('map')->nullable();
             $table->string('latitude')->nullable();

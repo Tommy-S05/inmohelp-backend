@@ -32,41 +32,41 @@ class PropertyTypeSeeder extends Seeder
             'is_active' => true
         ]);
 
-        PropertyType::create([
-            'name' => 'Comercios',
-            'slug' => 'comercios',
-            'description' => 'Comercios',
-            'code' => 'COM',
-            //            'thumbnail' => '/assets/categories/category-comercios.png',
-            'is_active' => true
-        ]);
-
-        PropertyType::create([
-            'name' => 'Countries',
-            'slug' => 'countries',
-            'description' => 'countries',
-            'code' => 'COU',
-            //            'thumbnail' => '/assets/categories/category-countries.png',
-            'is_active' => true
-        ]);
-
-        PropertyType::create([
-            'name' => 'Hoteles',
-            'slug' => 'hoteles',
-            'description' => 'hoteles',
-            'code' => 'HOT',
-            //            'thumbnail' => '/assets/categories/category-hotel.png',
-            'is_active' => true
-        ]);
-
-        PropertyType::create([
-            'name' => 'Universidades',
-            'slug' => 'universidades',
-            'description' => 'universidades',
-            'code' => 'UNI',
-            //            'thumbnail' => '/assets/categories/category-universidad.png',
-            'is_active' => true
-        ]);
+        //        PropertyType::create([
+        //            'name' => 'Comercios',
+        //            'slug' => 'comercios',
+        //            'description' => 'Comercios',
+        //            'code' => 'COM',
+        //            //            'thumbnail' => '/assets/categories/category-comercios.png',
+        //            'is_active' => true
+        //        ]);
+        //
+        //        PropertyType::create([
+        //            'name' => 'Countries',
+        //            'slug' => 'countries',
+        //            'description' => 'countries',
+        //            'code' => 'COU',
+        //            //            'thumbnail' => '/assets/categories/category-countries.png',
+        //            'is_active' => true
+        //        ]);
+        //
+        //        PropertyType::create([
+        //            'name' => 'Hoteles',
+        //            'slug' => 'hoteles',
+        //            'description' => 'hoteles',
+        //            'code' => 'HOT',
+        //            //            'thumbnail' => '/assets/categories/category-hotel.png',
+        //            'is_active' => true
+        //        ]);
+        //
+        //        PropertyType::create([
+        //            'name' => 'Universidades',
+        //            'slug' => 'universidades',
+        //            'description' => 'universidades',
+        //            'code' => 'UNI',
+        //            //            'thumbnail' => '/assets/categories/category-universidad.png',
+        //            'is_active' => true
+        //        ]);
 
         PropertyType::create([
             'name' => 'Casa de Verano',
@@ -78,13 +78,22 @@ class PropertyTypeSeeder extends Seeder
         ]);
 
         PropertyType::create([
-            'name' => 'Almacenes',
-            'slug' => 'almacenes',
-            'description' => 'almacenes',
-            'code' => 'ALM',
-            //            'thumbnail' => '/assets/categories/category-almacenes2.png',
+            'name' => 'Villa',
+            'slug' => Str::slug('villa', '-'),
+            'description' => 'Villa',
+            'code' => 'VIL',
+            //            'thumbnail' => '/assets/categories/category-casadeverano.png',
             'is_active' => true
         ]);
+
+        //        PropertyType::create([
+        //            'name' => 'Almacenes',
+        //            'slug' => 'almacenes',
+        //            'description' => 'almacenes',
+        //            'code' => 'ALM',
+        //            //            'thumbnail' => '/assets/categories/category-almacenes2.png',
+        //            'is_active' => true
+        //        ]);
 
         //        PropertyType::create([
         //            'name' => 'Terreno',

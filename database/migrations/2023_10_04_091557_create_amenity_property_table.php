@@ -10,10 +10,10 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('amenity_property', function (Blueprint $table) {
+        Schema::create('amenity_property', function(Blueprint $table) {
             $table->id();
-            $table->foreignId('amenity_id')->constrained();
-            $table->foreignId('property_id')->constrained();
+            $table->foreignId('amenity_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('property_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }
