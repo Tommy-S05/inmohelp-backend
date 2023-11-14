@@ -453,9 +453,20 @@ class PropertyResource extends Resource
         ];
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        if(auth()->user()->hasRole([1, 'Admin'])) {
+            return $query;
+        }
+        return $query->where('user_id', auth()->id());
+    }
+
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::count();
+        $count = self::getEloquentQuery()->count();
+        return $count !== null ? (string)$count : '0';
+        //        return static::getModel()::count();
     }
 
     public static function getNavigationBadgeColor(): ?string
