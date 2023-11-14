@@ -60,7 +60,7 @@ class DatabaseSeeder extends Seeder
 
         $role1 = Role::create(['name' => 'Super Admin', 'guard_name' => 'web']);
         $role2 = Role::create(['name' => 'Admin', 'guard_name' => 'web']);
-        $role3 = Role::create(['name' => 'Agent', 'guard_name' => 'web']);
+        $role3 = Role::create(['name' => 'Agente', 'guard_name' => 'web']);
         $role4 = Role::create(['name' => 'Cliente', 'guard_name' => 'web']);
 
         $user1->assignRole($role1);
