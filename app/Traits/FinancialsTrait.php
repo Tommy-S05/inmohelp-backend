@@ -19,7 +19,8 @@ trait FinancialsTrait
         }
         $loan = $request->price - $settings->down_payment_available;
         $periods = $settings->loan_term * 12;
-        $interest = (((1 + ($settings->interest_rate / 100)) ** (1 / 12)) - 1);
+        //        $interest = (((1 + ($settings->interest_rate / 100)) ** (1 / 12)) - 1);
+        $interest = ($settings->interest_rate / 100) / 12;
 
         $payment = $loan * (($interest * (1 + $interest) ** $periods) / ((1 + $interest) ** $periods - 1));
         //        $payment = ($interest * $loan) / (1 - (1 + $interest) ** (-$periods));
@@ -30,7 +31,8 @@ trait FinancialsTrait
     {
         $settings = Setting::where('user_id', Auth::user()->id)->first();
         $periods = $settings->loan_term * 12;
-        $interest = (((1 + ($settings->interest_rate / 100)) ** (1 / 12)) - 1);
+        //        $interest = (((1 + ($settings->interest_rate / 100)) ** (1 / 12)) - 1);
+        $interest = ($settings->interest_rate / 100) / 12;
         $downPayment = $settings->down_payment_available;
 
         $sql = "CASE
