@@ -5,7 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\SubCategoryResource\Pages;
 use App\Filament\Resources\SubCategoryResource\RelationManagers;
 use App\Models\Category;
-use App\Models\SubCategory;
+use App\Models\Subcategory;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -17,7 +17,7 @@ use Illuminate\Support\Str;
 
 class SubCategoryResource extends Resource
 {
-    protected static ?string $model = SubCategory::class;
+    protected static ?string $model = Subcategory::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-adjustments-vertical';
     protected static ?string $navigationGroup = 'Finance';
