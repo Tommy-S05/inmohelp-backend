@@ -39,6 +39,8 @@ class PropertyResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-home-modern';
     protected static ?string $navigationLabel = 'Propiedades';
     protected static ?string $navigationGroup = 'Propiedades';
+    protected static ?string $breadcrumb = 'propiedades';
+    protected static ?string $label = 'propiedades';
     protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
@@ -69,6 +71,7 @@ class PropertyResource extends Resource
     public static function getNameFormField()
     {
         return TextInput::make('name')
+            ->label('Nombre')
             ->autofocus()
             ->required()
             ->live(onBlur: true)
@@ -88,7 +91,7 @@ class PropertyResource extends Resource
 
     public static function getPropertyInformationWizard()
     {
-        return Wizard\Step::make('Property Information')
+        return Wizard\Step::make('Información')
             ->icon('heroicon-o-home')
             ->columns(3)
             ->schema([
@@ -100,6 +103,7 @@ class PropertyResource extends Resource
                         self::getSlugFormField(),
 
                         Select::make('property_type_id')
+                            ->label('Tipo de propiedad')
                             ->relationship('propertyType', 'name')
                             ->required()
                             ->preload()
@@ -112,11 +116,13 @@ class PropertyResource extends Resource
                                         self::getNameFormField(),
                                         self::getSlugFormField(),
                                         Textarea::make('description')
+                                            ->label('Descripción')
                                             ->rows(4)
                                             ->maxLength(65535)
                                             ->nullable()
                                             ->columnSpanFull(),
                                         Toggle::make('is_active')
+                                            ->label('Activo')
                                             ->default(true)
                                             ->label('Active')
                                             ->required(),
@@ -124,10 +130,12 @@ class PropertyResource extends Resource
                             ]),
 
                         Textarea::make('short_description')
+                            ->label('Descripción corta')
                             ->autosize()
                             ->maxLength(65535),
 
                         Textarea::make('description')
+                            ->label('Descripción')
                             ->maxLength(65535)
                             ->rows(5)
                             ->columnSpanFull(),
@@ -138,6 +146,7 @@ class PropertyResource extends Resource
                     ->columnSpan(1)
                     ->schema([
                         Select::make('purpose')
+                            ->label('Propósito')
                             ->options([
                                 'Venta' => 'Venta',
                                 'Alquiler' => 'Alquiler',
@@ -146,6 +155,7 @@ class PropertyResource extends Resource
                             ->native(false),
 
                         TextInput::make('area')
+                            ->label('Área')
                             ->numeric()
                             ->label('Property Size')
                             ->required()
@@ -154,6 +164,7 @@ class PropertyResource extends Resource
                             ->minValue(0),
 
                         TextInput::make('price')
+                            ->label('Precio')
                             ->numeric()
                             ->required()
                             ->inputMode('float')
@@ -163,6 +174,7 @@ class PropertyResource extends Resource
                             ->minValue(0),
 
                         DatePicker::make('year_built')
+                            ->label('Año de construcción')
                             ->placeholder('Select a date')
                             ->displayFormat('M Y')
                             ->maxDate(now())
@@ -174,7 +186,7 @@ class PropertyResource extends Resource
 
     public static function getPropertyLocationWizard()
     {
-        return Wizard\Step::make('Property Location')
+        return Wizard\Step::make('Localización')
             ->icon('heroicon-o-map-pin')
             ->columns(2)
             ->schema([
@@ -220,7 +232,7 @@ class PropertyResource extends Resource
 
     public static function getPropertyAmenitiesWizard()
     {
-        return Wizard\Step::make('Property Amenities')
+        return Wizard\Step::make('Amenidades')
             ->icon('heroicon-o-sparkles')
             ->schema([
                 Section::make('Details')
@@ -259,7 +271,7 @@ class PropertyResource extends Resource
 
     public static function getPropertyGalleryWizard()
     {
-        return Wizard\Step::make('Property Gallery')
+        return Wizard\Step::make('Galería')
             ->icon('heroicon-o-photo')
             ->schema([
                 Section::make('Thumbnail')
@@ -295,7 +307,7 @@ class PropertyResource extends Resource
 
     public static function getPropertyStatusWizard()
     {
-        return Wizard\Step::make('Property Status')
+        return Wizard\Step::make('Estado')
             ->icon('heroicon-o-battery-50')
             ->columns(2)
             ->schema([
@@ -343,8 +355,10 @@ class PropertyResource extends Resource
         return $table
             ->columns([
                 SpatieMediaLibraryImageColumn::make('thumbnail')
+                    ->label('Miniatura')
                     ->collection('thumbnail'),
                 SpatieMediaLibraryImageColumn::make('images')
+                    ->label('Galería')
                     ->collection('gallery')
                     ->label('Gallery')
                     ->circular()
@@ -352,62 +366,80 @@ class PropertyResource extends Resource
                     ->limit(3)
                     ->limitedRemainingText(),
                 Tables\Columns\TextColumn::make('code')
+                    ->label('Código')
                     ->copyable()
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
                     ->limit(20)
                     ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('slug')
+                    ->label('Slug')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Agent')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('propertyType.name')
+                    ->label('Tipo de propiedad')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('purpose')
+                    ->label('Propósito')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('area')
+                    ->label('Área')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('price')
+                    ->label('Precio')
                     ->money()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('province.name')
+                    ->label('Provincia')
                     ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('municipality.name')
+                    ->label('Municipio')
                     ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('neighborhood.name')
+                    ->label('Sector')
                     ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('propertyStatus.name')
+                    ->label('Estado')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\ToggleColumn::make('featured')
+                    ->label('Destacada')
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\ToggleColumn::make('available')
+                    ->label('Disponible')
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\ToggleColumn::make('published'),
+                Tables\Columns\ToggleColumn::make('published')
+                    ->label('Publicada'),
                 Tables\Columns\TextColumn::make('published_at')
+                    ->label('Fecha de publicación')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\ToggleColumn::make('is_active'),
+                Tables\Columns\ToggleColumn::make('is_active')
+                    ->label('Activa'),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creada')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizada')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -419,13 +451,13 @@ class PropertyResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make()
                     ->label('')
-                    ->tooltip('View Property'),
+                    ->tooltip('Ver Propiedad'),
                 Tables\Actions\EditAction::make()
                     ->label('')
-                    ->tooltip('Edit Property'),
+                    ->tooltip('Editar Propiedad'),
                 Tables\Actions\DeleteAction::make()
                     ->label('')
-                    ->tooltip('Delete Property'),
+                    ->tooltip('Eliminar Propiedad'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
