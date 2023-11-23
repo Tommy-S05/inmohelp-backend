@@ -18,7 +18,8 @@ class PropertyStatusResource extends Resource
     protected static ?string $model = PropertyStatus::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-battery-50';
-    protected static ?string $navigationGroup = 'Properties';
+    protected static ?string $navigationLabel = 'Estatus de Propiedad';
+    protected static ?string $navigationGroup = 'Propiedades';
     protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form

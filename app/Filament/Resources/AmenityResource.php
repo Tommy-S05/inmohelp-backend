@@ -18,7 +18,8 @@ class AmenityResource extends Resource
     protected static ?string $model = Amenity::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-sparkles';
-    protected static ?string $navigationGroup = 'Properties';
+    protected static ?string $navigationLabel = 'Amenidades';
+    protected static ?string $navigationGroup = 'Propiedades';
     protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form

@@ -18,6 +18,7 @@ class IconResource extends Resource
     protected static ?string $model = Icon::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-list-bullet';
+    protected static ?string $navigationLabel = 'Iconos';
     protected static ?string $navigationGroup = 'Properties';
     protected static ?int $navigationSort = 4;
     protected static bool $shouldRegisterNavigation = false;

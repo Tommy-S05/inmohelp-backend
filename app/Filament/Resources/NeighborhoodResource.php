@@ -19,7 +19,8 @@ class NeighborhoodResource extends Resource
     protected static ?string $model = Neighborhood::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-home';
-    protected static ?string $navigationGroup = 'Territories';
+    protected static ?string $navigationLabel = 'Sectores';
+    protected static ?string $navigationGroup = 'Territorios';
     protected static ?int $navigationSort = 4;
 
     public static function form(Form $form): Form

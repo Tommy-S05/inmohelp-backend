@@ -19,7 +19,8 @@ class PropertyTypeResource extends Resource
     protected static ?string $model = PropertyType::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-tag';
-    protected static ?string $navigationGroup = 'Properties';
+    protected static ?string $navigationLabel = 'Tipos de Propiedad';
+    protected static ?string $navigationGroup = 'Propiedades';
     protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
