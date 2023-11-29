@@ -63,6 +63,12 @@ class PriceIndexController extends Controller
         return response()->json($priceIndex);
     }
 
+    public function neighborhood()
+    {
+        $neighborhoods = Neighborhood::where('average_price', '>=', 0)->get();
+        return response()->json($neighborhoods);
+    }
+
     private function calculateLoanAmount($available, $interestRate, $loanTerm)
     {
         //        $monthlyInterestRate = (((1 + ($interestRate / 100)) ** (1 / 12)) - 1);
