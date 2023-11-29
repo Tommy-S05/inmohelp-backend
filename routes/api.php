@@ -70,7 +70,7 @@ Route::get('/categories', [\App\Http\Controllers\CategoryController::class, 'ind
 
 //PriceIndexController
 Route::get('/price-index', [\App\Http\Controllers\PriceIndexController::class, 'index'])->middleware('auth:sanctum');
-Route::get('/neighborhoods', [\App\Http\Controllers\PriceIndexController::class, 'neighborhood']);
+Route::get('/neighborhoods', [\App\Http\Controllers\TerritoryController::class, 'neighborhood']);
 
 //AmortizationController
 Route::get('/amortization', [\App\Http\Controllers\AmortizationController::class, 'amortization']);
