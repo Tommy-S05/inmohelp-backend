@@ -87,7 +87,6 @@ class MunicipalityResource extends Resource
                 Tables\Columns\TextColumn::make('neighborhoods_count')
                     ->label('Sectores')
                     ->counts('neighborhoods')
-                    ->label('Neighborhoods')
                     ->badge()
                     ->color('secondary')
                     ->sortable(),

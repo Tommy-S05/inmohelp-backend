@@ -97,6 +97,7 @@ class CategoryResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('type')
                     ->label('Tipo')
+                    ->getStateUsing(fn(Category $record): string => $record->type === 'income' ? 'Ingresos' : 'Gastos')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('description')
                     ->label('Descripción')

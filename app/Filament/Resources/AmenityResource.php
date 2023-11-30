@@ -37,7 +37,6 @@ class AmenityResource extends Resource
                             ->maxLength(255),
                         Forms\Components\Toggle::make('is_active')
                             ->label('Activo')
-                            ->label('Active')
                             ->default(true)
                             ->inline(false)
                             ->required(),

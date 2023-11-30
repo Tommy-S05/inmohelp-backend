@@ -141,7 +141,6 @@ class RoleResource extends Resource
                 Tables\Columns\TextColumn::make('permissions_count')
                     ->label('Permisos')
                     ->badge()
-                    ->label('Permissions')
                     ->counts('permissions')
                     ->colors(['success']),
                 Tables\Columns\TextColumn::make('updated_at')

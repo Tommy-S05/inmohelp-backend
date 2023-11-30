@@ -73,7 +73,6 @@ class ProvinceResource extends Resource
                 Tables\Columns\TextColumn::make('municipalities_count')
                     ->label('Municipios')
                     ->counts('municipalities')
-                    ->label('Municipalities')
                     ->badge()
                     ->color('secondary')
                     ->sortable(),

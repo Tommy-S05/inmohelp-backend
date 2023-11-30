@@ -395,7 +395,7 @@ class PropertyResource extends Resource
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('user.name')
-                    ->label('Agent')
+                    ->label('Agente')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('propertyType.name')
                     ->label('Tipo de propiedad')
@@ -412,7 +412,7 @@ class PropertyResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('price')
                     ->label('Precio')
-                    ->money()
+                    ->money('DOP')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('province.name')
                     ->label('Provincia')

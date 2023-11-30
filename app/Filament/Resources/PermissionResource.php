@@ -106,6 +106,7 @@ class PermissionResource extends Resource
                     ->counts('roles')
                     ->colors(['success']),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizado')
                     ->dateTime(),
             ])
             ->filters([

@@ -97,7 +97,6 @@ class CreateUser extends CreateRecord
                     Toggle::make('is_active')
                         ->label('Activo')
                         ->default(true)
-                        ->label('Active')
                         ->inline(false)
                         ->required(),
                     Textarea::make('address')

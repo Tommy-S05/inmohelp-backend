@@ -52,7 +52,6 @@ class RegionResource extends Resource
                 Tables\Columns\TextColumn::make('provinces_count')
                     ->label('Provincias')
                     ->counts('provinces')
-                    ->label('Provinces')
                     ->badge()
                     ->color('secondary')
                     ->sortable(),
