@@ -20,6 +20,8 @@ class MunicipalityResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
     protected static ?string $navigationLabel = 'Municipios';
     protected static ?string $navigationGroup = 'Territorios';
+    protected static ?string $breadcrumb = 'municipios';
+    protected static ?string $label = 'municipios';
     protected static ?int $navigationSort = 5;
 
     public static function form(Form $form): Form
@@ -29,9 +31,11 @@ class MunicipalityResource extends Resource
                 Forms\Components\Section::make()
                     ->schema([
                         Forms\Components\TextInput::make('name')
+                            ->label('Nombre')
                             ->required()
                             ->maxLength(255),
                         Forms\Components\Select::make('province_id')
+                            ->label('Provincia')
                             ->relationship('province', 'name')
                             ->required()
                             ->preload()
@@ -40,11 +44,13 @@ class MunicipalityResource extends Resource
                                 Forms\Components\Section::make()
                                     ->schema([
                                         Forms\Components\TextInput::make('name')
+                                            ->label('Nombre')
                                             ->autofocus()
                                             ->required()
                                             ->unique()
                                             ->maxLength(255),
                                         Forms\Components\Select::make('region_id')
+                                            ->label('Región')
                                             ->relationship('region', 'name')
                                             ->required()
                                             ->preload()
@@ -53,14 +59,15 @@ class MunicipalityResource extends Resource
                                                 Forms\Components\Section::make()
                                                     ->schema([
                                                         Forms\Components\TextInput::make('name')
+                                                            ->label('Nombre')
                                                             ->autofocus()
                                                             ->required()
                                                             ->unique()
                                                             ->maxLength(255),
                                                     ])
-                                            ])->createOptionModalHeading('Create region'),
+                                            ])->createOptionModalHeading('Crear región'),
                                     ])->columns(2)
-                            ])->createOptionModalHeading('Create province'),
+                            ])->createOptionModalHeading('Crear provincia'),
                     ])->columns(2)
             ]);
     }
@@ -70,29 +77,35 @@ class MunicipalityResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('province.name')
+                    ->label('Provincia')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('neighborhoods_count')
+                    ->label('Sectores')
                     ->counts('neighborhoods')
                     ->label('Neighborhoods')
                     ->badge()
                     ->color('secondary')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizado')
                     ->dateTime()
                     ->since()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creado')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('province')
+                    ->label('Provincia')
                     ->relationship('province', 'name')
                     ->placeholder('All provinces')
                     ->multiple()

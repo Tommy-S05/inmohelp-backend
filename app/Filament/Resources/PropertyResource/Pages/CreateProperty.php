@@ -72,7 +72,7 @@ class CreateProperty extends CreateRecord
                 Action::make('Ver')
                     ->button()
                     ->url($this->getResource()::getUrl('view', ['record' => $this->getRecord()])),
-                Action::make('cerrar')
+                Action::make('Cerrar')
                     ->color('gray')
                     ->close(),
             ]);

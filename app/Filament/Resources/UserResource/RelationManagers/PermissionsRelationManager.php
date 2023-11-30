@@ -23,10 +23,12 @@ class PermissionsRelationManager extends RelationManager
                 Forms\Components\Section::make()
                     ->schema([
                         Forms\Components\TextInput::make('name')
+                            ->label('Nombre')
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->maxLength(255),
                         Forms\Components\Select::make('guard_name')
+                            ->label('Guard')
                             ->disabled()
                             ->options([
                                 'web' => 'Web',
@@ -49,20 +51,24 @@ class PermissionsRelationManager extends RelationManager
             ->recordTitleAttribute('name')
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
                     ->badge()
                     ->formatStateUsing(fn($state): string => Str::headline($state))
                     ->colors(['primary'])
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('guard_name')
+                    ->label('Guard')
                     ->badge()
                     ->colors(['tertiary']),
                 Tables\Columns\TextColumn::make('roles_count')
+                    ->label('Roles')
                     ->badge()
                     ->label('Roles')
                     ->counts('roles')
                     ->colors(['success']),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizado')
                     ->dateTime(),
             ])
             ->filters([

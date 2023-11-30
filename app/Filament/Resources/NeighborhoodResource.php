@@ -120,8 +120,8 @@ class NeighborhoodResource extends Resource
                     ->money('dop')
                     ->badge()
                     ->color(function($state): string {
-                        if($state > 7000) return 'danger';
-                        elseif($state > 4000) return 'warning';
+                        if($state > 20000) return 'danger';
+                        elseif($state > 10000) return 'warning';
                         return 'success';
                     })
                     //                    ->searchable()
@@ -151,8 +151,8 @@ class NeighborhoodResource extends Resource
                 Tables\Filters\Filter::make('updated_at')
                     ->label('Actualizado')
                     ->form([
-                        Forms\Components\DateTimePicker::make('updated_from'),
-                        Forms\Components\DateTimePicker::make('updated_until'),
+                        Forms\Components\DateTimePicker::make('updated_from')->label('Actualizado desde'),
+                        Forms\Components\DateTimePicker::make('updated_until')->label('Actualizado hasta'),
                     ])
                     ->query(function(Builder $query, array $data): Builder {
                         return $query

@@ -21,6 +21,8 @@ class CategoryResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-adjustments-horizontal';
     protected static ?string $navigationLabel = 'Categorías';
     protected static ?string $navigationGroup = 'Finanzas';
+    protected static ?string $breadcrumb = 'categorías';
+    protected static ?string $label = 'categorías';
     protected static ?int $navigationSort = 2;
 
 
@@ -45,6 +47,7 @@ class CategoryResource extends Resource
                         //                        $set('slug', Str::slug($state));
                         //                    }),
                         Forms\Components\TextInput::make('name')
+                            ->label('Nombre')
                             ->autofocus()
                             ->required()
                             ->live(onBlur: true)
@@ -53,6 +56,7 @@ class CategoryResource extends Resource
                             ->maxLength(255),
 
                         Forms\Components\TextInput::make('slug')
+                            ->label('Slug')
                             ->disabled()
                             ->dehydrated()
                             ->required()
@@ -60,6 +64,7 @@ class CategoryResource extends Resource
                             ->maxLength(255),
 
                         Forms\Components\Select::make('type')
+                            ->label('Tipo')
                             ->options([
                                 'income' => 'Ingresos',
                                 'expense' => 'Gastos',
@@ -68,9 +73,11 @@ class CategoryResource extends Resource
                             ->required(),
 
                         Forms\Components\TextInput::make('description')
+                            ->label('Descripción')
                             ->maxLength(255),
 
                         Forms\Components\Toggle::make('is_active')
+                            ->label('Activo')
                             ->default(true)
                             ->required(),
                     ])->columns(2),
@@ -82,21 +89,28 @@ class CategoryResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('slug')
+                    ->label('Slug')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('type')
+                    ->label('Tipo')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('description')
+                    ->label('Descripción')
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\IconColumn::make('is_active')
+                    ->label('Activo')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creado')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizado')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

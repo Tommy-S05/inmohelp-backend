@@ -21,6 +21,7 @@ class UsersRelationManager extends RelationManager
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label('Nombre')
                     ->required()
                     ->maxLength(255),
             ]);
@@ -32,25 +33,29 @@ class UsersRelationManager extends RelationManager
             ->recordTitleAttribute('name')
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
+                    ->label('Correo electrónico')
                     ->sortable()
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('permissions_count')
-                    ->label('Permissions')
+                    ->label('Permisos')
                     ->numeric()
                     ->badge()
                     ->color('success')
                     ->getStateUsing(fn(User $record): string => $record->getAllPermissions()->count()),
                 Tables\Columns\TextColumn::make('username')
+                    ->label('Usuario')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('phone_number')
+                    ->label('Teléfono')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('is_active')
-                    ->label('Active')
+                    ->label('Activo')
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {
                         'Activo' => 'success',
@@ -58,14 +63,17 @@ class UsersRelationManager extends RelationManager
                     })
                     ->getStateUsing(fn(User $record): string => $record->is_active ? 'Activo' : 'Inactivo'),
                 Tables\Columns\TextColumn::make('deleted_at')
+                    ->label('Eliminado')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creado')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizado')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

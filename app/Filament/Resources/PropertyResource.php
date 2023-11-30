@@ -82,6 +82,7 @@ class PropertyResource extends Resource
     public static function getSlugFormField(): Forms\Components\TextInput
     {
         return TextInput::make('slug')
+            ->label('Slug')
             ->required()
             ->unique(ignoreRecord: true)
             ->disabled()
@@ -155,9 +156,8 @@ class PropertyResource extends Resource
                             ->native(false),
 
                         TextInput::make('area')
-                            ->label('Área')
+                            ->label('Tamaño de la propiedad')
                             ->numeric()
-                            ->label('Property Size')
                             ->required()
                             ->placeholder('Size in square meters')
                             ->suffix('m²')
@@ -191,6 +191,7 @@ class PropertyResource extends Resource
             ->columns(2)
             ->schema([
                 Select::make('province_id')
+                    ->label('Provincia')
                     ->required()
                     ->relationship('province', 'name')
                     ->afterStateUpdated(function(Set $set, $state) {
@@ -203,7 +204,7 @@ class PropertyResource extends Resource
                     ->native(false),
 
                 Select::make('municipality_id')
-                    ->label('Municipality')
+                    ->label('Municipio')
                     ->required()
                     ->options(fn(Get $get): Collection => Municipality::query()
                         ->where('province_id', $get('province_id'))
@@ -215,7 +216,7 @@ class PropertyResource extends Resource
                     ->native(false),
 
                 Select::make('neighborhood_id')
-                    ->label('Neighborhood')
+                    ->label('Sector')
                     ->required()
                     ->options(fn(Get $get): Collection => Neighborhood::query()
                         ->where('municipality_id', $get('municipality_id'))
@@ -225,6 +226,7 @@ class PropertyResource extends Resource
                     ->live()
                     ->native(false),
                 TextInput::make('address')
+                    ->label('Dirección')
                     ->required()
                     ->maxLength(255),
             ]);
@@ -235,35 +237,40 @@ class PropertyResource extends Resource
         return Wizard\Step::make('Amenidades')
             ->icon('heroicon-o-sparkles')
             ->schema([
-                Section::make('Details')
+                Section::make('Detalles')
                     ->columns(2)
                     ->schema([
                         TextInput::make('bedrooms')
+                            ->label('Habitaciones')
                             ->numeric()
                             ->minValue(0),
 
                         TextInput::make('bathrooms')
+                            ->label('Baños')
                             ->numeric()
                             ->minValue(0),
 
                         TextInput::make('garages')
+                            ->label('Garajes')
                             ->numeric()
                             ->minValue(0),
 
                         TextInput::make('floors')
+                            ->label('Pisos')
                             ->numeric()
                             ->minValue(0)
                     ]),
 
-                Section::make('Amenities')
+                Section::make('Amenidades')
                     ->schema([
                         CheckboxList::make('amenities')
+                            ->label('Amenidades')
                             ->relationship('amenities', 'name')
                             ->columnSpanFull()
                             ->columns(3)
                             ->bulkToggleable()
                             ->searchable()
-                            ->noSearchResultsMessage('No amenities found.')
+                            ->noSearchResultsMessage('No se encuentran amenidades.')
                             ->gridDirection('row')
                     ])
             ]);
@@ -274,11 +281,12 @@ class PropertyResource extends Resource
         return Wizard\Step::make('Galería')
             ->icon('heroicon-o-photo')
             ->schema([
-                Section::make('Thumbnail')
+                Section::make('Miniatura')
                     ->columns(1)
                     ->collapsed(false)
                     ->schema([
                         SpatieMediaLibraryFileUpload::make('thumbnail')
+                            ->label('Miniatura')
                             ->collection('thumbnail')
                             ->disk('public')
                             ->moveFiles()
@@ -287,11 +295,12 @@ class PropertyResource extends Resource
                             ->downloadable()
                             ->columnSpanFull()
                     ]),
-                Section::make('Gallery')
+                Section::make('Galería')
                     ->columns(1)
                     ->collapsed()
                     ->schema([
                         SpatieMediaLibraryFileUpload::make('images')
+                            ->label('Imagénes')
                             ->collection('gallery')
                             ->disk('public')
                             ->multiple()
@@ -320,31 +329,37 @@ class PropertyResource extends Resource
                             ->columnSpanFull()
                             ->schema([
                                 Select::make('property_status_id')
+                                    ->label('Estado')
                                     ->relationship('propertyStatus', 'name')
                                     ->preload()
                                     ->searchable()
                                     ->native(false),
 
                                 Forms\Components\DateTimePicker::make('published_at')
+                                    ->label('Fecha de publicación')
                                     ->placeholder('Select a date')
                                     ->required()
                                     ->native(false),
                             ]),
 
                         Forms\Components\Toggle::make('is_active')
-                            ->label('Active')
+                            ->label('Activo')
                             ->default(true)
                             ->required(),
 
                         Forms\Components\Toggle::make('published')
+                            ->label('Publicada')
                             ->default(true)
                             ->required(),
 
                         Forms\Components\Toggle::make('available')
+                            ->label('Disponible')
                             ->default(true),
-                        Forms\Components\Toggle::make('featured'),
-                        Forms\Components\Toggle::make('negotiable'),
-                        Forms\Components\Toggle::make('furnished'),
+                        Forms\Components\Toggle::make('featured')
+                            ->label('Destacada')
+                            ->default(false),
+//                        Forms\Components\Toggle::make('negotiable'),
+//                        Forms\Components\Toggle::make('furnished'),
 
                     ])
             ]);
@@ -374,8 +389,7 @@ class PropertyResource extends Resource
                     ->label('Nombre')
                     ->limit(20)
                     ->searchable()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('slug')
                     ->label('Slug')
                     ->searchable()
@@ -394,7 +408,8 @@ class PropertyResource extends Resource
                 Tables\Columns\TextColumn::make('area')
                     ->label('Área')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('price')
                     ->label('Precio')
                     ->money()

@@ -36,10 +36,12 @@ class RolesRelationManager extends RelationManager
                 Forms\Components\Section::make()
                     ->schema([
                         Forms\Components\TextInput::make('name')
+                            ->label('Nombre')
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->maxLength(255),
                         Forms\Components\Select::make('guard_name')
+                            ->label('Guard')
                             ->disabled()
                             ->options([
                                 'web' => 'Web',
@@ -54,8 +56,8 @@ class RolesRelationManager extends RelationManager
                         'lg' => 2,
                     ]),
 
-                Forms\Components\Section::make('Permissions')
-                    ->description('Select all necessary permissions for this role.')
+                Forms\Components\Section::make('Permisos')
+                    ->description('Seleccione todos los permisos necesarios para este rol.')
                     ->schema(function() use ($groupedPermissions) {
                         $sections = [];
 
@@ -66,9 +68,10 @@ class RolesRelationManager extends RelationManager
                             }, $modelPermissions);
 
                             $sections[] = Forms\Components\Section::make($model)
-                                ->description("Permissions for $model")
+                                ->description("Permisos para $model")
                                 ->schema([
                                     Forms\Components\CheckboxList::make('permissions')
+                                        ->label('Permisos')
                                         ->relationship('permissions', 'name')
                                         ->bulkToggleable()
                                         ->searchable()
@@ -94,19 +97,23 @@ class RolesRelationManager extends RelationManager
             ->recordTitleAttribute('name')
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
                     ->badge()
                     ->formatStateUsing(fn($state): string => Str::headline($state))
                     ->colors(['primary'])
                     ->searchable(),
                 Tables\Columns\TextColumn::make('guard_name')
+                    ->label('Guard')
                     ->badge()
                     ->colors(['tertiary']),
                 Tables\Columns\TextColumn::make('users_count')
+                    ->label('Usuarios')
                     ->badge()
                     ->label('Users')
                     ->counts('users')
                     ->colors(['success']),
                 Tables\Columns\TextColumn::make('permissions_count')
+                    ->label('Permisos')
                     ->badge()
                     ->label('Permissions')
                     ->counts('permissions')

@@ -22,15 +22,15 @@ class ListUsers extends ListRecords
     public function getTabs(): array
     {
         return [
-            'All' => ListRecords\Tab::make(),
-            'This Week' => ListRecords\Tab::make()
+            'Todos' => ListRecords\Tab::make(),
+            'Esta semana' => ListRecords\Tab::make()
 //                ->modifyQueryUsing(fn(Builder $query): Builder => $query->where('created_at', '>=', now()->subWeek())),
                 ->query(fn($query) => $query->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()]))
                 ->badge(User::query()->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])->count()),
-            'This Month' => ListRecords\Tab::make()
+            'Este mes' => ListRecords\Tab::make()
                 ->query(fn($query) => $query->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()]))
                 ->badge(User::query()->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])->count()),
-            'This Year' => ListRecords\Tab::make()
+            'Este año' => ListRecords\Tab::make()
                 ->query(fn($query) => $query->whereBetween('created_at', [now()->startOfYear(), now()->endOfYear()]))
                 ->badge(User::query()->whereBetween('created_at', [now()->startOfYear(), now()->endOfYear()])->count()),
 

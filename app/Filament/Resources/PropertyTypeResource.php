@@ -19,8 +19,11 @@ class PropertyTypeResource extends Resource
     protected static ?string $model = PropertyType::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-tag';
-    protected static ?string $navigationLabel = 'Tipos de Propiedad';
+    protected static ?string $navigationLabel = 'Tipos de Propiedades';
     protected static ?string $navigationGroup = 'Propiedades';
+    protected static ?string $breadcrumb = 'tipos de propiedades';
+    protected static ?string $label = 'tipos de propiedades';
+
     protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
@@ -32,29 +35,33 @@ class PropertyTypeResource extends Resource
                     ->columnSpanFull()
                     ->schema([
                         Forms\Components\TextInput::make('code')
+                            ->label('Código')
                             ->required()
                             ->maxLength(3)
                             ->minLength(2),
                     ]),
                 Forms\Components\TextInput::make('name')
+                    ->label('Nombre')
                     ->autofocus()
                     ->required()
                     ->maxLength(255)
                     ->live(onBlur: true)
                     ->afterStateUpdated(fn(string $operation, $state, Forms\Set $set) => $operation === 'create' ? $set('slug', Str::slug($state)) : null),
                 Forms\Components\TextInput::make('slug')
+                    ->label('Slug')
                     ->disabled()
                     ->dehydrated()
                     ->required()
                     ->maxLength(255),
                 Forms\Components\Textarea::make('description')
+                    ->label('Descripción')
                     ->rows(4)
                     ->maxLength(65535)
                     ->nullable()
                     ->columnSpanFull(),
                 Forms\Components\Toggle::make('is_active')
+                    ->label('Activo')
                     ->default(true)
-                    ->label('Active')
                     ->required(),
             ]);
     }
@@ -64,20 +71,26 @@ class PropertyTypeResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('slug')
+                    ->label('Slug')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('description')
+                    ->label('Descripción')
                     ->searchable(),
                 Tables\Columns\IconColumn::make('is_active')
+                    ->label('Activo')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creado')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizado')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
