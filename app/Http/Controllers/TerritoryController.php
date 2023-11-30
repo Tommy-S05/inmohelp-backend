@@ -10,7 +10,7 @@ class TerritoryController extends Controller
 {
     public function neighborhood()
     {
-        $neighborhoods = Neighborhood::where('average_price', '>=', 0)->orderBy('name')->get();
+        $neighborhoods = Neighborhood::where('average_price', '>=', 0)->orderBy('name')->get(['id', 'name', 'average_price']);
         return response()->json($neighborhoods);
     }
 
