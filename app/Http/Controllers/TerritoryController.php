@@ -10,13 +10,13 @@ class TerritoryController extends Controller
 {
     public function neighborhood()
     {
-        $neighborhoods = Neighborhood::where('average_price', '>=', 0)->get();
+        $neighborhoods = Neighborhood::where('average_price', '>=', 0)->orderBy('name')->get();
         return response()->json($neighborhoods);
     }
 
     public function province()
     {
-        $provinces = Province::all();
+        $provinces = Province::all()->sortBy('name');
         return response()->json($provinces);
     }
 }

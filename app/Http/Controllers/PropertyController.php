@@ -155,9 +155,9 @@ class PropertyController extends Controller
 
     public function getFiltersData()
     {
-        $provinces = Province::all(['id', 'name']);
-        $propertyTypes = PropertyType::all(['id', 'name']);
-        $neighborhoods = Neighborhood::all(['id', 'name']);
+        $provinces = Province::all(['id', 'name'])->sortBy('name');
+        $propertyTypes = PropertyType::all(['id', 'name'])->sortBy('name');
+        $neighborhoods = Neighborhood::all(['id', 'name'])->sortBy('name');
 
         return response()->json([
             'provinces' => $provinces,
