@@ -38,6 +38,7 @@ Route::get('/properties/affordable', [\App\Http\Controllers\PropertyController::
 Route::get('/properties/outstanding', [\App\Http\Controllers\PropertyController::class, 'outstanding']);
 Route::post('/properties', [\App\Http\Controllers\PropertyController::class, 'store']);
 Route::get('/properties/{property}', [\App\Http\Controllers\PropertyController::class, 'show']);
+Route::get('/properties-filters', [\App\Http\Controllers\PropertyController::class, 'getFiltersData']);
 
 Route::post('/login', [App\Http\Controllers\AuthController::class, 'login']);
 Route::post('/register', [App\Http\Controllers\AuthController::class, 'register']);

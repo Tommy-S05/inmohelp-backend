@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePropertyRequest;
 use App\Http\Requests\UpdatePropertyRequest;
 use App\Http\Resources\PropertyResource;
+use App\Models\Neighborhood;
+use App\Models\PropertyType;
+use App\Models\Province;
 use App\QueryFilters\Property\AffordableFilter;
 use App\QueryFilters\Property\AreaFilter;
 use App\QueryFilters\Property\PropertyTypeFilter;
@@ -148,5 +151,18 @@ class PropertyController extends Controller
     {
         $property->delete();
         return response()->noContent();
+    }
+
+    public function getFiltersData()
+    {
+        $provinces = Province::all(['id', 'name']);
+        $propertyTypes = PropertyType::all(['id', 'name']);
+        $neighborhoods = Neighborhood::all(['id', 'name']);
+
+        return response()->json([
+            'provinces' => $provinces,
+            'propertyTypes' => $propertyTypes,
+            'neighborhoods' => $neighborhoods,
+        ]);
     }
 }
