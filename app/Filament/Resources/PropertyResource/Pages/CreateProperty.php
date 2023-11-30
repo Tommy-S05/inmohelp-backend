@@ -69,9 +69,9 @@ class CreateProperty extends CreateRecord
             ->title('Propiedad creada')
             ->body('La propiedad se ha creado correctamente.')
             ->actions([
-                Action::make('view')
+                Action::make('Ver')
                     ->button()
-                    ->url($this->getResource()::getUrl('Ver', ['record' => $this->getRecord()])),
+                    ->url($this->getResource()::getUrl('view', ['record' => $this->getRecord()])),
                 Action::make('cerrar')
                     ->color('gray')
                     ->close(),
