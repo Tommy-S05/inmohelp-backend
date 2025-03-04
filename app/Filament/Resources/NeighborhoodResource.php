@@ -19,7 +19,10 @@ class NeighborhoodResource extends Resource
     protected static ?string $model = Neighborhood::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-home';
-    protected static ?string $navigationGroup = 'Territories';
+    protected static ?string $navigationLabel = 'Sectores';
+    protected static ?string $navigationGroup = 'Territorios';
+    protected static ?string $breadcrumb = 'sectores';
+    protected static ?string $label = 'sectores';
     protected static ?int $navigationSort = 4;
 
     public static function form(Form $form): Form
@@ -29,10 +32,12 @@ class NeighborhoodResource extends Resource
                 Forms\Components\Section::make()
                     ->schema([
                         Forms\Components\TextInput::make('name')
+                            ->label('Nombre')
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->maxLength(255),
                         Forms\Components\Select::make('municipality_id')
+                            ->label('Municipio')
                             ->relationship('municipality', 'name')
                             ->required()
                             ->preload()
@@ -41,11 +46,13 @@ class NeighborhoodResource extends Resource
                                 Forms\Components\Section::make()
                                     ->schema([
                                         Forms\Components\TextInput::make('name')
+                                            ->label('Nombre')
                                             ->autofocus()
                                             ->required()
                                             ->unique()
                                             ->maxLength(255),
                                         Forms\Components\Select::make('province_id')
+                                            ->label('Provincia')
                                             ->relationship('province', 'name')
                                             ->required()
                                             ->preload()
@@ -54,11 +61,13 @@ class NeighborhoodResource extends Resource
                                                 Forms\Components\Section::make()
                                                     ->schema([
                                                         Forms\Components\TextInput::make('name')
+                                                            ->label('Nombre')
                                                             ->autofocus()
                                                             ->required()
                                                             ->unique()
                                                             ->maxLength(255),
                                                         Forms\Components\Select::make('region_id')
+                                                            ->label('Región')
                                                             ->relationship('region', 'name')
                                                             ->required()
                                                             ->preload()
@@ -67,18 +76,20 @@ class NeighborhoodResource extends Resource
                                                                 Forms\Components\Section::make()
                                                                     ->schema([
                                                                         Forms\Components\TextInput::make('name')
+                                                                            ->label('Nombre')
                                                                             ->autofocus()
                                                                             ->required()
                                                                             ->unique()
                                                                             ->maxLength(255),
                                                                     ])
-                                                            ])->createOptionModalHeading('Create region'),
+                                                            ])->createOptionModalHeading('Crear región'),
                                                     ])->columns(2),
-                                            ])->createOptionModalHeading('Create province'),
+                                            ])->createOptionModalHeading('Crear provincia'),
                                     ])->columns(2),
-                            ])->createOptionModalHeading('Create municipality'),
+                            ])->createOptionModalHeading('Crear municipio'),
 
                         Forms\Components\TextInput::make('average_price')
+                            ->label('Indice de precio')
                             ->numeric()
                             ->required()
                             ->inputMode('float')
@@ -92,12 +103,15 @@ class NeighborhoodResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('municipality.name')
+                    ->label('Municipio')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('average_price')
+                    ->label('Indice de precio')
                     ->numeric(
                         decimalPlaces: 2,
                         decimalSeparator: '.',
@@ -106,17 +120,19 @@ class NeighborhoodResource extends Resource
                     ->money('dop')
                     ->badge()
                     ->color(function($state): string {
-                        if($state > 7000) return 'danger';
-                        elseif($state > 4000) return 'warning';
+                        if($state > 20000) return 'danger';
+                        elseif($state > 10000) return 'warning';
                         return 'success';
                     })
                     //                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creado')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizado')
                     ->dateTime()
                     //                    ->since()
                     ->sortable()
@@ -125,6 +141,7 @@ class NeighborhoodResource extends Resource
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('municipality')
+                    ->label('Municipio')
                     ->relationship('municipality', 'name')
                     ->placeholder('All Municipalities')
                     ->multiple()
@@ -132,9 +149,10 @@ class NeighborhoodResource extends Resource
                     ->preload(),
 
                 Tables\Filters\Filter::make('updated_at')
+                    ->label('Actualizado')
                     ->form([
-                        Forms\Components\DateTimePicker::make('updated_from'),
-                        Forms\Components\DateTimePicker::make('updated_until'),
+                        Forms\Components\DateTimePicker::make('updated_from')->label('Actualizado desde'),
+                        Forms\Components\DateTimePicker::make('updated_until')->label('Actualizado hasta'),
                     ])
                     ->query(function(Builder $query, array $data): Builder {
                         return $query
@@ -163,9 +181,11 @@ class NeighborhoodResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
-                    ->label(''),
+                    ->label('')
+                    ->tooltip('Editar'),
                 Tables\Actions\DeleteAction::make()
-                    ->label(''),
+                    ->label('')
+                    ->tooltip('Eliminar'),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),

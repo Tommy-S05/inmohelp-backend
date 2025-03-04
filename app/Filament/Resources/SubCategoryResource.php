@@ -5,7 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\SubCategoryResource\Pages;
 use App\Filament\Resources\SubCategoryResource\RelationManagers;
 use App\Models\Category;
-use App\Models\SubCategory;
+use App\Models\Subcategory;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -17,10 +17,13 @@ use Illuminate\Support\Str;
 
 class SubCategoryResource extends Resource
 {
-    protected static ?string $model = SubCategory::class;
+    protected static ?string $model = Subcategory::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-adjustments-vertical';
-    protected static ?string $navigationGroup = 'Finance';
+    protected static ?string $navigationLabel = 'Subcategorías';
+    protected static ?string $navigationGroup = 'Finanzas';
+    protected static ?string $breadcrumb = 'subcategorías';
+    protected static ?string $label = 'subcategorías';
     protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
@@ -31,6 +34,7 @@ class SubCategoryResource extends Resource
                 //                    ->required()
                 //                    ->numeric(),
                 Forms\Components\TextInput::make('name')
+                    ->label('Nombre')
                     ->autofocus()
                     ->required()
                     ->live(onBlur: true)
@@ -39,6 +43,7 @@ class SubCategoryResource extends Resource
                     ->maxLength(255),
 
                 Forms\Components\TextInput::make('slug')
+                    ->label('Slug')
                     ->disabled()
                     ->dehydrated()
                     ->required()
@@ -46,12 +51,14 @@ class SubCategoryResource extends Resource
                     ->maxLength(255),
 
                 Forms\Components\Select::make('category_id')
+                    ->label('Categoría')
                     ->relationship('category', 'name')
                     ->required()
                     ->preload()
                     ->searchable()
                     ->createOptionForm([
                         Forms\Components\TextInput::make('name')
+                            ->label('Nombre')
                             ->autofocus()
                             ->required()
                             ->live(onBlur: true)
@@ -60,6 +67,7 @@ class SubCategoryResource extends Resource
                             ->maxLength(255),
 
                         Forms\Components\TextInput::make('slug')
+                            ->label('Slug')
                             //                            ->disabled()
                             ->dehydrated()
                             ->required()
@@ -67,6 +75,7 @@ class SubCategoryResource extends Resource
                             ->maxLength(255),
 
                         Forms\Components\Select::make('type')
+                            ->label('Tipo')
                             ->options([
                                 'income' => 'Ingresos',
                                 'expense' => 'Gastos',
@@ -75,15 +84,18 @@ class SubCategoryResource extends Resource
                             ->searchable(),
 
                         Forms\Components\TextInput::make('description')
+                            ->label('Descripción')
                             ->maxLength(255),
                     ])
                     ->required()
-                    ->placeholder('Category'),
+                    ->placeholder('Categoría'),
 
                 Forms\Components\TextInput::make('description')
+                    ->label('Descripción')
                     ->maxLength(255),
 
                 Forms\Components\Toggle::make('is_active')
+                    ->label('Activo')
                     ->default(true)
                     ->required(),
             ]);

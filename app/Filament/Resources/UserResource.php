@@ -33,7 +33,10 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
     //    protected static ?string $slug = 'users';
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
-    protected static ?string $navigationGroup = 'Users Management';
+    protected static ?string $navigationLabel = 'Usuarios';
+    protected static ?string $navigationGroup = 'Gestión de Usuarios';
+    protected static ?string $breadcrumb = 'usuarios';
+    protected static ?string $label = 'usuarios';
     protected static ?int $navigationSort = 0;
 
 
@@ -52,24 +55,28 @@ class UserResource extends Resource
 
         return $form
             ->schema([
-                Forms\Components\Section::make('User Details')
+                Forms\Components\Section::make('Detalles del Usuario')
                     ->schema([
                         Forms\Components\TextInput::make('name')
+                            ->label('Nombre')
                             ->required()
                             ->maxLength(255),
 
                         Forms\Components\TextInput::make('email')
+                            ->label('Correo Electrónico')
                             ->unique(User::class, 'email', ignoreRecord: true)
                             ->email()
                             ->required()
                             ->maxLength(255),
 
                         Forms\Components\TextInput::make('username')
+                            ->label('Usuario')
                             ->unique(User::class, 'username', ignoreRecord: true)
                             ->required()
                             ->maxLength(255),
 
                         Forms\Components\TextInput::make('phone_number')
+                            ->label('Teléfono')
                             ->tel()
                             ->telRegex('/^(\+1)?[ -]?(\(809\)|\(849\)|\(829\)|809|849|829)[ -]?(\d{3})[ -]?(\d{4})$/')
                             //                            ->telRegex('/^[+][1-9]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\.\/0-9]*$/')
@@ -80,21 +87,23 @@ class UserResource extends Resource
                         //                    Forms\Components\TextInput::make('photo')
                         //                        ->maxLength(255),
                         Forms\Components\Textarea::make('address')
+                            ->label('Dirección')
                             ->maxLength(65535)
                             ->columnSpanFull(),
                         Forms\Components\Toggle::make('is_active')
+                            ->label('Activo')
                             ->default(true)
                             ->required(),
                     ])
                     ->columns(2)
                     ->columnSpan(['lg' => fn(Model $record): int => $record->hasRole('Super Admin') && !auth()->user()->hasRole('Super Admin') ? 3 : 2]),
 
-                Forms\Components\Section::make('Manage Password')
+                Forms\Components\Section::make('Contraseña')
                     ->schema([
                         Forms\Components\TextInput::make('password')
                             ->label(fn(string $operation): string => match ($operation) {
-                                'create' => 'Password',
-                                'edit' => 'New Password',
+                                'create' => 'Contraseña',
+                                'edit' => 'Nueva Contraseña',
                             })
                             ->password()
                             ->live(debounce: 250)
@@ -105,8 +114,8 @@ class UserResource extends Resource
                             ->maxLength(255),
                         Forms\Components\TextInput::make('password_confirmation')
                             ->label(fn(string $operation): string => match ($operation) {
-                                'create' => 'Confirm Password',
-                                'edit' => 'Confirm New Password',
+                                'create' => 'Confirmar Contraseña',
+                                'edit' => 'Confirmar Nueva Contraseña',
                             })
                             ->password()
                             ->visible(fn(Get $get): bool => filled($get('password')))
@@ -130,18 +139,19 @@ class UserResource extends Resource
                     ->columns(1)
                     ->columnSpan(['lg' => 1])
                     ->heading(fn(string $operation): string => match ($operation) {
-                        'create' => 'Manage Password',
-                        'edit' => 'Change Password',
+                        'create' => 'Contraseña',
+                        'edit' => 'Cambiar Contraseña'
                     }),
 
-                Tabs::make('Roles & Permissions')
+                Tabs::make('Roles & Permisos')
                     ->tabs([
                         Tabs\Tab::make('Roles')
                             ->schema([
                                 Forms\Components\Section::make()
-                                    ->description('Select all necessary roles for this user.')
+                                    ->description('Seleccione todos los roles necesarios para este usuario.')
                                     ->schema([
                                         Forms\Components\CheckboxList::make('roles')
+                                            ->label('Roles')
                                             ->relationship('roles', 'name')
                                             ->getOptionLabelFromRecordUsing(fn(Model $record) => Str::headline($record->name))
                                             ->bulkToggleable()
@@ -154,10 +164,10 @@ class UserResource extends Resource
                                     ])
                                     ->compact()
                             ]),
-                        Tabs\Tab::make('Permissions')
+                        Tabs\Tab::make('Permisos')
                             ->schema([
                                 Forms\Components\Section::make()
-                                    ->description('Select all necessary permissions for this role.')
+                                    ->description('Seleccione todos los permisos necesarios para este rol.')
                                     ->schema(function() use ($groupedPermissions) {
                                         $sections = [];
 
@@ -168,9 +178,10 @@ class UserResource extends Resource
                                             }, $modelPermissions);
 
                                             $sections[] = Forms\Components\Section::make($model)
-                                                ->description("Permissions for $model")
+                                                ->description("Permisos para $model")
                                                 ->schema([
                                                     Forms\Components\CheckboxList::make('permissions')
+                                                        ->label('Permisos')
                                                         ->hiddenLabel()
                                                         ->relationship('permissions', 'name')
                                                         ->bulkToggleable()
@@ -238,14 +249,16 @@ class UserResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
+                    ->label('Correo Electrónico')
                     ->sortable()
                     ->searchable(),
                 //Put the User role in the table
                 Tables\Columns\TextColumn::make('roles')
-                    ->label('Role')
+                    ->label('Roles')
                     //                    ->sortable()
                     //                    ->searchable()
                     //                    ->getStateUsing(fn(User $record): string => $record->roles->pluck('name')->join(', '))
@@ -268,20 +281,22 @@ class UserResource extends Resource
                     ->color(fn(string $state): string => match ($state) {
                         'Super Admin' => 'primary',
                         'Admin' => 'secondary',
-                        'User' => 'tertiary',
-                        'Sin Rol' => 'danger',
-                        default => 'warning'
+                        'Agente' => 'tertiary',
+                        'Cliente' => 'warning',
+                        default => 'danger'
                     }),
                 Tables\Columns\TextColumn::make('permissions_count')
-                    ->label('Permissions')
+                    ->label('Permisos')
                     ->numeric()
                     ->badge()
                     ->color('success')
                     ->getStateUsing(fn(User $record): string => $record->getAllPermissions()->count()),
                 Tables\Columns\TextColumn::make('username')
+                    ->label('Usuario')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('phone_number')
+                    ->label('Teléfono')
                     ->searchable(),
                 //                Tables\Columns\TextColumn::make('email_verified_at')
                 //                    ->dateTime()
@@ -290,7 +305,7 @@ class UserResource extends Resource
                 //                Tables\Columns\TextColumn::make('photo')
                 //                    ->searchable(),
                 Tables\Columns\TextColumn::make('is_active')
-                    ->label('Active')
+                    ->label('Activo')
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {
                         'Activo' => 'success',
@@ -298,21 +313,24 @@ class UserResource extends Resource
                     })
                     ->getStateUsing(fn(User $record): string => $record->is_active ? 'Activo' : 'Inactivo'),
                 Tables\Columns\TextColumn::make('deleted_at')
+                    ->label('Eliminado')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creado')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizado')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make()
-                    ->label('Deleted users'),
+                    ->label('Usuarios Eliminados'),
                 Tables\Filters\SelectFilter::make('roles')
                     ->label('Roles')
                     ->multiple()
@@ -341,20 +359,24 @@ class UserResource extends Resource
     {
         return $infolist
             ->schema([
-                Section::make('User Details')
+                Section::make('Detalles del Usuario')
                     ->schema([
                         Grid::make(2)
                             ->schema([
                                 TextEntry::make('name')
+                                    ->label('Nombre')
                                     ->icon('heroicon-m-user')
                                     ->weight(FontWeight::Bold)
                                     ->size(TextEntry\TextEntrySize::Medium),
                                 TextEntry::make('email')
+                                    ->label('Correo Electrónico')
                                     ->icon('heroicon-m-envelope')
                                     ->size(TextEntry\TextEntrySize::Medium)->weight(FontWeight::Bold),
                                 TextEntry::make('username')
+                                    ->label('Usuario')
                                     ->icon('heroicon-m-at-symbol'),
                                 TextEntry::make('phone_number')
+                                    ->label('Teléfono')
                                     ->icon('heroicon-m-phone')
                                     ->default('(xxx) xxx-xxxx'),
                             ]),
@@ -363,11 +385,14 @@ class UserResource extends Resource
                 Section::make()
                     ->schema([
                         IconEntry::make('is_active')
+                            ->label('Activo')
                             ->columnSpanFull()
                             ->boolean(),
                         TextEntry::make('created_at')
+                            ->label('Creado')
                             ->since(),
                         TextEntry::make('updated_at')
+                            ->label('Actualizado')
                             ->since(),
                     ])
                     ->columns(2)

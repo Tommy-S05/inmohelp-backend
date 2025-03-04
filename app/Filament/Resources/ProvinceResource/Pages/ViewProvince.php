@@ -13,7 +13,7 @@ class ViewProvince extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\Action::make('Back')
+            Actions\Action::make('Atrás')
                 ->icon('heroicon-o-arrow-left')
                 ->url($this->getResource()::getUrl('index'))
                 ->color('gray'),

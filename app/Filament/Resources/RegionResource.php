@@ -18,7 +18,10 @@ class RegionResource extends Resource
     protected static ?string $model = Region::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-globe-americas';
-    protected static ?string $navigationGroup = 'Territories';
+    protected static ?string $navigationLabel = 'Regiones';
+    protected static ?string $navigationGroup = 'Territorios';
+    protected static ?string $breadcrumb = 'regiones';
+    protected static ?string $label = 'regiones';
     protected static ?int $navigationSort = 7;
 
     public static function form(Form $form): Form
@@ -28,6 +31,7 @@ class RegionResource extends Resource
                 Forms\Components\Section::make()
                     ->schema([
                         Forms\Components\TextInput::make('name')
+                            ->label('Nombre')
                             ->required()
                             ->autofocus()
                             ->unique(ignoreRecord: true)
@@ -42,20 +46,23 @@ class RegionResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('provinces_count')
+                    ->label('Provincias')
                     ->counts('provinces')
-                    ->label('Provinces')
                     ->badge()
                     ->color('secondary')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizado')
                     ->dateTime()
                     ->since()
                     ->sortable()
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creado')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

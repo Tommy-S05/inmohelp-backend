@@ -20,6 +20,7 @@ class SubCategoriesRelationManager extends RelationManager
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label('Nombre')
                     ->autofocus()
                     ->required()
                     ->live(onBlur: true)
@@ -27,15 +28,18 @@ class SubCategoriesRelationManager extends RelationManager
                     ->maxLength(255),
 
                 Forms\Components\TextInput::make('slug')
+                    ->label('Slug')
                     ->disabled()
                     ->dehydrated()
                     ->required()
                     ->maxLength(255),
 
                 Forms\Components\TextInput::make('description')
+                    ->label('Descripción')
                     ->maxLength(255),
 
                 Forms\Components\Toggle::make('is_active')
+                    ->label('Activo')
                     ->default(true)
                     ->required(),
             ]);
@@ -47,24 +51,30 @@ class SubCategoriesRelationManager extends RelationManager
             ->recordTitleAttribute('name')
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('category.name')
-                    ->label('Category')
+                    ->label('Categoría')
                     ->searchable()
                     ->sortable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('slug')
+                    ->label('Slug')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('description')
+                    ->label('Descripción')
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\IconColumn::make('is_active')
+                    ->label('Activo')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creado')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizado')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

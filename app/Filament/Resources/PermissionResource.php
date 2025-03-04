@@ -23,7 +23,10 @@ class PermissionResource extends Resource
     protected static ?string $model = Permission::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-lock-closed';
-    protected static ?string $navigationGroup = 'Users Management';
+    protected static ?string $navigationLabel = 'Permisos';
+    protected static ?string $navigationGroup = 'Gestión de Usuarios';
+    protected static ?string $breadcrumb = 'permisos';
+    protected static ?string $label = 'permisos';
     protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
@@ -33,11 +36,13 @@ class PermissionResource extends Resource
                 Forms\Components\Section::make()
                     ->schema([
                         Forms\Components\TextInput::make('name')
+                            ->label('Nombre')
                             ->autofocus()
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->maxLength(255),
                         Forms\Components\Select::make('guard_name')
+                            ->label('Guard')
                             ->disabled()
                             ->options([
                                 'web' => 'Web',
@@ -51,9 +56,11 @@ class PermissionResource extends Resource
                     ]),
 
                 Section::make('Roles')
-                    ->description('Select all necessary roles for this permission.')
+                    ->label('Roles')
+                    ->description('Seleccione todos los roles necesarios para este permiso.')
                     ->schema([
                         CheckboxList::make('roles')
+                            ->label('Roles')
                             ->relationship('roles', 'name')
                             ->getOptionLabelFromRecordUsing(fn(Model $record) => Str::headline($record->name))
                             ->bulkToggleable()
@@ -72,16 +79,18 @@ class PermissionResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
                     ->badge()
                     ->formatStateUsing(fn($state): string => Str::headline($state))
                     ->colors(['primary'])
                     ->searchable(),
                 Tables\Columns\TextColumn::make('guard_name')
+                    ->label('Guard')
                     ->badge()
                     ->colors(['tertiary']),
                 Tables\Columns\TextColumn::make('users_count')
+                    ->label('Usuarios')
                     ->badge()
-                    ->label('Users')
                     //                    ->counts('users')
                     ->getStateUsing(function(Permission $record): int {
                         return User::whereHas('roles.permissions', function($query) use ($record) {
@@ -92,11 +101,12 @@ class PermissionResource extends Resource
                     })
                     ->colors(['success']),
                 Tables\Columns\TextColumn::make('roles_count')
-                    ->badge()
                     ->label('Roles')
+                    ->badge()
                     ->counts('roles')
                     ->colors(['success']),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizado')
                     ->dateTime(),
             ])
             ->filters([
