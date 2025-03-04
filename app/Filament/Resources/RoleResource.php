@@ -19,8 +19,10 @@ class RoleResource extends Resource
 {
     protected static ?string $model = Role::class;
     protected static ?string $navigationIcon = 'heroicon-o-shield-check';
-
-    protected static ?string $navigationGroup = 'Users Management';
+    protected static ?string $navigationLabel = 'Roles';
+    protected static ?string $navigationGroup = 'Gestión de Usuarios';
+    protected static ?string $breadcrumb = 'roles';
+    protected static ?string $label = 'roles';
     protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
@@ -45,11 +47,13 @@ class RoleResource extends Resource
                 Forms\Components\Section::make()
                     ->schema([
                         Forms\Components\TextInput::make('name')
+                            ->label('Nombre')
                             ->autofocus()
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->maxLength(255),
                         Forms\Components\Select::make('guard_name')
+                            ->label('Guard')
                             ->disabled()
                             ->options([
                                 'web' => 'Web',
@@ -62,8 +66,8 @@ class RoleResource extends Resource
                         'lg' => 2,
                     ]),
 
-                Forms\Components\Section::make('Permissions')
-                    ->description('Select all necessary permissions for this role.')
+                Forms\Components\Section::make('Permisos')
+                    ->description('Seleccione todos los permisos necesarios para este rol.')
                     ->schema(function() use ($groupedPermissions) {
                         $sections = [];
                         // Crea una sección para cada modelo
@@ -74,9 +78,10 @@ class RoleResource extends Resource
                             }, $modelPermissions);
 
                             $sections[] = Forms\Components\Section::make($model)
-                                ->description("Permissions for $model")
+                                ->description("Permisos para $model")
                                 ->schema([
                                     Forms\Components\CheckboxList::make('permissions')
+                                        ->label('Permisos')
                                         ->relationship('permissions', 'name')
                                         ->bulkToggleable()
                                         ->searchable()
@@ -118,24 +123,28 @@ class RoleResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
                     ->badge()
                     ->formatStateUsing(fn($state): string => Str::headline($state))
                     ->colors(['primary'])
                     ->searchable(),
                 Tables\Columns\TextColumn::make('guard_name')
+                    ->label('Guard')
                     ->badge()
                     ->colors(['tertiary']),
                 Tables\Columns\TextColumn::make('users_count')
+                    ->label('Usuarios')
                     ->badge()
                     ->label('Users')
                     ->counts('users')
                     ->colors(['success']),
                 Tables\Columns\TextColumn::make('permissions_count')
+                    ->label('Permisos')
                     ->badge()
-                    ->label('Permissions')
                     ->counts('permissions')
                     ->colors(['success']),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizado')
                     ->dateTime(),
             ])
             ->filters([

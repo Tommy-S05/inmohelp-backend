@@ -37,14 +37,14 @@ class CreateUser extends CreateRecord
     {
         return Notification::make()
             ->success()
-            ->title('User registered')
-            ->body('The user has been created successfully.')
+            ->title('Usuario creado')
+            ->body('El usuario ha sido creado exitosamente.')
             ->actions([
-                Action::make('view')
+                Action::make('Ver')
                     ->button()
 //                    ->url(route('filament.admin.resources.users.view', $this->record->id)),
                     ->url($this->getResource()::getUrl('view', ['record' => $this->getRecord()])),
-                Action::make('undo')
+                Action::make('Cerrar')
                     ->color('gray')
                     ->close(),
             ]);
@@ -64,53 +64,59 @@ class CreateUser extends CreateRecord
         }
 
         return [
-            Step::make('User Account')
-                ->description('Give the account user data')
+            Step::make('Cuenta')
+                ->description('Información de la cuenta')
                 ->schema([
                     TextInput::make('name')
+                        ->label('Nombre')
                         ->required()
                         ->maxLength(255),
 
                     TextInput::make('email')
+                        ->label('Correo electrónico')
                         ->unique(User::class, 'email', ignoreRecord: true)
                         ->email()
                         ->required()
                         ->maxLength(255),
 
                     TextInput::make('username')
+                        ->label('Usuario')
                         ->unique(User::class, 'username', ignoreRecord: true)
                         ->required()
                         ->maxLength(255),
                 ]),
 
-            Step::make('User Details')
-                ->description('User personal information')
+            Step::make('Detalles personales')
+                ->description('Información personal')
                 ->schema([
                     TextInput::make('phone_number')
+                        ->label('Teléfono')
                         ->tel()
                         ->telRegex('/^(\+1)?[ -]?(\(809\)|\(849\)|\(829\)|809|849|829)[ -]?(\d{3})[ -]?(\d{4})$/')
                         ->maxLength(20),
                     Toggle::make('is_active')
+                        ->label('Activo')
                         ->default(true)
-                        ->label('Active')
                         ->inline(false)
                         ->required(),
                     Textarea::make('address')
+                        ->label('Dirección')
                         ->maxLength(65535)
                         ->columnSpanFull(),
                 ])->columns(2),
 
-            Step::make('Roles & Permissions')
-                ->description('User roles and permissions')
+            Step::make('Roles & Permisos')
+                ->description('Roles y permisos de usuario')
                 ->schema([
-                    Tabs::make('Roles & Permissions')
+                    Tabs::make('Roles & Permisos')
                         ->tabs([
                             Tabs\Tab::make('Roles')
                                 ->schema([
                                     Section::make()
-                                        ->description('Select all necessary roles for this user.')
+                                        ->description('Seleccione todos los roles necesarios para este usuario.')
                                         ->schema([
                                             CheckboxList::make('roles')
+                                                ->label('Roles')
                                                 ->relationship('roles', 'name')
                                                 ->getOptionLabelFromRecordUsing(fn(Model $record) => Str::headline($record->name))
                                                 ->bulkToggleable()
@@ -123,10 +129,10 @@ class CreateUser extends CreateRecord
                                         ])
                                 ]),
 
-                            Tabs\Tab::make('Permissions')
+                            Tabs\Tab::make('Permisos')
                                 ->schema([
                                     Section::make()
-                                        ->description('Select all necessary permissions for this role.')
+                                        ->description('Seleccione todos los permisos necesarios para este rol.')
                                         ->schema(function () use ($groupedPermissions) {
                                             $sections = [];
 
@@ -137,9 +143,10 @@ class CreateUser extends CreateRecord
                                                 }, $modelPermissions);
 
                                                 $sections[] = Section::make($model)
-                                                    ->description("Permissions for $model")
+                                                    ->description("Permisos para $model")
                                                     ->schema([
                                                         CheckboxList::make('permissions')
+                                                            ->label('Permisos')
                                                             ->hiddenLabel()
                                                             ->relationship('permissions', 'name')
                                                             ->bulkToggleable()
@@ -163,10 +170,11 @@ class CreateUser extends CreateRecord
                         ->columnSpanFull(),
 
                 ])->columns(4),
-            Step::make('Manage Password')
-                ->description('Set the account password')
+            Step::make('Contraseña')
+                ->description('Contraseña de usuario')
                 ->schema([
                     TextInput::make('password')
+                        ->label('Contraseña')
                         ->password()
                         ->dehydrateStateUsing(fn(string $state): string => Hash::make($state))
                         ->rule(Password::default())
@@ -174,6 +182,7 @@ class CreateUser extends CreateRecord
                         ->required(fn(string $operation): bool => $operation === 'create')
                         ->maxLength(255),
                     TextInput::make('password_confirmation')
+                        ->label('Confirmar contraseña')
                         ->password()
                         ->requiredWith('password')
                         ->same('password')

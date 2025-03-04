@@ -18,10 +18,11 @@ class IconTypeResource extends Resource
     protected static ?string $model = IconType::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-ellipsis-vertical';
+    protected static ?string $navigationLabel = 'Tipos de iconos';
     protected static ?string $navigationGroup = 'Properties';
     protected static ?int $navigationSort = 5;
     protected static bool $shouldRegisterNavigation = false;
-    
+
 
     public static function form(Form $form): Form
     {

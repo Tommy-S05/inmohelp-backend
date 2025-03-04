@@ -38,6 +38,7 @@ Route::get('/properties/affordable', [\App\Http\Controllers\PropertyController::
 Route::get('/properties/outstanding', [\App\Http\Controllers\PropertyController::class, 'outstanding']);
 Route::post('/properties', [\App\Http\Controllers\PropertyController::class, 'store']);
 Route::get('/properties/{property}', [\App\Http\Controllers\PropertyController::class, 'show']);
+Route::get('/properties-filters', [\App\Http\Controllers\PropertyController::class, 'getFiltersData']);
 
 Route::post('/login', [App\Http\Controllers\AuthController::class, 'login']);
 Route::post('/register', [App\Http\Controllers\AuthController::class, 'register']);
@@ -70,6 +71,8 @@ Route::get('/categories', [\App\Http\Controllers\CategoryController::class, 'ind
 
 //PriceIndexController
 Route::get('/price-index', [\App\Http\Controllers\PriceIndexController::class, 'index'])->middleware('auth:sanctum');
+Route::get('/neighborhoods', [\App\Http\Controllers\TerritoryController::class, 'neighborhood']);
+Route::get('/provinces', [\App\Http\Controllers\TerritoryController::class, 'province']);
 
 //AmortizationController
 Route::get('/amortization', [\App\Http\Controllers\AmortizationController::class, 'amortization']);

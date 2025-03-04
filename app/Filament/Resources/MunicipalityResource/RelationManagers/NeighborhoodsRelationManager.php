@@ -21,12 +21,14 @@ class NeighborhoodsRelationManager extends RelationManager
                 Forms\Components\Section::make()
                     ->schema([
                         Forms\Components\TextInput::make('name')
+                            ->label('Nombre')
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->autofocus()
                             ->maxLength(255),
 
                         Forms\Components\TextInput::make('average_price')
+                            ->label('Indice de precio')
                             ->numeric()
                             ->inputMode('float')
                             ->minValue(0),
@@ -40,12 +42,15 @@ class NeighborhoodsRelationManager extends RelationManager
             ->recordTitleAttribute('name')
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('municipality.name')
+                    ->label('Municipio')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('average_price')
+                    ->label('Indice de precio')
                     ->numeric(
                         decimalPlaces: 2,
                         decimalSeparator: '.',
@@ -54,17 +59,19 @@ class NeighborhoodsRelationManager extends RelationManager
                     ->money('dop')
                     ->badge()
                     ->color(function($state): string {
-                        if($state > 7000) return 'danger';
-                        elseif($state > 4000) return 'warning';
+                        if($state > 20000) return 'danger';
+                        elseif($state > 10000) return 'warning';
                         return 'success';
                     })
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creado')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizado')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

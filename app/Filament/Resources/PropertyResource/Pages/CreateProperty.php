@@ -29,7 +29,7 @@ class CreateProperty extends CreateRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\Action::make('Cancel')
+            Actions\Action::make('Cancelar')
                 ->icon('heroicon-o-arrow-left')
                 ->url($this->getResource()::getUrl('index'))
                 ->color('gray'),
@@ -51,28 +51,28 @@ class CreateProperty extends CreateRecord
         return $data;
     }
 
-//    protected function afterCreate(): void
-//    {
-//        if ($this->data['images']) {
-//            foreach ($this->data['images'] as $uuid => $image) {
-//                $this->record->images()->create([
-//                    'image' => $image
-//                ]);
-//            }
-//        }
-//    }
+    //    protected function afterCreate(): void
+    //    {
+    //        if ($this->data['images']) {
+    //            foreach ($this->data['images'] as $uuid => $image) {
+    //                $this->record->images()->create([
+    //                    'image' => $image
+    //                ]);
+    //            }
+    //        }
+    //    }
 
     protected function getCreatedNotification(): ?Notification
     {
         return Notification::make()
             ->success()
-            ->title('Property registered')
-            ->body('The property has been created successfully.')
+            ->title('Propiedad creada')
+            ->body('La propiedad se ha creado correctamente.')
             ->actions([
-                Action::make('view')
+                Action::make('Ver')
                     ->button()
                     ->url($this->getResource()::getUrl('view', ['record' => $this->getRecord()])),
-                Action::make('undo')
+                Action::make('Cerrar')
                     ->color('gray')
                     ->close(),
             ]);

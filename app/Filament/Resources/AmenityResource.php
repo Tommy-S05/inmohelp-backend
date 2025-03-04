@@ -18,7 +18,10 @@ class AmenityResource extends Resource
     protected static ?string $model = Amenity::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-sparkles';
-    protected static ?string $navigationGroup = 'Properties';
+    protected static ?string $navigationLabel = 'Amenidades';
+    protected static ?string $navigationGroup = 'Propiedades';
+    protected static ?string $breadcrumb = 'amenidades';
+    protected static ?string $label = 'amenidades';
     protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
@@ -28,11 +31,12 @@ class AmenityResource extends Resource
                 Forms\Components\Section::make()
                     ->schema([
                         Forms\Components\TextInput::make('name')
+                            ->label('Nombre')
                             ->required()
                             ->autofocus()
                             ->maxLength(255),
                         Forms\Components\Toggle::make('is_active')
-                            ->label('Active')
+                            ->label('Activo')
                             ->default(true)
                             ->inline(false)
                             ->required(),
@@ -98,6 +102,7 @@ class AmenityResource extends Resource
                         */
 
                         Forms\Components\Textarea::make('description')
+                            ->label('Descripción')
                             ->rows(4)
                             ->maxLength(65535)
                             ->nullable()
@@ -111,21 +116,27 @@ class AmenityResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('icon.name')
-                    ->searchable()
-                    ->sortable(),
+//                Tables\Columns\TextColumn::make('icon.name')
+//                    ->label('Icono')
+//                    ->searchable()
+//                    ->sortable(),
                 Tables\Columns\TextColumn::make('description')
+                    ->label('Descripción')
                     ->searchable(),
                 Tables\Columns\IconColumn::make('is_active')
+                    ->label('Activo')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizada')
                     ->dateTime()
                     ->since()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creada')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
